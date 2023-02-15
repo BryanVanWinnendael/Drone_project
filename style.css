@@ -1,0 +1,9 @@
+QPushButton#uploadbtn {
+  background-color: blue;
+  font: 57 13pt "Futura";
+}
+
+QLabel#label-error {
+  font: 57 13pt "Futura";
+  color: red;
+}
