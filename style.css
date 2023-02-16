@@ -1,9 +1,23 @@
 QPushButton#uploadbtn {
-  background-color: blue;
+  background-color: transparent;
   font: 57 13pt "Futura";
+  border-width: 1px;
+  border-color: #000000;
+  border-style: dotted;
+  height: 100px;
+}
+
+QPushButton#backbtn {
+  font: 57 13pt "Futura";
+  width: 30px;
+  background-color: transparent;
 }
 
 QLabel#label-error {
   font: 57 13pt "Futura";
   color: red;
+}
+
+QLabel#recentlabel {
+  font: 57 13pt "Futura";
 }

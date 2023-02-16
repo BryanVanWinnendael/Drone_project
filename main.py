@@ -1,26 +1,26 @@
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import QFileDialog
-from pointCloudScreen import PointCloud_MainWindow
+from widgets.renderer import RendererWidget
+from widgets.home import HomeWidget
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 from PyQt5.QtCore import QUrl
+from utils import saveFileName
+
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        super().__init__()
-        central = QtWidgets.QWidget()
-        layout = QtWidgets.QVBoxLayout(central)
+        super(MainWindow, self).__init__()
+        homeWidget = HomeWidget(self)
+        self.setCentralWidget(homeWidget)
 
-        self.testButton = QtWidgets.QPushButton('Upload file')
-        self.testButton.setObjectName("uploadbtn")
-        layout.addWidget(self.testButton)
-
-        self.label = QtWidgets.QLabel()
-        self.label.setObjectName("label-error")
-        layout.addWidget(self.label)
-
-        self.setCentralWidget(central)
-        self.setAcceptDrops(True)
-        self.testButton.clicked.connect(self.openFileNameDialog)
-
+    # Navigation functions
+    def navigateToRenderer(self, fileName):
+        print(fileName)
+        saveFileName(fileName)
+        cloudPointWidget = RendererWidget(self, fileName)
+        self.setCentralWidget(cloudPointWidget)
+    
+    def navigateToHome(self):
+        homeWidget = HomeWidget(self)
+        self.setCentralWidget(homeWidget)
 
     def doRequest(self):   
         url = "https://names.drycodes.com/10"
@@ -38,52 +38,15 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             print("Error occured: ", er)
             print(reply.errorString())
-       
-
-    def openFileNameDialog(self):
-        options = QFileDialog.Options()
-        options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","Polygon Files (*.ply)", options=options)
-        if fileName and fileName.endswith('.ply'):
-            self.launchWindow(fileName)
-
-    def launchWindow(self, fileName=None):
-        self.test = PointCloud_MainWindow(fileName)
-        self.test.resize(800, 600)
-        self.test.backSignal.connect(self.show)
-        self.hide()
-        self.test.show()
-
-    def dragEnterEvent(self, event):
-        if event.mimeData().hasUrls():
-            event.accept()
-        else:
-            event.ignore()
-
-    def dropEvent(self, event):
-        files = [u.toLocalFile() for u in event.mimeData().urls()]
-        if (files[0].endswith('.ply') == True):
-            print("Opening ply file")
-            self.label.clear()
-            self.launchWindow(files[0])
-        else:
-            self.label.setText("Not a ply file")
-            print("Not a ply file")
-
-
-def GUI_Window():
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
+    
+if __name__ == '__main__':
+    app = QtWidgets.QApplication([])
 
     css="style.css"
     with open(css,"r") as fh:
         app.setStyleSheet(fh.read())
 
-    mainWindow = MainWindow()
-    mainWindow.resize(800, 600)
-    mainWindow.show()
-    sys.exit(app.exec_())
-
-
-if __name__ == '__main__':
-    GUI_Window()
+    window = MainWindow()
+    window.resize(800, 600)
+    window.show()
+    app.exec_()
