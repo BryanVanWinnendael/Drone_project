@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils import getFileNames
-
+from widgets.components.buttonHistory import ButtonHistory
 class HomeWidget(QtWidgets.QWidget):
     def __init__(self,parent):
         super(HomeWidget, self).__init__()
@@ -26,20 +26,13 @@ class HomeWidget(QtWidgets.QWidget):
         label.setAlignment(QtCore.Qt.AlignCenter)
         vbox.addWidget(label)
         recentFiles = getFileNames()
-        print(recentFiles)
         for file in recentFiles if recentFiles != None else []:
-            fileName = file["name"]
-            fileTime = file["time"]
-
-            btn = QtWidgets.QPushButton(fileName + " - " + fileTime)
-            btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-            btn.setObjectName("recentbtn")
-            btn.clicked.connect(lambda state, file=file: self.parent.navigateToRenderer(fileName))
+            btn = ButtonHistory(file, self.parent)
             vbox.addWidget(btn)
         layout.addLayout(vbox)
 
         self.setLayout(layout)
-    
+
     def openFileNameDialog(self):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog

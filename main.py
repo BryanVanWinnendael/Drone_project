@@ -13,7 +13,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # Navigation functions
     def navigateToRenderer(self, fileName):
-        print(fileName)
         saveFileName(fileName)
         cloudPointWidget = RendererWidget(self, fileName)
         self.setCentralWidget(cloudPointWidget)
