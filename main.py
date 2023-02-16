@@ -16,6 +16,7 @@ class MainWindow(QtWidgets.QMainWindow):
         saveFileName(fileName)
         cloudPointWidget = RendererWidget(self, fileName)
         self.setCentralWidget(cloudPointWidget)
+        
     
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
