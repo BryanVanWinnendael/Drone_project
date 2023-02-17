@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class ButtonTable(QtWidgets.QPushButton):
@@ -11,6 +11,7 @@ class ButtonTable(QtWidgets.QPushButton):
         area = data["Surface area"]
         fileName = f"data/planes/plane_{item_id}.ply"
         self.clicked.connect(lambda: self.showObject(fileName))
+        self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
     def showObject(self, fileName):
         self.parent.changeGeometry(fileName)
