@@ -14,7 +14,7 @@ class HomeWidget(QtWidgets.QWidget):
         self.label.setObjectName("label-error")
         layout.addWidget(self.label)
 
-        self.uploadButton = QtWidgets.QPushButton('Upload file')
+        self.uploadButton = QtWidgets.QPushButton('Drag & Drop of Upload')
         self.uploadButton.setMinimumHeight(300)
         self.uploadButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.uploadButton.setObjectName("uploadbtn")
