@@ -6,7 +6,8 @@ class ButtonTable(QtWidgets.QPushButton):
         super(ButtonTable, self).__init__()
         self.parent = parent
         self.setText("View")
-        name, item_id = data["Segment"].split(" ")
+        item_id = data["Segment"]
+        name = f'Segment {item_id}'
         area = data["Surface area"]
         fileName = f"data/planes/plane_{item_id}.ply"
         self.clicked.connect(lambda: self.showObject(fileName))

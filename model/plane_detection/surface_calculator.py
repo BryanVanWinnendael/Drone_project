@@ -10,11 +10,8 @@ def CalculateSurfaces():
         os.makedirs("data/meshes")
 
     # Iterate over all files in directory
-    for filename in os.listdir("data/meshes"):
+    for i, filename in enumerate(os.listdir("data/meshes")):
         file_path = os.path.join("data/meshes", filename)
-
-        file = os.path.splitext(filename)[0]
-        file = file.replace("mesh_", "Segment ")
 
         if os.path.isfile(file_path):
             # Load mesh from file
@@ -23,7 +20,7 @@ def CalculateSurfaces():
             # Compute the surface area
             surface_area = mesh.get_surface_area()
 
-            results[file] = surface_area
+            results[i + 1] = surface_area
 
     if not os.path.exists("data/results"):
             os.makedirs("data/results")

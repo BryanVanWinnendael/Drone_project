@@ -19,7 +19,7 @@ class ResultTable(QTableWidget):
  
     def setData(self): 
         for i in range(len(self.data)):
-            self.setItem(i, 0, QTableWidgetItem(self.data[i]["Segment"]))
+            self.setItem(i, 0, QTableWidgetItem(f'Segment {self.data[i]["Segment"]}'))
             self.setItem(i, 1, QTableWidgetItem(self.data[i]["Surface area"]))
             self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent))
         headers = list(self.data[0].keys())
