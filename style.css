@@ -21,3 +21,16 @@ QLabel#label-error {
 QLabel#recentlabel {
   font: 57 13pt "Futura";
 }
+
+QPushButton#viewButton {
+  background-color: #249ea7;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 10px 20px;
+}
+
+QTableWidgetItem {
+  background-color: antiquewhite;
+}
