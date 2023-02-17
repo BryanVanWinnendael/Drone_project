@@ -7,6 +7,7 @@ class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
         super().__init__()
         self.fileName = fileName
+        self.classified = "data/results/result-classified.ply"
         self.parent = parent
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
@@ -30,16 +31,30 @@ class RendererWidget(QtWidgets.QWidget):
         self.backButton.setIcon(QtGui.QIcon('assets/back.svg'))
         self.backButton.setIconSize(QtCore.QSize(30, 30))
 
-        self.resetButton = QtWidgets.QPushButton("Reset")
-        self.resetButton.setObjectName("backbtn")
-        self.resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.resetButton.clicked.connect(lambda: self.changeGeometry(self.fileName))
+
+        self.buttonSpace = QtWidgets.QWidget()
+
+        self.buttonSpaceLayout = QtWidgets.QHBoxLayout()
+
+        self.originalButton = QtWidgets.QPushButton("Original")
+        self.originalButton.setObjectName("backbtn")
+        self.originalButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.originalButton.clicked.connect(lambda: self.changeGeometry(self.fileName))
+
+        self.classifiedButton = QtWidgets.QPushButton("Classified")
+        self.classifiedButton.setObjectName("backbtn")
+        self.classifiedButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.classifiedButton.clicked.connect(lambda: self.changeGeometry(self.classified))
+
+        self.buttonSpaceLayout.addWidget(self.originalButton)
+        self.buttonSpaceLayout.addWidget(self.classifiedButton)
+        self.buttonSpace.setLayout(self.buttonSpaceLayout)
 
         self.resultTable = ResultTable(self)
     
         layout.addWidget(self.backButton, 0, 0)
         layout.addWidget(self.windowcontainer, 1, 0)
-        layout.addWidget(self.resetButton, 2, 0)
+        layout.addWidget(self.buttonSpace, 2, 0)
         layout.addWidget(self.resultTable, 3, 0)
 
         self.setLayout(layout)
