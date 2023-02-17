@@ -1,9 +1,6 @@
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import pyqtSlot
-import sys
 import csv
-import open3d as o3d
 from widgets.components.buttonTable import ButtonTable
 
 class ResultTable(QTableWidget):

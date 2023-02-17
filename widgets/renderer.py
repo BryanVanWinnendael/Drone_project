@@ -1,7 +1,6 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 import win32gui
 import open3d as o3d
-from utils import getFileNames
 from widgets.components.resultTable import ResultTable
 
 class RendererWidget(QtWidgets.QWidget):

@@ -1,5 +1,5 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
-import open3d as o3d
+from PyQt5 import QtWidgets
+
 
 class ButtonTable(QtWidgets.QPushButton):
     def __init__(self, data, parent):
