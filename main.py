@@ -5,6 +5,7 @@ from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkRepl
 from PyQt5.QtCore import QUrl
 from utils import saveFileName
 from model.segmentator import Segmentator
+from PyQt5.QtGui import QFontDatabase
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -44,6 +45,7 @@ class MainWindow(QtWidgets.QMainWindow):
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
+    QFontDatabase.addApplicationFont('assets/fonts/gilroy.otf')
 
     css="style.css"
     with open(css,"r") as fh:

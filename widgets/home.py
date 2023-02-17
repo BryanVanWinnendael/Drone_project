@@ -10,11 +10,12 @@ class HomeWidget(QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
         self.label = QtWidgets.QLabel()
-        self.label.setMaximumHeight(30)
+        self.label.setMaximumHeight(25)
         self.label.setObjectName("label-error")
         layout.addWidget(self.label)
 
-        self.uploadButton = QtWidgets.QPushButton('Upload file')
+        self.uploadButton = QtWidgets.QPushButton('Drag & Drop of Upload')
+        self.uploadButton.setMinimumHeight(300)
         self.uploadButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.uploadButton.setObjectName("uploadbtn")
         self.uploadButton.setIcon(QtGui.QIcon('assets/upload.svg'))
