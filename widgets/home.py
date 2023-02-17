@@ -57,4 +57,6 @@ class HomeWidget(QtWidgets.QWidget):
             print("Not a ply file")
     
     
-    
+    def renderIsLoading(self):
+        self.label.setText("Loading...")
+        self.uploadButton.setEnabled(False)

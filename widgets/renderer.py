@@ -11,12 +11,12 @@ class RendererWidget(QtWidgets.QWidget):
         self.parent = parent
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
-        self.acceptDrops = False
+        self.acceptDrops = False       
+        
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
         self.vis.add_geometry(pcd)      
-
         hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
         
         self.window = QtGui.QWindow.fromWinId(hwnd)    
@@ -56,7 +56,8 @@ class RendererWidget(QtWidgets.QWidget):
     def changeGeometry(self, fileName):
         self.vis.clear_geometries()
         pcd = o3d.io.read_point_cloud(fileName)
-        self.vis.add_geometry(pcd)
+        self.vis.add_geometry(pcd)      
+        self.vis.reset_view_point(True)
 
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_vis)

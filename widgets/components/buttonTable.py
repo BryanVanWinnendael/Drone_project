@@ -14,6 +14,3 @@ class ButtonTable(QtWidgets.QPushButton):
     def showObject(self, fileName):
         self.parent.changeGeometry(fileName)
         print(fileName)
-        print(type(fileName))
-        #pcd = o3d.io.read_point_cloud(fileName)
-        #o3d.visualization.draw_geometries([pcd], "", 500, 500)
