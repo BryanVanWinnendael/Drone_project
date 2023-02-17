@@ -9,11 +9,11 @@ from widgets.components.buttonTable import ButtonTable
 class ResultTable(QTableWidget):
     def __init__(self, parent):
         self.parent = parent
-        file = open("data/results.csv", "r")
+        file = open("data/results/output.csv", "r")
         self.data = list(csv.DictReader(file, delimiter=","))
         file.close()
 
-        super(ResultTable, self).__init__(len(self.data), 4)
+        super(ResultTable, self).__init__(len(self.data), len(self.data[0]) + 1)
         #QTableWidget.__init__(self, 4 , 3)
         
         self.setData()
@@ -22,9 +22,9 @@ class ResultTable(QTableWidget):
  
     def setData(self): 
         for i in range(len(self.data)):
-            
-            self.setItem(i, 0, QTableWidgetItem(self.data[i]["name"]))
-            self.setItem(i, 1, QTableWidgetItem(self.data[i]["id"]))
-            self.setItem(i, 2, QTableWidgetItem(self.data[i]["area"]))
-            self.setCellWidget(i, 3, ButtonTable(self.data[i], self.parent))
-        self.setHorizontalHeaderLabels(["Name", "Id", "Area", "View"])
+            self.setItem(i, 0, QTableWidgetItem(self.data[i]["Segment"]))
+            self.setItem(i, 1, QTableWidgetItem(self.data[i]["Surface area"]))
+            self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent))
+        headers = list(self.data[0].keys())
+        headers.append("View")
+        self.setHorizontalHeaderLabels(headers)

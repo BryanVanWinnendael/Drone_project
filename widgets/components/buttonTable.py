@@ -6,9 +6,9 @@ class ButtonTable(QtWidgets.QPushButton):
         super(ButtonTable, self).__init__()
         self.parent = parent
         self.setText("View")
-        name = data["name"]
-        item_id = data["id"]
-        fileName = f"data/results/{name}_{item_id}.ply"
+        name, item_id = data["Segment"].split(" ")
+        area = data["Surface area"]
+        fileName = f"data/planes/plane_{item_id}.ply"
         self.clicked.connect(lambda: self.showObject(fileName))
 
     def showObject(self, fileName):

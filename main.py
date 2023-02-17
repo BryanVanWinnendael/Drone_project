@@ -4,6 +4,7 @@ from widgets.home import HomeWidget
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 from PyQt5.QtCore import QUrl
 from utils import saveFileName
+from model.segmentator import Segmentator
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -14,6 +15,8 @@ class MainWindow(QtWidgets.QMainWindow):
     # Navigation functions
     def navigateToRenderer(self, fileName):      
         saveFileName(fileName)
+        segmentator = Segmentator()
+        segmentator.segment(fileName)
         cloudPointWidget = RendererWidget(self, fileName)
         self.setCentralWidget(cloudPointWidget)
         

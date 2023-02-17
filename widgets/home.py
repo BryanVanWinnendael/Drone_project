@@ -1,6 +1,7 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils import getFileNames
 from widgets.components.buttonHistory import ButtonHistory
+
 class HomeWidget(QtWidgets.QWidget):
     def __init__(self,parent):
         super(HomeWidget, self).__init__()
@@ -9,6 +10,7 @@ class HomeWidget(QtWidgets.QWidget):
         self.setAcceptDrops(True)
 
         self.label = QtWidgets.QLabel()
+        self.label.setMaximumHeight(30)
         self.label.setObjectName("label-error")
         layout.addWidget(self.label)
 
@@ -22,6 +24,7 @@ class HomeWidget(QtWidgets.QWidget):
 
         vbox = QtWidgets.QVBoxLayout()
         label = QtWidgets.QLabel("Recent files")
+        label.setMaximumHeight(30)
         label.setObjectName("recentlabel")
         label.setAlignment(QtCore.Qt.AlignCenter)
         vbox.addWidget(label)
@@ -55,7 +58,6 @@ class HomeWidget(QtWidgets.QWidget):
         else:
             self.label.setText("Not a ply file")
             print("Not a ply file")
-    
     
     def renderIsLoading(self):
         self.label.setText("Loading...")
