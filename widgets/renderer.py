@@ -31,11 +31,17 @@ class RendererWidget(QtWidgets.QWidget):
         self.backButton.setIcon(QtGui.QIcon('assets/back.svg'))
         self.backButton.setIconSize(QtCore.QSize(30, 30))
 
+        self.resetButton = QtWidgets.QPushButton("Reset")
+        self.resetButton.setObjectName("backbtn")
+        self.resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.resetButton.clicked.connect(lambda: self.changeGeometry(self.fileName))
+
         self.resultTable = ResultTable(self)
     
         layout.addWidget(self.backButton, 0, 0)
         layout.addWidget(self.windowcontainer, 1, 0)
-        layout.addWidget(self.resultTable, 2, 0)
+        layout.addWidget(self.resetButton, 2, 0)
+        layout.addWidget(self.resultTable, 3, 0)
 
         self.setLayout(layout)
 
@@ -56,11 +62,6 @@ class RendererWidget(QtWidgets.QWidget):
         self.timer.timeout.connect(self.update_vis)
         self.timer.start(1)
     
-    def mainGeometry(self):
-        self.vis.clear_geometries()
-        pcd = o3d.io.read_point_cloud(self.fileName)
-        self.vis.add_geometry(pcd)
 
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.update_vis)
-        self.timer.start(1)
+        
+    
