@@ -7,8 +7,8 @@ import open3d as o3d
 from widgets.components.buttonTable import ButtonTable
 
 class ResultTable(QTableWidget):
-    def __init__(self):
-
+    def __init__(self, parent):
+        self.parent = parent
         file = open("data/results.csv", "r")
         self.data = list(csv.DictReader(file, delimiter=","))
         file.close()
@@ -26,5 +26,5 @@ class ResultTable(QTableWidget):
             self.setItem(i, 0, QTableWidgetItem(self.data[i]["name"]))
             self.setItem(i, 1, QTableWidgetItem(self.data[i]["id"]))
             self.setItem(i, 2, QTableWidgetItem(self.data[i]["area"]))
-            self.setCellWidget(i, 3, ButtonTable(self.data[i], self))
+            self.setCellWidget(i, 3, ButtonTable(self.data[i], self.parent))
         self.setHorizontalHeaderLabels(["Name", "Id", "Area", "View"])
