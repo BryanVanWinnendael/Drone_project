@@ -1,3 +1,4 @@
+import colorsys
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
 from PyQt5.QtGui import QIcon
 import csv
@@ -24,6 +25,11 @@ class ResultTable(QTableWidget):
         self.setData()
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
+        header = self.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setObjectName("resultTableHeader")
  
     def setData(self): 
         for i in range(len(self.data)):
@@ -31,5 +37,5 @@ class ResultTable(QTableWidget):
             self.setItem(i, 1, QTableWidgetItem(self.data[i]["Surface area"]))
             self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent))
         headers = list(self.data[0].keys())
-        headers.append("View")
+        headers.append("")
         self.setHorizontalHeaderLabels(headers)

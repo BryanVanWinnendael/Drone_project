@@ -29,3 +29,16 @@ QLabel#recentlabel {
 QTableWidget#resultTable {
   background-color: #f4f4f4;
 }
+
+QPushButton#viewButton {
+  background-color: #249ea7;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 10px 20px;
+}
+
+QTableWidgetItem {
+  background-color: antiquewhite;
+}
