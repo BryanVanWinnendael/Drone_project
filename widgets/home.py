@@ -1,9 +1,13 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils import getFileNames
 from widgets.components.buttonHistory import ButtonHistory
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
 class HomeWidget(QtWidgets.QWidget):
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
     def __init__(self,parent):
+       
         super(HomeWidget, self).__init__()
         self.parent = parent
         layout = QtWidgets.QVBoxLayout()

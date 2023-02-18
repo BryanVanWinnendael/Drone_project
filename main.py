@@ -6,6 +6,21 @@ from PyQt5.QtCore import QUrl
 from utils import saveFileName
 from model.segmentator import Segmentator
 from PyQt5.QtGui import QFontDatabase
+from widgets.waiting import WaitingWidget
+from PyQt5.QtCore import QThread, pyqtSignal
+
+class Worker(QThread):
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
+    def __init__(self, fileName):
+        super().__init__()
+        self.fileName = fileName
+
+    def run(self):
+        self.progress.emit(0)
+        self.segmentator = Segmentator()
+        self.segmentator.segment(self.fileName)
+        self.finished.emit()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -14,13 +29,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(homeWidget)
 
     # Navigation functions
-    def navigateToRenderer(self, fileName):      
+    def navigateToRenderer(self, fileName):   
         saveFileName(fileName)
-        segmentator = Segmentator()
-        segmentator.segment(fileName)
         cloudPointWidget = RendererWidget(self, fileName)
-        self.setCentralWidget(cloudPointWidget)
-        
+
+        self.worker = Worker(fileName)
+        self.worker.start()
+        self.setCentralWidget(WaitingWidget())
+        self.worker.finished.connect(lambda: self.setCentralWidget(cloudPointWidget))
+
     
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
