@@ -69,7 +69,7 @@ def DetectMultiPlanes(points, min_ratio=0.05, threshold=0.01, iterations=1000):
     return plane_list
 
 
-def DetectPlanes(filename):
+def DetectPlanes(filename, waitingScreen):
     import random
     import time
 
@@ -77,13 +77,17 @@ def DetectPlanes(filename):
 
     # pre-processing
     print('Pre-processing the point cloud...')
+    waitingScreen.progress.emit('Pre-processing the point cloud...')
+
     points = RemoveNan(points)
     points = DownSample(points,voxel_size=0.003)
     # points = RemoveNoiseStatistical(points, nb_neighbors=50, std_ratio=0.5)
 
     t0 = time.time()
     results = DetectMultiPlanes(points, min_ratio=0.05, threshold=0.005, iterations=2000)
+
     print('Done detection planes after: ', time.time() - t0, " seconds")
+
     planes = []
     generated_colors = GenerateColors(len(results))
     colors = []
@@ -116,4 +120,6 @@ def DetectPlanes(filename):
     colors = np.concatenate(colors, axis=0)
 
     print('Saving results...')
+    waitingScreen.progress.emit('Saving results...')
+
     SaveResult(planes, colors)

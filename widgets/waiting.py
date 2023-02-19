@@ -13,7 +13,7 @@ class WaitingWidget(QtWidgets.QWidget):
         self.label = QtWidgets.QLabel()
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setText("Loading...")
-        self.label.setStyleSheet("font-size: 20px; font-weight: bold; color: #fff;")
+        self.label.setStyleSheet("font-size: 20px; font-weight: bold; color: black;")
         layout.addWidget(self.label, 0, 0, 1, 1)
 
         self.setLayout(layout)

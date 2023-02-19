@@ -33,8 +33,7 @@ QTableWidget#resultTable {
 QPushButton#viewButton {
   background-color: #249ea7;
   border: none;
-  color: #FFFFFF;
-  cursor: pointer;
+  color: #ffffff;
   font-size: 12px;
   padding: 10px 20px;
 }

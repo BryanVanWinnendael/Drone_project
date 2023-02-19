@@ -10,15 +10,16 @@ from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 
 class Worker(QThread):
+    begin = pyqtSignal()
     finished = pyqtSignal()
-    progress = pyqtSignal(int)
+    progress = pyqtSignal(str)
     def __init__(self, fileName):
         super().__init__()
         self.fileName = fileName
 
     def run(self):
-        self.progress.emit(0)
-        self.segmentator = Segmentator()
+        self.begin.emit()
+        self.segmentator = Segmentator(self)
         self.segmentator.segment(self.fileName)
         self.finished.emit()
 
@@ -35,10 +36,15 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.worker = Worker(fileName)
         self.worker.start()
-        self.setCentralWidget(WaitingWidget())
+        
+        self.worker.begin.connect(self.createWaitingWidget)
         self.worker.finished.connect(lambda: self.setCentralWidget(cloudPointWidget))
+        self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
+            
+    def createWaitingWidget(self):
+        self.waitingWidget = WaitingWidget()
+        self.setCentralWidget(self.waitingWidget)
 
-    
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)
