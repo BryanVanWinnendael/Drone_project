@@ -1,15 +1,12 @@
 import colorsys
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
 from PyQt5.QtGui import QIcon
-import csv
 from widgets.components.buttonTable import ButtonTable
 
 class ResultTable(QTableWidget):
-    def __init__(self, parent):
+    def __init__(self, parent, data):
         self.parent = parent
-        file = open("data/results/output.csv", "r")
-        self.data = list(csv.DictReader(file, delimiter=","))
-        file.close()
+        self.data = data
         
         super(ResultTable, self).__init__(len(self.data), len(self.data[0]) + 1)
         #QTableWidget.__init__(self, 4 , 3)

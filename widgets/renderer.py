@@ -4,8 +4,10 @@ import open3d as o3d
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
 import numpy as np
+from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
+import csv
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -17,6 +19,10 @@ class RendererWidget(QtWidgets.QWidget):
         layout = QtWidgets.QGridLayout(widget)
         self.acceptDrops = False       
         self.night = False
+
+        file = open("data/results/output.csv", "r")
+        self.data = list(csv.DictReader(file, delimiter=","))
+        file.close()
         
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
@@ -57,7 +63,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.buttonSpaceLayout.addWidget(self.daynightSwitch)
         self.buttonSpace.setLayout(self.buttonSpaceLayout)
 
-        self.resultTable = ResultTable(self)
+        self.resultTable = ResultTable(self, self.data)
     
         self.tableAndButtonSpace = QtWidgets.QWidget()
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
@@ -75,9 +81,15 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.splitter.setSizes([100,200])
 
+        total_area = sum([float(info["Surface area"]) for info in self.data])
+        self.area_label = QtWidgets.QLabel(f"Total area: {total_area} m²")
+        self.area_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.area_label.setAlignment(Qt.AlignCenter)
+
         layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.windowcontainer, 1, 0)
-        layout.addWidget(self.splitter, 2, 0)
+        layout.addWidget(self.area_label, 2, 0)
+        layout.addWidget(self.splitter, 3, 0)
 
         self.setLayout(layout)
 
