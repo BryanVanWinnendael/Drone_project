@@ -21,9 +21,12 @@ def PlanesToMeshes():
             pcd.estimate_normals()
 
             # Create a mesh from the point cloud, with ball pivoting
-            radii = [0.005, 0.01, 0.02, 0.04]
-            rec_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
-                pcd, o3d.utility.DoubleVector(radii))
+            # radii = [0.005, 0.01, 0.02, 0.04]
+            # rec_mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
+            #     pcd, o3d.utility.DoubleVector(radii))
+
+            # Create a mesh using Poisson
+            rec_mesh, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=9)
 
             # Write the mesh to file
             if not os.path.exists("data/meshes"):
