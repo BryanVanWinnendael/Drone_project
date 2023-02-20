@@ -32,13 +32,12 @@ class MainWindow(QtWidgets.QMainWindow):
     # Navigation functions
     def navigateToRenderer(self, fileName):   
         saveFileName(fileName)
-        cloudPointWidget = RendererWidget(self, fileName)
 
         self.worker = Worker(fileName)
         self.worker.start()
         
         self.worker.begin.connect(self.createWaitingWidget)
-        self.worker.finished.connect(lambda: self.setCentralWidget(cloudPointWidget))
+        self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
         self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
             
     def createWaitingWidget(self):
