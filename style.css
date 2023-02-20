@@ -24,6 +24,12 @@ QPushButton#exportbtn {
   border: none;
 }
 
+QPushButton#historyArrobtn {
+  font: 57 13pt "gilroy";
+  border: none;
+  text-align: right;
+}
+
 QLabel#label-error {
   font: 32 13pt "gilroy";
   color: #b22222;
@@ -31,6 +37,11 @@ QLabel#label-error {
 
 QLabel#recentlabel {
   font: 57 13pt "gilroy";
+}
+
+QLabel#recentlabelTime {
+  font: 57 9pt "gilroy";
+  color: #808080;
 }
 
 QTableWidget#resultTable {
