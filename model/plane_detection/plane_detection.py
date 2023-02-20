@@ -3,6 +3,7 @@ import numpy as np
 import open3d as o3d
 import os
 from model.plane_detection.color_generator import GenerateColors
+import csv
 
 def ReadPlyPoint(fname):
     pcd = o3d.io.read_point_cloud(fname)
@@ -79,6 +80,15 @@ def DetectMultiPlanes(points, min_ratio=0.05, threshold=0.01, iterations=1000):
 
     return plane_list
 
+def GetColor(class_name):
+    if class_name == "roof":
+        return [0.7, 0, 0]
+    elif class_name == "wall":
+        return [0, 0.7, 0]
+    elif class_name == "window":
+        return [0, 0, 0.7]
+    else:
+        return [0, 0, 0]
 
 def DetectPlanes(filename, waitingScreen):
     import random
@@ -103,14 +113,23 @@ def DetectPlanes(filename, waitingScreen):
     generated_colors = GenerateColors(len(results))
     colors = []
 
+    classes = ["roof", "wall", "window"]
+    csv_planes = {}
+
     # Create directory to save planes
     if not os.path.exists("data/planes"):
         os.makedirs("data/planes")
 
     for i, (w, plane) in enumerate(results):
-        r = generated_colors[i][0] / 255
-        g = generated_colors[i][1] / 255
-        b = generated_colors[i][2] / 255
+        # Grab a random class
+        class_name = random.choice(classes)
+
+        # r = generated_colors[i][0] / 255
+        # g = generated_colors[i][1] / 255
+        # b = generated_colors[i][2] / 255
+
+        # Get color from class
+        r, g, b = GetColor(class_name)
 
         color = np.zeros((plane.shape[0], plane.shape[1]))
         color[:, 0] = r
@@ -126,6 +145,15 @@ def DetectPlanes(filename, waitingScreen):
         pcd.colors = o3d.utility.Vector3dVector(colors[i])
 
         o3d.io.write_point_cloud(f'data/planes/plane_{i + 1}.ply', pcd)
+
+        csv_planes[i + 1] = class_name
+
+    # Write class and segment to csv
+    with open('data/results/planes.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['Segment', 'Class', 'Surface area']) # Write header row
+        for key, value in csv_planes.items():
+            writer.writerow([key, value])
 
     planes = np.concatenate(planes, axis=0)
     colors = np.concatenate(colors, axis=0)
