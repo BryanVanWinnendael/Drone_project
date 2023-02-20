@@ -3,6 +3,7 @@ import win32gui
 import open3d as o3d
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
+import numpy as np
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -13,11 +14,13 @@ class RendererWidget(QtWidgets.QWidget):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
         self.acceptDrops = False       
+        self.night = False
         
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
         self.vis.add_geometry(pcd)      
+
         hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
         
         self.window = QtGui.QWindow.fromWinId(hwnd)    
@@ -42,8 +45,14 @@ class RendererWidget(QtWidgets.QWidget):
         self.classifiedButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.classifiedButton.clicked.connect(lambda: self.changeGeometry(self.classified))
 
+        self.daynightSwitch = QtWidgets.QPushButton("Switch Black")
+        self.daynightSwitch.setObjectName("backbtn")
+        self.daynightSwitch.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.daynightSwitch.clicked.connect(lambda: self.changeBackground())
+
         self.buttonSpaceLayout.addWidget(self.originalButton)
         self.buttonSpaceLayout.addWidget(self.classifiedButton)
+        self.buttonSpaceLayout.addWidget(self.daynightSwitch)
         self.buttonSpace.setLayout(self.buttonSpaceLayout)
 
         self.resultTable = ResultTable(self)
@@ -72,7 +81,21 @@ class RendererWidget(QtWidgets.QWidget):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_vis)
         self.timer.start(1)
-    
+
+    def changeBackground(self):
+        opt = self.vis.get_render_option()
+        
+        if self.night:
+            opt.background_color = np.asarray([255, 255, 255])
+            self.night = False
+            self.daynightSwitch.setText("Switch Black")
+        else:
+            opt.background_color = np.asarray([0, 0, 0])
+            self.night = True
+            self.daynightSwitch.setText("Switch White")
 
         
-    
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_vis)
+        self.timer.start(1)
