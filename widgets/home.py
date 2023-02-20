@@ -1,20 +1,25 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils import getFileNames
 from widgets.components.buttonHistory import ButtonHistory
+from PyQt5.QtCore import QObject, QThread, pyqtSignal
 
 class HomeWidget(QtWidgets.QWidget):
+    finished = pyqtSignal()
+    progress = pyqtSignal(int)
     def __init__(self,parent):
+       
         super(HomeWidget, self).__init__()
         self.parent = parent
         layout = QtWidgets.QVBoxLayout()
         self.setAcceptDrops(True)
 
         self.label = QtWidgets.QLabel()
-        self.label.setMaximumHeight(30)
+        self.label.setMaximumHeight(25)
         self.label.setObjectName("label-error")
         layout.addWidget(self.label)
 
-        self.uploadButton = QtWidgets.QPushButton('Upload file')
+        self.uploadButton = QtWidgets.QPushButton('Drag & Drop of Upload')
+        self.uploadButton.setMinimumHeight(300)
         self.uploadButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.uploadButton.setObjectName("uploadbtn")
         self.uploadButton.setIcon(QtGui.QIcon('assets/upload.svg'))

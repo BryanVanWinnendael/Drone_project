@@ -1,7 +1,7 @@
 import open3d as o3d
 import os
 
-def PlanesToMeshes():
+def PlanesToMeshes(waitingScreen):
     # Check if directory exists, if not create it
     if not os.path.exists("data/planes"):
         os.makedirs("data/planes")
@@ -13,6 +13,7 @@ def PlanesToMeshes():
         mesh_file = filename.replace("plane", "mesh")
         if os.path.isfile(file_path):
             print(f"Converting {filename} to mesh...")
+            waitingScreen.progress.emit(f"Converting {filename} to mesh...")
 
             # Load point cloud from file
             pcd = o3d.io.read_point_cloud(file_path)
@@ -35,3 +36,4 @@ def PlanesToMeshes():
             o3d.io.write_triangle_mesh(os.path.join("data/meshes", mesh_file), rec_mesh)
 
     print("Successfully converted planes to meshes.")
+    waitingScreen.progress.emit("Successfully converted planes to meshes.")

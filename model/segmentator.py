@@ -4,11 +4,11 @@ from model.plane_detection.surface_calculator import CalculateSurfaces
 from model.view_data import ViewPointCloud, ViewMesh, ViewResult
 
 class Segmentator:
-    def __init__(self):
-        pass
+    def __init__(self, waitingScreen):
+        self.waitingScreen = waitingScreen
 
     def segment(self, filename):
-        DetectPlanes(filename)
-        PlanesToMeshes()
+        DetectPlanes(filename, self.waitingScreen)
+        PlanesToMeshes(self.waitingScreen)
         CalculateSurfaces()
         #ViewResult()

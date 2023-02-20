@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import win32gui
 import open3d as o3d
 from widgets.components.resultTable import ResultTable
+from widgets.components.resultTopBar import ResultTopBar
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -24,13 +25,8 @@ class RendererWidget(QtWidgets.QWidget):
         self.windowcontainer = self.createWindowContainer(self.window, widget)
         self.windowcontainer.setMinimumWidth(300)
         self.windowcontainer.setMinimumHeight(300)
-        self.backButton = QtWidgets.QPushButton("Back")
-        self.backButton.setObjectName("backbtn")
-        self.backButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.backButton.clicked.connect(self.parent.navigateToHome)
-        self.backButton.setIcon(QtGui.QIcon('assets/back.svg'))
-        self.backButton.setIconSize(QtCore.QSize(30, 30))
 
+        self.topBar = ResultTopBar(self.fileName, self.parent)
 
         self.buttonSpace = QtWidgets.QWidget()
 
@@ -52,7 +48,7 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.resultTable = ResultTable(self)
     
-        layout.addWidget(self.backButton, 0, 0)
+        layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.windowcontainer, 1, 0)
         layout.addWidget(self.buttonSpace, 2, 0)
         layout.addWidget(self.resultTable, 3, 0)

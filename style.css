@@ -1,23 +1,43 @@
 QPushButton#uploadbtn {
   background-color: transparent;
-  font: 57 13pt "Futura";
+  font: 57 13pt "gilroy";
   border-width: 1px;
   border-color: #000000;
   border-style: dotted;
   height: 100px;
 }
 
+QPushButton#uploadbtn:hover {
+  background-color: #f4f4f4;
+}
+
 QPushButton#backbtn {
-  font: 57 13pt "Futura";
+  font: 57 13pt "gilroy";
   width: 30px;
   background-color: transparent;
 }
 
 QLabel#label-error {
-  font: 57 13pt "Futura";
-  color: red;
+  font: 32 13pt "gilroy";
+  color: #b22222;
 }
 
 QLabel#recentlabel {
-  font: 57 13pt "Futura";
+  font: 57 13pt "gilroy";
+}
+
+QTableWidget#resultTable {
+  background-color: #f4f4f4;
+}
+
+QPushButton#viewButton {
+  background-color: #249ea7;
+  border: none;
+  color: #ffffff;
+  font-size: 12px;
+  padding: 10px 20px;
+}
+
+QTableWidgetItem {
+  background-color: antiquewhite;
 }

@@ -5,6 +5,23 @@ from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkRepl
 from PyQt5.QtCore import QUrl
 from utils import saveFileName
 from model.segmentator import Segmentator
+from PyQt5.QtGui import QFontDatabase
+from widgets.waiting import WaitingWidget
+from PyQt5.QtCore import QThread, pyqtSignal
+
+class Worker(QThread):
+    begin = pyqtSignal()
+    finished = pyqtSignal()
+    progress = pyqtSignal(str)
+    def __init__(self, fileName):
+        super().__init__()
+        self.fileName = fileName
+
+    def run(self):
+        self.begin.emit()
+        self.segmentator = Segmentator(self)
+        self.segmentator.segment(self.fileName)
+        self.finished.emit()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -13,14 +30,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(homeWidget)
 
     # Navigation functions
-    def navigateToRenderer(self, fileName):      
+    def navigateToRenderer(self, fileName):   
         saveFileName(fileName)
-        segmentator = Segmentator()
-        segmentator.segment(fileName)
-        cloudPointWidget = RendererWidget(self, fileName)
-        self.setCentralWidget(cloudPointWidget)
+
+        self.worker = Worker(fileName)
+        self.worker.start()
         
-    
+        self.worker.begin.connect(self.createWaitingWidget)
+        self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
+        self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
+            
+    def createWaitingWidget(self):
+        self.waitingWidget = WaitingWidget()
+        self.setCentralWidget(self.waitingWidget)
+
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)
@@ -44,6 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
+    QFontDatabase.addApplicationFont('assets/fonts/gilroy.otf')
 
     css="style.css"
     with open(css,"r") as fh:
