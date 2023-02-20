@@ -6,7 +6,8 @@ class ButtonHistory(QtWidgets.QPushButton):
         self.parent = parent
         fileName = file["name"]
         fileTime = file["time"]
-        self.setText(fileName + "-" + fileTime)
+        self.setText(fileName + "\n" + fileTime)
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.setMinimumHeight(40)
         self.setObjectName("recentbtn")
         self.clicked.connect(lambda: self.parent.navigateToRenderer(fileName))
