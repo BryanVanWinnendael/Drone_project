@@ -149,6 +149,8 @@ def DetectPlanes(filename, waitingScreen):
         csv_planes[i + 1] = class_name
 
     # Write class and segment to csv
+    if not os.path.exists('data/results'):
+        os.makedirs('data/results')
     with open('data/results/planes.csv', mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(['Segment', 'Class', 'Surface area']) # Write header row
