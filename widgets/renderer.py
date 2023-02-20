@@ -1,5 +1,4 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
-import win32gui
 import open3d as o3d
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
@@ -8,6 +7,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
+import pygetwindow as gw
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -29,7 +29,8 @@ class RendererWidget(QtWidgets.QWidget):
         self.vis.create_window()
         self.vis.add_geometry(pcd)      
 
-        hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
+        window_open3d = gw.getWindowsWithTitle('Open3D')
+        hwnd = window_open3d[0]._hWnd
         
         self.window = QtGui.QWindow.fromWinId(hwnd)    
 

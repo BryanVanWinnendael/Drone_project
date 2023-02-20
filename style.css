@@ -44,6 +44,12 @@ QLabel#recentlabelTime {
   color: #808080;
 }
 
+QLabel#labelLoading {
+  color: #000000;
+  background-color: #249ea7;
+  text-align: center;
+}
+
 QTableWidget#resultTable {
   background-color: #f4f4f4;
 }
