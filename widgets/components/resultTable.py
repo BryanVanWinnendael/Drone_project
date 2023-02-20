@@ -25,14 +25,16 @@ class ResultTable(QTableWidget):
         header = self.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setObjectName("resultTableHeader")
  
     def setData(self): 
         for i in range(len(self.data)):
             self.setItem(i, 0, QTableWidgetItem(f'Segment {self.data[i]["Segment"]}'))
-            self.setItem(i, 1, QTableWidgetItem(self.data[i]["Surface area"]))
-            self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent))
+            self.setItem(i, 1, QTableWidgetItem(self.data[i]["Class"]))
+            self.setItem(i, 2, QTableWidgetItem(self.data[i]["Surface area"]))
+            self.setCellWidget(i, 3, ButtonTable(self.data[i], self.parent))
         headers = list(self.data[0].keys())
         headers.append("")
         self.setHorizontalHeaderLabels(headers)
