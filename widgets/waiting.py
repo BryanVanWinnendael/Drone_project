@@ -1,24 +1,34 @@
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QMovie
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+
 class WaitingWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
 
-        self.centralwidget = QtWidgets.QWidget(self)
-
-        self.labelGif = QtWidgets.QLabel(self.centralwidget)
-        self.labelGif.setGeometry(QtCore.QRect(25, 25, 200, 200))
-        self.labelGif.setMinimumSize(QtCore.QSize(200, 200))
-        self.labelGif.setMaximumSize(QtCore.QSize(200, 200))
-        self.labelGif.setObjectName("label")
-
+        self.labelGif = QtWidgets.QLabel()
         self.movie = QMovie("assets/loading.gif")
-        self.labelGif.setMovie(self.movie)
-        self.movie.start()
+        
+        size = self.movie.scaledSize()
+        self.labelGif.setScaledContents(True)
+        
+        self.labelGif.setGeometry(0, 0, 50, 50)
+        self.labelGif.setMinimumSize(QtCore.QSize(50, 50))
+        self.labelGif.setMaximumSize(QtCore.QSize(50, 50))
+        self.labelGif.setObjectName("label")
+        
 
-        layout.addWidget(self.labelGif, 0, 0, 1, 1)
+        self.labelGif.setMovie(self.movie)
+        self.labelGif.movie()
+        self.movie.start()
+        self.labelGif.setAlignment(Qt.AlignCenter)
+        
+        layout.addWidget(self.labelGif, 0, 0)
 
         self.label = QtWidgets.QLabel()
         self.label.setAlignment(QtCore.Qt.AlignCenter)
@@ -26,8 +36,8 @@ class WaitingWidget(QtWidgets.QWidget):
         self.label.setStyleSheet("font-size: 20px; font-weight: bold; color: black;")
         self.label.setMaximumHeight(30)
         self.label.setMinimumWidth(200)
-        layout.addWidget(self.label, 1, 0, 1, 1)
 
+        layout.addWidget(self.label, 1, 0)
         self.setLayout(layout)
 
 
