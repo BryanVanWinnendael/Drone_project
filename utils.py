@@ -24,7 +24,10 @@ def getFileNames():
     return savedFileNames.value("savedFileNames")
 
 def getRecentFile():
-    with open('data/results/recent-file.json', 'r') as openfile:
-        json_object = json.load(openfile)
-    
+    try :
+        with open('data/results/recent-file.json', 'r') as openfile:
+            json_object = json.load(openfile)
+    except:
+        return None
+ 
     return json_object.get("name")
