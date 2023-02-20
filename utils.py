@@ -1,3 +1,4 @@
+import json
 from PyQt5 import QtCore
 import datetime
 
@@ -21,3 +22,9 @@ def saveFileName(fileName):
 def getFileNames():
     savedFileNames = QtCore.QSettings("Drone-app", "savedFileNames")
     return savedFileNames.value("savedFileNames")
+
+def getRecentFile():
+    with open('data/results/recent-file.json', 'r') as openfile:
+        json_object = json.load(openfile)
+    
+    return json_object.get("name")

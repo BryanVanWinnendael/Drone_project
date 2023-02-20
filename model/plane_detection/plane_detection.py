@@ -1,3 +1,4 @@
+import json
 import numpy as np
 import open3d as o3d
 import os
@@ -40,7 +41,7 @@ def DrawResult(points, colors):
     pcd.colors = o3d.utility.Vector3dVector(colors)
     o3d.visualization.draw_geometries([pcd])
 
-def SaveResult(points, colors):
+def SaveResult(points, colors, filename):
     pcd = o3d.geometry.PointCloud()
     pcd.points = o3d.utility.Vector3dVector(points)
     pcd.colors = o3d.utility.Vector3dVector(colors)
@@ -50,6 +51,16 @@ def SaveResult(points, colors):
                 os.makedirs("data/results")
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcd)
+    recent_file = {
+        "name": filename,
+    }
+
+    json_object = json.dumps(recent_file, indent=4)
+
+    with open("data/results/recent-file.json", "w") as outfile:
+        outfile.write(json_object)
+
+
 
 def DetectMultiPlanes(points, min_ratio=0.05, threshold=0.01, iterations=1000):
     plane_list = []
@@ -122,4 +133,4 @@ def DetectPlanes(filename, waitingScreen):
     print('Saving results...')
     waitingScreen.progress.emit('Saving results...')
 
-    SaveResult(planes, colors)
+    SaveResult(planes, colors, filename)
