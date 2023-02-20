@@ -28,7 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).__init__()
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)
-
+        print("test")
     # Navigation functions
     def navigateToRenderer(self, fileName):   
         saveFileName(fileName)
