@@ -3,7 +3,7 @@ from widgets.renderer import RendererWidget
 from widgets.home import HomeWidget
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 from PyQt5.QtCore import QUrl
-from utils import saveFileName, getRecentFile
+from utils import saveFileName, getRecentFile, clean
 from model.segmentator import Segmentator
 from PyQt5.QtGui import QFontDatabase
 from widgets.waiting import WaitingWidget
@@ -36,6 +36,8 @@ class MainWindow(QtWidgets.QMainWindow):
         recent_file = getRecentFile()
         if recent_file == fileName:
             return self.setCentralWidget(RendererWidget(self, fileName))
+        else:
+            clean(True)
 
         self.worker = Worker(fileName)
         self.worker.start()
