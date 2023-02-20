@@ -17,6 +17,13 @@ QPushButton#backbtn {
   background-color: transparent;
 }
 
+QPushButton#exportbtn {
+  font: 57 13pt "gilroy";
+  background-color: #249ea7;
+  color: #ffffff;
+  border: none;
+}
+
 QLabel#label-error {
   font: 32 13pt "gilroy";
   color: #b22222;
