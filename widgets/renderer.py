@@ -4,6 +4,8 @@ import open3d as o3d
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
 import numpy as np
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -57,10 +59,25 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.resultTable = ResultTable(self)
     
+        self.tableAndButtonSpace = QtWidgets.QWidget()
+        self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
+
+        self.tableAndButtonsLayout.addWidget(self.buttonSpace)
+        self.tableAndButtonsLayout.addWidget(self.resultTable)
+        self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
+
+        self.splitter = QtWidgets.QSplitter(Qt.Vertical)
+        self.splitter.addWidget(self.windowcontainer)
+        self.splitter.addWidget(self.tableAndButtonSpace)
+
+        self.splitter.setStretchFactor(0, 1)
+        self.splitter.setStretchFactor(1, 5)
+
+        self.splitter.setSizes([100,200])
+
         layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.windowcontainer, 1, 0)
-        layout.addWidget(self.buttonSpace, 2, 0)
-        layout.addWidget(self.resultTable, 3, 0)
+        layout.addWidget(self.splitter, 2, 0)
 
         self.setLayout(layout)
 
