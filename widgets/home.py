@@ -43,8 +43,7 @@ class HomeWidget(QtWidgets.QWidget):
 
     def openFileNameDialog(self):
         options = QtWidgets.QFileDialog.Options()
-        options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "","Polygon Files (*.ply)", options=options)
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Open point cloud file", "","Polygon Files (*.ply)", options=options)
         if fileName and fileName.endswith('.ply'):
             self.parent.navigateToRenderer(fileName)
     
