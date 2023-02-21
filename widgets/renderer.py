@@ -2,6 +2,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import open3d as o3d
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
+from widgets.components.buttonSpace import ButtonSpace
 import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -41,32 +42,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.windowcontainer.setMinimumHeight(300)
 
         self.topBar = ResultTopBar(self.fileName, self.parent)
-
-        self.buttonSpace = QtWidgets.QWidget()
-        self.buttonSpaceLayout = QtWidgets.QHBoxLayout()
-
-        self.originalButton = QtWidgets.QPushButton("Original")
-        self.originalButton.setObjectName("backbtn")
-        self.originalButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.originalButton.mouseDoubleClickEvent = self.resetOriginalView
-        self.originalButton.clicked.connect(lambda: (self.changeGeometry(self.fileName), self.changeViewToOriginal()))
-
-        self.classifiedButton = QtWidgets.QPushButton("Classified")
-        self.classifiedButton.setObjectName("backbtn")
-        self.classifiedButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.classifiedButton.mouseDoubleClickEvent = self.resetOriginalView
-        self.classifiedButton.clicked.connect(lambda: (self.changeGeometry(self.classified), self.changeViewToOriginal()))
-
-        self.daynightSwitch = QtWidgets.QPushButton("Switch Black")
-        self.daynightSwitch.setObjectName("backbtn")
-        self.daynightSwitch.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.daynightSwitch.clicked.connect(lambda: self.changeBackground())
-
-        self.buttonSpaceLayout.addWidget(self.originalButton)
-        self.buttonSpaceLayout.addWidget(self.classifiedButton)
-        self.buttonSpaceLayout.addWidget(self.daynightSwitch)
-        self.buttonSpace.setLayout(self.buttonSpaceLayout)
-
+        self.buttonSpace = ButtonSpace(self)
         self.resultTable = ResultTable(self, self.data)
 
         total_area = sum([float(info["Surface area"]) for info in self.data])
@@ -133,11 +109,11 @@ class RendererWidget(QtWidgets.QWidget):
         if self.night:
             opt.background_color = np.asarray([255, 255, 255])
             self.night = False
-            self.daynightSwitch.setText("Switch Black")
+            self.buttonSpace.daynightSwitch.setText("Switch Black")
         else:
             opt.background_color = np.asarray([0, 0, 0])
             self.night = True
-            self.daynightSwitch.setText("Switch White")
+            self.buttonSpace.daynightSwitch.setText("Switch White")
 
         
 

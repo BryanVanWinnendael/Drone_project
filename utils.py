@@ -2,6 +2,8 @@ import json
 from PyQt5 import QtCore
 import datetime
 import os
+from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
+from PyQt5.QtCore import QUrl
 
 def saveFileName(fileName):
     savedFileNames = getFileNames()
@@ -59,4 +61,19 @@ def updateClass(row, col, newItem):
     with open(res_path, "w") as outfile:
         outfile.write(data)
 
+def doRequest(self):   
+    url = "https://names.drycodes.com/10"
+    req = QNetworkRequest(QUrl(url))
     
+    self.nam = QNetworkAccessManager()
+    self.nam.finished.connect(self.handleResponse)
+    self.nam.get(req)
+
+def handleResponse(self, reply):
+    er = reply.error()
+    if er == QNetworkReply.NoError:
+        bytes_string = reply.readAll()
+        print(str(bytes_string, 'utf-8'))
+    else:
+        print("Error occured: ", er)
+        print(reply.errorString())

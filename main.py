@@ -1,8 +1,6 @@
 from PyQt5 import QtWidgets
 from widgets.renderer import RendererWidget
 from widgets.home import HomeWidget
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
-from PyQt5.QtCore import QUrl
 from utils import saveFileName, getRecentFile, cleanData
 from model.segmentator import Segmentator
 from PyQt5.QtGui import QFontDatabase
@@ -58,23 +56,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)
-
-    def doRequest(self):   
-        url = "https://names.drycodes.com/10"
-        req = QNetworkRequest(QUrl(url))
-        
-        self.nam = QNetworkAccessManager()
-        self.nam.finished.connect(self.handleResponse)
-        self.nam.get(req)
-
-    def handleResponse(self, reply):
-        er = reply.error()
-        if er == QNetworkReply.NoError:
-            bytes_string = reply.readAll()
-            print(str(bytes_string, 'utf-8'))
-        else:
-            print("Error occured: ", er)
-            print(reply.errorString())
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
