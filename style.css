@@ -32,9 +32,7 @@ QPushButton#rendererbtn {
 
 QPushButton#exportbtn {
   background-color: #249ea7;
-  color: #ffffff;
   border-radius: 4px;
-  font-size: 18px;
   border: none;
 }
 

@@ -15,6 +15,7 @@ class ResultTopBar(QtWidgets.QWidget):
         self.backButton.clicked.connect(self.parent.navigateToHome)
         self.backButton.setIcon(QtGui.QIcon('assets/back.svg'))
         self.backButton.setIconSize(QtCore.QSize(30, 30))
+        self.backButton.setToolTip("Back to home")
 
         self.nameLabel = QtWidgets.QLabel()
         self.nameLabel.setMaximumHeight(25)
@@ -25,9 +26,14 @@ class ResultTopBar(QtWidgets.QWidget):
         self.layout.addWidget(self.backButton)
         self.layout.addWidget(self.nameLabel)
 
-        self.saveButton = QtWidgets.QPushButton("Export")
+        self.saveButton = QtWidgets.QPushButton()
+        self.saveButton.setIcon(QtGui.QIcon('assets/export.svg'))
+        self.saveButton.setIconSize(QtCore.QSize(30, 30))
         self.saveButton.setObjectName("exportbtn")
         self.saveButton.setMinimumHeight(35)
+        self.saveButton.setMaximumWidth(35)
+        file = fileName.split("/")[-1]
+        self.saveButton.setToolTip(f"Export {file} table to CSV")
         self.saveButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.saveButton.clicked.connect(self.saveFileDialog)
         self.layout.addWidget(self.saveButton)
