@@ -65,13 +65,22 @@ class RendererWidget(QtWidgets.QWidget):
         self.buttonSpace.setLayout(self.buttonSpaceLayout)
 
         self.resultTable = ResultTable(self, self.data)
+
+        total_area = sum([float(info["Surface area"]) for info in self.data])
+        self.area_label = QtWidgets.QLabel(f"Total area: {total_area} m²")
+        self.area_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.area_label.setAlignment(Qt.AlignCenter)
+        self.area_label.setMaximumHeight(50)
     
         self.tableAndButtonSpace = QtWidgets.QWidget()
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
 
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
+        self.tableAndButtonsLayout.addWidget(self.area_label)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
+
+       
 
         self.splitter = QtWidgets.QSplitter(Qt.Vertical)
         self.splitter.addWidget(self.windowcontainer)
@@ -82,15 +91,12 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.splitter.setSizes([100,200])
 
-        total_area = sum([float(info["Surface area"]) for info in self.data])
-        self.area_label = QtWidgets.QLabel(f"Total area: {total_area} m²")
-        self.area_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self.area_label.setAlignment(Qt.AlignCenter)
+       
 
         layout.addWidget(self.topBar, 0, 0)
-        layout.addWidget(self.windowcontainer, 1, 0)
-        layout.addWidget(self.area_label, 2, 0)
-        layout.addWidget(self.splitter, 3, 0)
+        # layout.addWidget(self.windowcontainer, 1, 0)
+        # layout.addWidget(self.area_label, 2, 0)
+        layout.addWidget(self.splitter, 1, 0)
 
         self.setLayout(layout)
 
