@@ -33,7 +33,7 @@ def getRecentFile():
  
     return json_object.get("name")
 
-def clean(hard=False):
+def cleanData(hard=False):
     if os.path.exists("data/planes"):
         for filename in os.listdir('data/planes'):
             os.remove("data/planes/" + filename)

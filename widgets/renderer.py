@@ -27,7 +27,9 @@ class RendererWidget(QtWidgets.QWidget):
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
-        self.vis.add_geometry(pcd)      
+        self.vis.add_geometry(pcd)     
+        self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
+        self.canResetOriginalView = True
 
         window_open3d = gw.getWindowsWithTitle('Open3D')
         hwnd = window_open3d[0]._hWnd
@@ -41,18 +43,19 @@ class RendererWidget(QtWidgets.QWidget):
         self.topBar = ResultTopBar(self.fileName, self.parent)
 
         self.buttonSpace = QtWidgets.QWidget()
-
         self.buttonSpaceLayout = QtWidgets.QHBoxLayout()
 
         self.originalButton = QtWidgets.QPushButton("Original")
         self.originalButton.setObjectName("backbtn")
         self.originalButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.originalButton.clicked.connect(lambda: self.changeGeometry(self.fileName))
+        self.originalButton.mouseDoubleClickEvent = self.resetOriginalView
+        self.originalButton.clicked.connect(lambda: (self.changeGeometry(self.fileName), self.changeViewToOriginal()))
 
         self.classifiedButton = QtWidgets.QPushButton("Classified")
         self.classifiedButton.setObjectName("backbtn")
         self.classifiedButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.classifiedButton.clicked.connect(lambda: self.changeGeometry(self.classified))
+        self.classifiedButton.mouseDoubleClickEvent = self.resetOriginalView
+        self.classifiedButton.clicked.connect(lambda: (self.changeGeometry(self.classified), self.changeViewToOriginal()))
 
         self.daynightSwitch = QtWidgets.QPushButton("Switch Black")
         self.daynightSwitch.setObjectName("backbtn")
@@ -80,22 +83,14 @@ class RendererWidget(QtWidgets.QWidget):
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
 
-       
-
         self.splitter = QtWidgets.QSplitter(Qt.Vertical)
         self.splitter.addWidget(self.windowcontainer)
         self.splitter.addWidget(self.tableAndButtonSpace)
-
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 5)
-
         self.splitter.setSizes([100,200])
-
        
-
         layout.addWidget(self.topBar, 0, 0)
-        # layout.addWidget(self.windowcontainer, 1, 0)
-        # layout.addWidget(self.area_label, 2, 0)
         layout.addWidget(self.splitter, 1, 0)
 
         self.setLayout(layout)
@@ -109,6 +104,10 @@ class RendererWidget(QtWidgets.QWidget):
         self.vis.update_renderer()
 
     def changeGeometry(self, fileName):
+        if fileName != self.fileName and self.canResetOriginalView:
+            self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
+            self.canResetOriginalView = False
+
         self.vis.clear_geometries()
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis.add_geometry(pcd)      
@@ -117,6 +116,16 @@ class RendererWidget(QtWidgets.QWidget):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_vis)
         self.timer.start(1)
+
+    def changeViewToOriginal(self):
+        ctr = self.vis.get_view_control()
+        ctr.convert_from_pinhole_camera_parameters(self.original_view)
+        self.canResetOriginalView = True
+    
+    def resetOriginalView(self, *args):
+        self.vis.reset_view_point(True)
+        self.canResetOriginalView = True
+        self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
 
     def changeBackground(self):
         opt = self.vis.get_render_option()
