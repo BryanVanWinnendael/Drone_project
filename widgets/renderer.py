@@ -46,25 +46,26 @@ class RendererWidget(QtWidgets.QWidget):
         self.buttonSpaceLayout = QtWidgets.QHBoxLayout()
 
         self.originalButton = QtWidgets.QPushButton("Original")
-        self.originalButton.setObjectName("backbtn")
+        self.originalButton.setObjectName("rendererbtn")
         self.originalButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.originalButton.mouseDoubleClickEvent = self.resetOriginalView
         self.originalButton.clicked.connect(lambda: (self.changeGeometry(self.fileName), self.changeViewToOriginal()))
 
         self.classifiedButton = QtWidgets.QPushButton("Classified")
-        self.classifiedButton.setObjectName("backbtn")
+        self.classifiedButton.setObjectName("rendererbtn")
         self.classifiedButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.classifiedButton.mouseDoubleClickEvent = self.resetOriginalView
         self.classifiedButton.clicked.connect(lambda: (self.changeGeometry(self.classified), self.changeViewToOriginal()))
 
         self.daynightSwitch = QtWidgets.QPushButton("Switch Black")
-        self.daynightSwitch.setObjectName("backbtn")
+        self.daynightSwitch.setObjectName("rendererbtn")
         self.daynightSwitch.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.daynightSwitch.clicked.connect(lambda: self.changeBackground())
 
         self.buttonSpaceLayout.addWidget(self.originalButton)
         self.buttonSpaceLayout.addWidget(self.classifiedButton)
         self.buttonSpaceLayout.addWidget(self.daynightSwitch)
+        self.buttonSpaceLayout.setAlignment(Qt.AlignCenter)
         self.buttonSpace.setLayout(self.buttonSpaceLayout)
 
         self.resultTable = ResultTable(self, self.data)

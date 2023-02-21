@@ -2,41 +2,55 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from utils import getFileNames
 from widgets.components.buttonHistory import ButtonHistory
 from PyQt5.QtCore import pyqtSignal
+from widgets.components.buttonUpload import ButtonUpload
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
     progress = pyqtSignal(int)
     def __init__(self,parent):
-       
         super(HomeWidget, self).__init__()
         self.parent = parent
         layout = QtWidgets.QVBoxLayout()
         self.setAcceptDrops(True)
 
-        self.label = QtWidgets.QLabel()
-        self.label.setMaximumHeight(25)
-        self.label.setObjectName("label-error")
-        layout.addWidget(self.label)
+        self.labelError = QtWidgets.QLabel()
+        self.labelError.setMaximumHeight(25)
+        self.labelError.setObjectName("label-error")
+        layout.addWidget(self.labelError)
 
-        self.uploadButton = QtWidgets.QPushButton('Drag and Drop or Upload')
-        self.uploadButton.setMinimumHeight(300)
-        self.uploadButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.uploadButton.setObjectName("uploadbtn")
-        self.uploadButton.setIcon(QtGui.QIcon('assets/upload.svg'))
-        self.uploadButton.setIconSize(QtCore.QSize(30, 30))
-        self.uploadButton.clicked.connect(self.openFileNameDialog)
+
+
+        widget = QtWidgets.QWidget()
+        self.uploadButtonLayout = QtWidgets.QGridLayout(widget)
+        self.textLayout = QtWidgets.QHBoxLayout()
+
+        self.uploadText = QtWidgets.QLabel("Drag file here or")
+        self.uploadText.setObjectName("uploadtext")
+        self.textLayout.addWidget(self.uploadText)
+
+        self.uploadText2 = QtWidgets.QLabel("browse")
+        self.uploadText2.setObjectName("uploadtext2")
+        self.textLayout.addWidget(self.uploadText2)
+
+        self.uploadButton = ButtonUpload(self)
         layout.addWidget(self.uploadButton)
 
         vbox = QtWidgets.QVBoxLayout()
-        label = QtWidgets.QLabel("Recent files")
-        label.setMaximumHeight(30)
-        label.setObjectName("recentlabel")
-        label.setAlignment(QtCore.Qt.AlignCenter)
-        vbox.addWidget(label)
+        
+        self.label = QtWidgets.QLabel("Recent files")
+        self.label.setMaximumHeight(40)
+        self.label.setObjectName("recentlabel")
+        self.label.setAlignment(QtCore.Qt.AlignCenter)
+
+        vbox.addWidget(self.label)
         recentFiles = getFileNames()
         for file in recentFiles if recentFiles != None else []:
             btn = ButtonHistory(file, self.parent)
             vbox.addWidget(btn)
+
+        vbox.setAlignment(QtCore.Qt.AlignCenter)
+        vbox.setContentsMargins(0, 0, 0, 0)
+        vbox.setSpacing(0)
         layout.addLayout(vbox)
 
         self.setLayout(layout)

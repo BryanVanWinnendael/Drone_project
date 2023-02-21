@@ -5,7 +5,6 @@ from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkRepl
 from PyQt5.QtCore import QUrl
 from utils import saveFileName, getRecentFile, cleanData
 from model.segmentator import Segmentator
-from PyQt5.QtGui import QFontDatabase
 from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtGui
@@ -28,7 +27,7 @@ class Worker(QThread):
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-
+        self.setObjectName("mainWindow")
         self.setWindowIcon(QtGui.QIcon('assets/drone.png'))
         self.setWindowTitle("Point cloud renderer")
 
@@ -38,7 +37,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def navigateToRenderer(self, fileName):   
         saveFileName(fileName)
         recent_file = getRecentFile()
-        
+
         if recent_file == fileName:
             return self.setCentralWidget(RendererWidget(self, fileName))
         else:
@@ -78,7 +77,6 @@ class MainWindow(QtWidgets.QMainWindow):
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    QFontDatabase.addApplicationFont('assets/fonts/gilroy.otf')
 
     myappid = 'mycompany.myproduct.subproduct.version'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)

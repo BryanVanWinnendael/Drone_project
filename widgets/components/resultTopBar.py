@@ -8,6 +8,7 @@ class ResultTopBar(QtWidgets.QWidget):
         self.parent = parent
         self.fileName = fileName
 
+        self.layoutButton = QtWidgets.QHBoxLayout()
         self.backButton = QtWidgets.QPushButton("Back")
         self.backButton.setObjectName("backbtn")
         self.backButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -20,7 +21,7 @@ class ResultTopBar(QtWidgets.QWidget):
 
         name = fileName.split("/")[-1].split(".")[0]
         self.nameLabel.setText(name)
-        self.nameLabel.setObjectName("recentlabel")
+        self.nameLabel.setObjectName("filelabel")
         self.layout.addWidget(self.backButton)
         self.layout.addWidget(self.nameLabel)
 

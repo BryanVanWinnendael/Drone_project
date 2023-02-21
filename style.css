@@ -1,46 +1,80 @@
+QMainWindow#mainWindow {
+  background-color: white;
+}
+
 QPushButton#uploadbtn {
   background-color: transparent;
-  font: 57 13pt "gilroy";
-  border-width: 1px;
-  border-color: #000000;
-  border-style: dotted;
-  height: 100px;
+  border-width: 2px;
+  font-size: 18px;
+  border-color: #d7e1fc;
+  border-style: dashed;
+  border-radius: 6px;
 }
 
 QPushButton#uploadbtn:hover {
-  background-color: #f4f4f4;
+  background-color: #d7e1fc;
 }
 
 QPushButton#backbtn {
-  font: 57 13pt "gilroy";
   width: 30px;
+  font-size: 18px;
+  border: none;
   background-color: transparent;
+  text-align: left;
 }
 
-QPushButton#exportbtn {
-  font: 57 13pt "gilroy";
-  background-color: #249ea7;
-  color: #ffffff;
+QPushButton#rendererbtn {
+  color: black;
+  font-size: 18px;
+  width: 300px;
   border: none;
 }
 
-QPushButton#historyArrobtn {
-  font: 57 13pt "gilroy";
+QPushButton#exportbtn {
+  background-color: #249ea7;
+  color: #ffffff;
+  border-radius: 4px;
+  font-size: 18px;
+  border: none;
+}
+
+QPushButton#exportbtn:hover {
+  background-color: #2ca6af;
+}
+
+QPushButton#historyArrowbtn {
   border: none;
   text-align: right;
 }
 
+QPushButton#recentbtn {
+  border: none;
+  border-bottom: 1px solid #ccc;
+}
+
 QLabel#label-error {
-  font: 32 13pt "gilroy";
   color: #b22222;
 }
 
-QLabel#recentlabel {
-  font: 57 13pt "gilroy";
+QLabel#filelabel {
+  font-size: 18px;
+  font-weight: 500;
 }
 
-QLabel#recentlabelTime {
-  font: 57 9pt "gilroy";
+QLabel#recentlabel {
+  padding: 10px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+QLabel#recentlabelButton {
+  font-size: 18px;
+  color: black;
+  font-weight: 300;
+}
+
+QLabel#recentlabelTimeButton {
+  font-size: 15px;
   color: #808080;
 }
 
@@ -50,8 +84,19 @@ QLabel#labelLoading {
   text-align: center;
 }
 
+QLabel#textUpload {
+  font-size: 18px;
+}
+
+QLabel#textUpload2 {
+  font-size: 18px;
+  color: #249ea7;
+  font-weight: 500;
+}
+
 QTableWidget#resultTable {
-  background-color: #f4f4f4;
+  background-color: white;
+  border: none;
 }
 
 QPushButton#viewButton {
@@ -63,5 +108,6 @@ QPushButton#viewButton {
 }
 
 QTableWidgetItem {
-  background-color: antiquewhite;
+  border: none;
+  background-color: white;
 }
