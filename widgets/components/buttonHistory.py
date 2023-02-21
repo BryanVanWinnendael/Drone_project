@@ -5,6 +5,7 @@ class ButtonHistory(QtWidgets.QPushButton):
         super(ButtonHistory, self).__init__()
         widget = QtWidgets.QWidget()
         self.layout = QtWidgets.QGridLayout(widget)
+        
         self.textLayout = QtWidgets.QVBoxLayout()
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
@@ -29,7 +30,6 @@ class ButtonHistory(QtWidgets.QPushButton):
         self.arrowIcon.setIcon(QtGui.QIcon('assets/arrow.svg'))
         self.arrowIcon.setIconSize(QtCore.QSize(40, 40))
         self.arrowIcon.clicked.connect(lambda: self.parent.navigateToRenderer(fileName))
-        
 
         self.layout.addLayout(self.textLayout, 0, 0)
         self.layout.addWidget(self.arrowIcon, 0, 1)

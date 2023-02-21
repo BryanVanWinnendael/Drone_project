@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 from utils import getFileNames
 from widgets.components.buttonHistory import ButtonHistory
-from PyQt5.QtCore import QObject, QThread, pyqtSignal
+from PyQt5.QtCore import pyqtSignal
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()

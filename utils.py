@@ -2,7 +2,6 @@ import json
 from PyQt5 import QtCore
 import datetime
 import os
-import sys
 
 def saveFileName(fileName):
     savedFileNames = getFileNames()
@@ -44,3 +43,20 @@ def clean(hard=False):
     if hard and os.path.exists("data/results"):
         for filename in os.listdir('data/results'):
             os.remove("data/results/" + filename)
+
+def updateClass(row, col, newItem):
+    if col != 1: return
+    row += 1
+    res_path = "data/results/output.csv"
+    with open(res_path, "r") as infile:
+        data = infile.read()
+        data = data.split("\n")
+        data[row] = data[row].split(",")
+        data[row][col] = newItem
+        data[row] = ",".join(data[row])
+        data = "\n".join(data)
+
+    with open(res_path, "w") as outfile:
+        outfile.write(data)
+
+    

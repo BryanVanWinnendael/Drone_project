@@ -8,7 +8,6 @@ from model.segmentator import Segmentator
 from PyQt5.QtGui import QFontDatabase
 from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
-import os 
 from PyQt5 import QtGui
 import ctypes
 

@@ -1,40 +1,54 @@
-import colorsys
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
-from PyQt5.QtGui import QIcon
 from widgets.components.buttonTable import ButtonTable
-
+from PyQt5 import QtCore
+from utils import updateClass
 class ResultTable(QTableWidget):
     def __init__(self, parent, data):
         self.parent = parent
         self.data = data
-        
         super(ResultTable, self).__init__(len(self.data), len(self.data[0]) + 1)
-        #QTableWidget.__init__(self, 4 , 3)
         
         self.verticalHeader().setVisible(False)
         self.setObjectName("resultTable")
-        
-        #header = header = self.horizontalHeader() 
-        #for i in range(len(self.data[0])):
-        #    header.setSectionResizeMode(i,  QHeaderView.ResizeMode.Stretch)
-        #header.setSectionResizeMode(len(self.data[0]) + 1, QHeaderView.ResizeMode.ResizeToContents)
- 
+       
         self.setData()
         self.resizeColumnsToContents()
         self.resizeRowsToContents()
+
         header = self.horizontalHeader()
         header.setSectionResizeMode(0, QHeaderView.Stretch)
         header.setSectionResizeMode(1, QHeaderView.Stretch)
         header.setSectionResizeMode(2, QHeaderView.Stretch)
         header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setObjectName("resultTableHeader")
+        self.itemChanged.connect(self.itemChangedEvent)
  
     def setData(self): 
         for i in range(len(self.data)):
-            self.setItem(i, 0, QTableWidgetItem(f'Segment {self.data[i]["Segment"]}'))
-            self.setItem(i, 1, QTableWidgetItem(self.data[i]["Class"]))
-            self.setItem(i, 2, QTableWidgetItem(self.data[i]["Surface area"]))
+            item_segment = QTableWidgetItem(self.data[i]["Segment"])
+            item_segment.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
+            item_segment.setText(self.data[i]["Segment"])
+
+            item_class = QTableWidgetItem(self.data[i]["Class"])
+            item_class.setFlags(QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable )
+            item_class.setText(self.data[i]["Class"])
+
+            item_area = QTableWidgetItem(self.data[i]["Surface area"])
+            item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
+            item_area.setText(self.data[i]["Surface area"])
+
+            self.setItem(i, 0, item_segment)
+            self.setItem(i, 1, item_class)
+            self.setItem(i, 2, item_area)
             self.setCellWidget(i, 3, ButtonTable(self.data[i], self.parent))
         headers = list(self.data[0].keys())
         headers.append("")
         self.setHorizontalHeaderLabels(headers)
+    
+    def itemChangedEvent(self, item):
+        columns = range(self.columnCount())
+        rows = range(self.rowCount())
+        for column in columns:
+            for row in rows:
+                if item == self.item(row, column):
+                    updateClass(row, column, item.text())

@@ -1,8 +1,4 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-import win32gui
-import open3d as o3d
-from widgets.components.resultTable import ResultTable
-from widgets.components.resultTopBar import ResultTopBar
+from PyQt5 import QtWidgets, QtCore
 
 class WaitingWidget(QtWidgets.QWidget):
     def __init__(self):
