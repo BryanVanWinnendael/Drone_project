@@ -12,17 +12,6 @@ import pywinctl as gw
 import os
 import sys
 
-if  sys.platform == "darwin":
-    from Quartz import CGWindowListCopyWindowInfo, kCGWindowListOptionAll, kCGNullWindowID, kCGWindowListOptionOnScreenOnly
-    from AppKit import NSWindow, NSView
-
-def get_nsview_from_hwnd(hwnd):
-    if sys.platform == "darwin":
-        ns_window = NSWindow.windowWithWindowNumber_(hwnd)
-        ns_view = ns_window.contentView()
-        print(ns_view)
-        return ns_view
-
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
         super().__init__()
@@ -51,16 +40,14 @@ class RendererWidget(QtWidgets.QWidget):
                 window_title = window
 
         window_open3d = gw.getWindowsWithTitle(window_title)
+
         if os.name == 'nt':
             hwnd = window_open3d[0]._hWnd
-        else:
-            hwnd = window_open3d[0]._appPID
-            print(hwnd)
 
-        self.window = QtGui.QWindow.fromWinId(hwnd)     
-        self.windowcontainer = self.createWindowContainer(self.window, widget)
-        self.windowcontainer.setMinimumWidth(300)
-        self.windowcontainer.setMinimumHeight(300)
+            self.window = QtGui.QWindow.fromWinId(hwnd)     
+            self.windowcontainer = self.createWindowContainer(self.window, widget)
+            self.windowcontainer.setMinimumWidth(300)
+            self.windowcontainer.setMinimumHeight(300)
 
         self.topBar = ResultTopBar(self.fileName, self.parent)
         self.buttonSpace = ButtonSpace(self)
@@ -79,8 +66,10 @@ class RendererWidget(QtWidgets.QWidget):
         self.tableAndButtonsLayout.addWidget(self.area_label)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
+        
+        if os.name == 'nt':
+            self.splitter = QtWidgets.QSplitter(Qt.Vertical)
 
-        self.splitter = QtWidgets.QSplitter(Qt.Vertical)
         self.splitter.addWidget(self.windowcontainer)
         self.splitter.addWidget(self.tableAndButtonSpace)
         self.splitter.setStretchFactor(0, 1)
