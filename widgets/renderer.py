@@ -32,7 +32,12 @@ class RendererWidget(QtWidgets.QWidget):
         self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
         self.canResetOriginalView = True
 
-        window_open3d = gw.getWindowsWithTitle('Open3D')
+        all_windows = gw.getAllTitles()
+        for window in all_windows:
+            if "Open3D" in window:
+                window_title = window
+
+        window_open3d = gw.getWindowsWithTitle(window_title)
         hwnd = window_open3d[0]._hWnd
         
         self.window = QtGui.QWindow.fromWinId(hwnd)    
