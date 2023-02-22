@@ -10,6 +10,23 @@ from PyQt5.QtCore import *
 import csv
 import pywinctl as gw
 import os
+import sys
+
+if  sys.platform == "darwin":
+    from Quartz import CGWindowListCopyWindowInfo, kCGWindowListOptionAll, kCGNullWindowID, kCGWindowListOptionOnScreenOnly
+    from AppKit import NSWindow, NSView
+
+def get_nsview_from_hwnd(hwnd):
+    if sys.platform == "darwin":
+        window_list = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly | kCGWindowListOptionAll, kCGNullWindowID)
+        for window_info in window_list:
+            if window_info['kCGWindowNumber'] == hwnd:
+                window_id = window_info['kCGWindowNumber']
+                window_layer = window_info['kCGWindowLayer']
+                ns_window = NSWindow.windowWithWindowNumber_(window_id)
+                ns_view = ns_window.contentView()
+                return ns_view
+        return None
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -25,7 +42,7 @@ class RendererWidget(QtWidgets.QWidget):
         file = open("data/results/output.csv", "r")
         self.data = list(csv.DictReader(file, delimiter=","))
         file.close()
-        
+
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
@@ -40,11 +57,11 @@ class RendererWidget(QtWidgets.QWidget):
 
         window_open3d = gw.getWindowsWithTitle(window_title)
         if os.name == 'nt':
-            hwnd = window_open3d[0]._hwnd
+            hwnd = window_open3d[0]._hWnd
+            self.window = QtGui.QWindow.fromWinId(hwnd)  
         else:
             hwnd = window_open3d[0]._appPID
-        
-        self.window = QtGui.QWindow.fromWinId(hwnd)    
+            self.window = get_nsview_from_hwnd(hwnd)
 
         self.windowcontainer = self.createWindowContainer(self.window, widget)
         self.windowcontainer.setMinimumWidth(300)
