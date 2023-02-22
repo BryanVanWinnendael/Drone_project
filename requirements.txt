@@ -1,4 +1,4 @@
 open3d
 numpy
 PyQt5
-pygetwindow
+pywinctl

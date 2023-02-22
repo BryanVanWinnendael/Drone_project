@@ -27,7 +27,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setObjectName("mainWindow")
-        # self.setWindowIcon(QtGui.QIcon('assets/drone.png'))
         self.setWindowTitle("Point cloud renderer")
 
         homeWidget = HomeWidget(self)

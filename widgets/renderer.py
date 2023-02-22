@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
-import pygetwindow as gw
+import pywinctl as gw
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
