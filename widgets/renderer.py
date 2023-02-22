@@ -9,6 +9,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
 import pywinctl as gw
+import os
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -38,7 +39,10 @@ class RendererWidget(QtWidgets.QWidget):
                 window_title = window
 
         window_open3d = gw.getWindowsWithTitle(window_title)
-        hwnd = window_open3d[0]._hWnd
+        if os.name == 'nt':
+            hwnd = window_open3d[0]._hwnd
+        else:
+            hwnd = window_open3d[0]._appPID
         
         self.window = QtGui.QWindow.fromWinId(hwnd)    
 
