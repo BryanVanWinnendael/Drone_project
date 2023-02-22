@@ -25,6 +25,7 @@ def get_nsview_from_hwnd(hwnd):
                 window_layer = window_info['kCGWindowLayer']
                 ns_window = NSWindow.windowWithWindowNumber_(window_id)
                 ns_view = ns_window.contentView()
+                print(ns_view)
                 return ns_view
         return None
 
