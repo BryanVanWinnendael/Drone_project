@@ -40,7 +40,7 @@ class RendererWidget(QtWidgets.QWidget):
 
         window_open3d = gw.getWindowsWithTitle(window_title)
         if os.name == 'nt':
-            hwnd = window_open3d[0]._hwnd
+            hwnd = window_open3d[0]._hWnd
         else:
             hwnd = window_open3d[0]._appPID
         
