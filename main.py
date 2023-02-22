@@ -7,6 +7,7 @@ from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtGui
 import ctypes
+import os
 
 class Worker(QThread):
     begin = pyqtSignal()
@@ -26,7 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setObjectName("mainWindow")
-        self.setWindowIcon(QtGui.QIcon('assets/drone.png'))
+        # self.setWindowIcon(QtGui.QIcon('assets/drone.png'))
         self.setWindowTitle("Point cloud renderer")
 
         homeWidget = HomeWidget(self)
@@ -58,9 +59,10 @@ class MainWindow(QtWidgets.QMainWindow):
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-
-    myappid = 'mycompany.myproduct.subproduct.version'
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    app.setWindowIcon(QtGui.QIcon('assets/drone.png'))
+    if os.name == 'nt':
+        myappid = 'mycompany.myproduct.subproduct.version'
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     css="style.css"
     with open(css,"r") as fh:
