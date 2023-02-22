@@ -53,12 +53,11 @@ class RendererWidget(QtWidgets.QWidget):
         window_open3d = gw.getWindowsWithTitle(window_title)
         if os.name == 'nt':
             hwnd = window_open3d[0]._hWnd
-            self.window = QtGui.QWindow.fromWinId(hwnd)  
         else:
             hwnd = window_open3d[0]._appPID
             print(hwnd)
-            self.window = get_nsview_from_hwnd(hwnd)
 
+        self.window = QtGui.QWindow.fromWinId(hwnd)     
         self.windowcontainer = self.createWindowContainer(self.window, widget)
         self.windowcontainer.setMinimumWidth(300)
         self.windowcontainer.setMinimumHeight(300)
