@@ -66,11 +66,10 @@ class RendererWidget(QtWidgets.QWidget):
         self.tableAndButtonsLayout.addWidget(self.area_label)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
-        
-        if os.name == 'nt':
-            self.splitter = QtWidgets.QSplitter(Qt.Vertical)
 
-        self.splitter.addWidget(self.windowcontainer)
+        self.splitter = QtWidgets.QSplitter(Qt.Vertical)
+        if os.name == 'nt':
+            self.splitter.addWidget(self.windowcontainer)
         self.splitter.addWidget(self.tableAndButtonSpace)
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 5)
