@@ -18,16 +18,10 @@ if  sys.platform == "darwin":
 
 def get_nsview_from_hwnd(hwnd):
     if sys.platform == "darwin":
-        window_list = CGWindowListCopyWindowInfo(kCGWindowListOptionOnScreenOnly | kCGWindowListOptionAll, kCGNullWindowID)
-        for window_info in window_list:
-            if window_info['kCGWindowNumber'] == hwnd:
-                window_id = window_info['kCGWindowNumber']
-                window_layer = window_info['kCGWindowLayer']
-                ns_window = NSWindow.windowWithWindowNumber_(window_id)
-                ns_view = ns_window.contentView()
-                print(ns_view)
-                return ns_view
-        return None
+        ns_window = NSWindow.windowWithWindowNumber_(hwnd)
+        ns_view = ns_window.contentView()
+        print(ns_view)
+        return ns_view
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -62,6 +56,7 @@ class RendererWidget(QtWidgets.QWidget):
             self.window = QtGui.QWindow.fromWinId(hwnd)  
         else:
             hwnd = window_open3d[0]._appPID
+            print(hwnd)
             self.window = get_nsview_from_hwnd(hwnd)
 
         self.windowcontainer = self.createWindowContainer(self.window, widget)
