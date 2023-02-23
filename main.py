@@ -7,7 +7,6 @@ from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtGui
 import ctypes
-import os
 
 class Worker(QThread):
     begin = pyqtSignal()
@@ -43,10 +42,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.worker = Worker(fileName)
         self.worker.start()
-        
-        self.worker.begin.connect(self.createWaitingWidget)
-        self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
-        self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
+        try:
+            self.worker.begin.connect(self.createWaitingWidget)
+            self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
+            self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
+        except:
+            pass
             
     def createWaitingWidget(self):
         self.waitingWidget = WaitingWidget()
@@ -59,9 +60,9 @@ class MainWindow(QtWidgets.QMainWindow):
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
     app.setWindowIcon(QtGui.QIcon('assets/drone.png'))
-    if os.name == 'nt':
-        myappid = 'mycompany.myproduct.subproduct.version'
-        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    
+    myappid = 'mycompany.myproduct.subproduct.version'
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     css="style.css"
     with open(css,"r") as fh:

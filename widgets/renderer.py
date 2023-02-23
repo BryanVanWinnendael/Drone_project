@@ -8,8 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
-import pywinctl as gw
-import os
+import win32gui
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -33,16 +32,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
         self.canResetOriginalView = True
 
-        all_windows = gw.getAllTitles()
-        for window in all_windows:
-            if "Open3D" in window:
-                window_title = window
-
-        window_open3d = gw.getWindowsWithTitle(window_title)
-        if os.name == 'nt':
-            hwnd = window_open3d[0]._hWnd
-        else:
-            hwnd = window_open3d[0]._appPID
+        hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
         
         self.window = QtGui.QWindow.fromWinId(hwnd)    
 
