@@ -9,6 +9,7 @@ class Segmentator:
 
     def segment(self, filename):
         DetectPlanes(filename, self.waitingScreen)
-        PlanesToMeshes(self.waitingScreen)
+        # Normaal de meshes niet nodig dankzij de convex hull
+        #PlanesToMeshes(self.waitingScreen)
         CalculateSurfaces()
         #ViewResult()

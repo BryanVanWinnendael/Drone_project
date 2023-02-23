@@ -89,6 +89,8 @@ class RendererWidget(QtWidgets.QWidget):
 
         if fileName not in [self.fileName, self.classified]:
             original_pcd = o3d.io.read_point_cloud(self.fileName)
+            if len(np.asarray(original_pcd.points)) > 200000:
+                original_pcd = original_pcd.voxel_down_sample(voxel_size=0.1)
             original_points = removePointsFromPointCloud(original_pcd, pcd.points)
             original_colors = np.full((len(original_points), 3), [0.5, 0.5, 0.5])
             new_points = np.asarray(pcd.points)
