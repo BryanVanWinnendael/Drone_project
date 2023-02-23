@@ -85,13 +85,16 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.vis.clear_geometries()
 
-        if fileName != self.fileName:
-            original_pcd = o3d.io.read_point_cloud(self.fileName)
-            self.vis.add_geometry(original_pcd)
-
         pcd = o3d.io.read_point_cloud(fileName)
-        original_pcd = removePointsFromPointCloud(original_pcd, pcd.points)
-        original_pcd.paint_uniform_color([0.5, 0.5, 0.5])
+
+        if fileName not in [self.fileName, self.classified]:
+            original_pcd = o3d.io.read_point_cloud(self.fileName)
+            original_points = removePointsFromPointCloud(original_pcd, pcd.points)
+            original_colors = np.full((len(original_points), 3), [0.5, 0.5, 0.5])
+            new_points = np.asarray(pcd.points)
+            new_colors = np.asarray(pcd.colors)
+            pcd.points = o3d.utility.Vector3dVector(np.concatenate((original_points, new_points)))
+            pcd.colors = o3d.utility.Vector3dVector(np.concatenate((original_colors, new_colors)))
 
         self.vis.add_geometry(pcd)      
         self.vis.reset_view_point(True)
@@ -126,12 +129,10 @@ class RendererWidget(QtWidgets.QWidget):
         self.timer.timeout.connect(self.update_vis)
         self.timer.start(1)
 
-def removePointsFromPointCloud(pointcloud, points):
-    pc_points = pointcloud.points
-
-    for point in points:
-        pc_points.remove(point)
-
-    pointcloud.points = pc_points
-
-    return pointcloud
+def removePointsFromPointCloud(pointcloud, points_to_remove):
+    pc_points = np.asarray(pointcloud.points)
+    points_to_mask = np.asarray(points_to_remove)
+    indexes = [i for i in range(len(pc_points)) if pc_points[i] in points_to_mask]
+    mask = np.ones(len(np.asarray(pointcloud.points)), dtype=bool)
+    mask[indexes] = False
+    return pc_points[mask]
