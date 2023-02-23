@@ -122,14 +122,14 @@ def DetectPlanes(filename, waitingScreen):
 
     for i, (w, plane) in enumerate(results):
         # Grab a random class
-        class_name = random.choice(classes)
+        # class_name = random.choice(classes)
 
-        # r = generated_colors[i][0] / 255
-        # g = generated_colors[i][1] / 255
-        # b = generated_colors[i][2] / 255
+        r = generated_colors[i][0] / 255
+        g = generated_colors[i][1] / 255
+        b = generated_colors[i][2] / 255
 
         # Get color from class
-        r, g, b = GetColor(class_name)
+        # r, g, b = GetColor(class_name)
 
         color = np.zeros((plane.shape[0], plane.shape[1]))
         color[:, 0] = r
@@ -146,7 +146,7 @@ def DetectPlanes(filename, waitingScreen):
 
         o3d.io.write_point_cloud(f'data/planes/plane_{i + 1}.ply', pcd)
 
-        csv_planes[i + 1] = class_name
+        csv_planes[i + 1] = "unclassified"
 
     # Write class and segment to csv
     if not os.path.exists('data/results'):
