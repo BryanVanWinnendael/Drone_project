@@ -84,7 +84,15 @@ class RendererWidget(QtWidgets.QWidget):
             self.canResetOriginalView = False
 
         self.vis.clear_geometries()
+
+        if fileName != self.fileName:
+            original_pcd = o3d.io.read_point_cloud(self.fileName)
+            self.vis.add_geometry(original_pcd)
+
         pcd = o3d.io.read_point_cloud(fileName)
+        original_pcd = removePointsFromPointCloud(original_pcd, pcd.points)
+        original_pcd.paint_uniform_color([0.5, 0.5, 0.5])
+
         self.vis.add_geometry(pcd)      
         self.vis.reset_view_point(True)
 
@@ -117,3 +125,13 @@ class RendererWidget(QtWidgets.QWidget):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.update_vis)
         self.timer.start(1)
+
+def removePointsFromPointCloud(pointcloud, points):
+    pc_points = pointcloud.points
+
+    for point in points:
+        pc_points.remove(point)
+
+    pointcloud.points = pc_points
+
+    return pointcloud
