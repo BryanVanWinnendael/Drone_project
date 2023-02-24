@@ -10,30 +10,59 @@ def SaveResult(planes):
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
-def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000):
+def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False):
+    # Prepare necessary variables
     points = np.asarray(pcd.points)
-    plane_list = []
+    planes = []
     N = len(points)
     target = points.copy()
     count = 0
 
+    # Loop until the minimum ratio of points is reached
     while count < (1 - min_ratio) * N:
+        # Convert back to open3d point cloud
         cloud = o3d.geometry.PointCloud()
         cloud.points = o3d.utility.Vector3dVector(target)
 
+        # Segment the plane
         inliers, mask = cloud.segment_plane(distance_threshold=threshold, ransac_n=3, num_iterations=iterations)
     
+        # Update the count
         count += len(mask)
 
         # Extract the plane
         plane = cloud.select_by_index(mask)
 
-        plane_list.append(plane)
+        if cluster:
+            inlier_points = np.asarray(plane.points)
+
+            # Perform DBSCAN clustering on the points
+            labels = np.array(plane.cluster_dbscan(eps=0.1, min_points=20, print_progress=True))
+
+            # Extract points for each cluster
+            for label in np.unique(labels):
+                # Get the points for this cluster
+                cluster_points = inlier_points[labels == label]
+
+                print("Found cluster with {} points".format(len(cluster_points)))
+
+                if len(cluster_points) >= 200:
+                    # Convert points to Open3D point cloud
+                    cluster_pcd = o3d.geometry.PointCloud()
+                    cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
+
+                    # Add the cluster point cloud to the list of planes
+                    planes.append(cluster_pcd)
+        else:
+            # Add the plane to the list
+            planes.append(plane)
+
+        # Remove the plane from the target
         target = np.delete(target, mask, axis=0)
 
-    print("Found {} planes".format(len(plane_list)))
+    print("Found {} planes".format(len(planes)))
 
-    return plane_list
+    return planes
 
 # Detect planes solely based on RANSAC
 def DetectPlanes(filename, minimum_number, waitingScreen):
@@ -47,6 +76,7 @@ def DetectPlanes(filename, minimum_number, waitingScreen):
     print("Starting with {} points".format(len(pcd.points)))
     pcd = pcd.voxel_down_sample(voxel_size=0.01)
     pcd, mask = pcd.remove_statistical_outlier(nb_neighbors=5, std_ratio=2.0)
+    # This was removed for now because it was causing the point cloud to be too small
     # pcd, mask = pcd.remove_radius_outlier(nb_points=16, radius=0.05)
     print("Ending with {} points".format(len(pcd.points)))
     pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
@@ -55,48 +85,9 @@ def DetectPlanes(filename, minimum_number, waitingScreen):
     # Segment the planes
     print("Segmenting planes...")
     waitingScreen.progress.emit("Segmenting planes...")
-    planes = SegmentPlanes(pcd, waitingScreen)
+    planes = SegmentPlanes(pcd, waitingScreen, cluster=True)
 
-    # while len(pcd.points) >= minimum_number:
-    #     # Use RANSAC to segment the plane
-    #     # 4 points are needed for convex hull
-    #     plane_model, inliers = pcd.segment_plane(distance_threshold=0.01, ransac_n=3, num_iterations=2000)
-
-    #     # Extract the inlier points
-    #     inlier_cloud = pcd.select_by_index(inliers)
-
-    #     # Extract inlier points
-    #     inlier_points = np.asarray(pcd.points)[inliers, :]
-
-    #     # Perform DBSCAN clustering on inlier points
-    #     clustering = DBSCAN(eps=0.05, min_samples=10).fit(inlier_points)
-
-    #     # Identify main plane cluster by finding largest cluster
-    #     labels = clustering.labels_
-    #     unique_labels, counts = np.unique(labels, return_counts=True)
-    #     main_label = unique_labels[np.argmax(counts)]
-
-    #     if (len(unique_labels) > 1):
-    #         print("More than one plane detected")
-
-    #     # Extract points in main plane cluster
-    #     main_cluster_points = inlier_points[labels == main_label]
-
-    #     # Convert points to Open3D point cloud
-    #     plane = o3d.geometry.PointCloud()
-    #     plane.points = o3d.utility.Vector3dVector(main_cluster_points)
-
-    #     # Extract the outlier points
-    #     pcd = pcd.select_by_index(inliers, invert=True)
-
-    #     # Add the plane to the list of planes
-    #     planes.append(plane)
-
-    # for plane in planes:
-    #     if len(plane.points) < 4:
-    #         planes.remove(plane)
-
-    # Generate random colors for each plane
+    # Generate range of colors
     colors = GenerateColors(len(planes))
 
     print("Planes detected: " + str(len(planes)))
