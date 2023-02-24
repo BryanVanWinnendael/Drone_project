@@ -9,4 +9,4 @@ class Segmentator:
         self.waitingScreen = waitingScreen
 
     def segment(self, filename):
-        SegmentPointCloud(filename, 100, self.waitingScreen)
+        SegmentPointCloud(filename, 4, self.waitingScreen)

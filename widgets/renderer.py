@@ -25,10 +25,16 @@ class RendererWidget(QtWidgets.QWidget):
         self.data = list(csv.DictReader(file, delimiter=","))
         file.close()
         
-        pcd = o3d.io.read_point_cloud(fileName)
+        self.pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
-        self.vis.add_geometry(pcd)     
+        self.vis.add_geometry(self.pcd)    
+
+        self.classified_pcd = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.5)
+        self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
+
         self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
         self.canResetOriginalView = True
 
@@ -85,20 +91,21 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.vis.clear_geometries()
 
-        pcd = o3d.io.read_point_cloud(fileName)
+        pcds = []
 
-        if fileName not in [self.fileName, self.classified]:
-            original_pcd = o3d.io.read_point_cloud("data/results/result-classified.ply")
-            if len(np.asarray(original_pcd.points)) > 200000:
-                original_pcd = original_pcd.voxel_down_sample(voxel_size=0.1)
-            original_points = removePointsFromPointCloud(original_pcd, pcd.points)
-            original_colors = np.full((len(original_points), 3), [0.5, 0.5, 0.5])
-            new_points = np.asarray(pcd.points)
-            new_colors = np.asarray(pcd.colors)
-            pcd.points = o3d.utility.Vector3dVector(np.concatenate((original_points, new_points)))
-            pcd.colors = o3d.utility.Vector3dVector(np.concatenate((original_colors, new_colors)))
+        if fileName == self.fileName:
+            pcds.append(self.pcd)
 
-        self.vis.add_geometry(pcd)      
+        elif fileName == self.classified:
+            pcds.append(self.classified_pcd)
+        else:
+            cloud = o3d.io.read_point_cloud(fileName)
+            print(cloud.points)
+            pcds.append(cloud)
+            pcds.append(self.classified_pcd_downscaled)
+
+        for pcd in pcds:
+            self.vis.add_geometry(pcd)      
         self.vis.reset_view_point(True)
 
         self.timer = QtCore.QTimer(self)
