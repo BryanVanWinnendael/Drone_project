@@ -9,7 +9,6 @@ from PyQt5 import QtGui
 import ctypes
 
 class Worker(QThread):
-    begin = pyqtSignal()
     finished = pyqtSignal()
     progress = pyqtSignal(str)
     def __init__(self, fileName):
@@ -17,7 +16,6 @@ class Worker(QThread):
         self.fileName = fileName
 
     def run(self):
-        self.begin.emit()
         self.segmentator = Segmentator(self)
         self.segmentator.segment(self.fileName)
         self.finished.emit()
@@ -43,15 +41,20 @@ class MainWindow(QtWidgets.QMainWindow):
         self.worker = Worker(fileName)
         self.worker.start()
         try:
-            self.worker.begin.connect(self.createWaitingWidget)
             self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
-            self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
+            self.worker.progress.connect(lambda x: self.setLoadingText(x))
         except:
             pass
-            
-    def createWaitingWidget(self):
-        self.waitingWidget = WaitingWidget()
-        self.setCentralWidget(self.waitingWidget)
+    
+    def setLoadingText(self, text):
+        try: 
+            waitingWidgetexist = self.waitingWidget
+        except:
+            waitingWidgetexist = False
+    
+        if not waitingWidgetexist:
+            self.waitingWidget = WaitingWidget()
+        self.waitingWidget.label.setText(text)
 
     def navigateToHome(self):
         homeWidget = HomeWidget(self)

@@ -29,18 +29,18 @@ def CalculateSurfaces():
 
     # Add surface to csv
     with open('data/results/planes.csv', 'r', newline='') as read_obj, \
-            open('data/results/output.csv', 'w', newline='') as write_obj:
-                # Create a csv.reader object from the input file object
-                reader = csv.reader(read_obj)
-                # Create a csv.writer object from the output file object
-                writer = csv.writer(write_obj)
-                # Read each row of the input csv file as list
-                for row in reader:
-                    # Append the default text in the row / list
-                    if row[0].isnumeric():
-                        row.append(results[int(row[0])])
-                    # Add the updated row / list to the output file
-                    writer.writerow(row)
+        open('data/results/output.csv', 'w', newline='') as write_obj:
+            # Create a csv.reader object from the input file object
+            reader = csv.reader(read_obj)
+            # Create a csv.writer object from the output file object
+            writer = csv.writer(write_obj)
+            # Read each row of the input csv file as list
+            for row in reader:
+                # Append the default text in the row / list
+                if row[0].isnumeric():
+                    row.append(results[int(row[0])])
+                # Add the updated row / list to the output file
+                writer.writerow(row)
 
     # Delete planes.csv file
     os.remove('data/results/planes.csv')
@@ -69,18 +69,18 @@ def OldCalculateSurfaces():
 
     # Add surface to csv
     with open('data/results/planes.csv', 'r', newline='') as read_obj, \
-            open('data/results/output.csv', 'w', newline='') as write_obj:
-                # Create a csv.reader object from the input file object
-                reader = csv.reader(read_obj)
-                # Create a csv.writer object from the output file object
-                writer = csv.writer(write_obj)
-                # Read each row of the input csv file as list
-                for row in reader:
-                    # Append the default text in the row / list
-                    if row[0].isnumeric():
-                        row.append(results[int(row[0])])
-                    # Add the updated row / list to the output file
-                    writer.writerow(row)
+        open('data/results/output.csv', 'w', newline='') as write_obj:
+            # Create a csv.reader object from the input file object
+            reader = csv.reader(read_obj)
+            # Create a csv.writer object from the output file object
+            writer = csv.writer(write_obj)
+            # Read each row of the input csv file as list
+            for row in reader:
+                # Append the default text in the row / list
+                if row[0].isnumeric():
+                    row.append(results[int(row[0])])
+                # Add the updated row / list to the output file
+                writer.writerow(row)
 
     # Delete planes.csv file
     os.remove('data/results/planes.csv')
