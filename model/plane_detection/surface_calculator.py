@@ -8,7 +8,6 @@ def CalculateSurfaces(waitingScreen):
     results = {}
 
     # Iterate over all files in directory
-    print("Calculating surface areas...")
     waitingScreen.progress.emit("Calculating surface areas...")
     for i, filename in enumerate(os.listdir("data/planes")):
         file_path = os.path.join("data/planes", filename)

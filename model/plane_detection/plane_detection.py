@@ -1,5 +1,7 @@
 import open3d as o3d
 from model.plane_detection.color_generator import GenerateColors
+import numpy as np
+from sklearn.cluster import DBSCAN
 
 def SaveResult(planes):
     pcds = o3d.geometry.PointCloud()
@@ -18,10 +20,12 @@ def DetectPlanes(filename, minimum_number, waitingScreen):
 
     # Preprocess the point cloud
     print("Preprocessing point cloud...")
-    pcd.voxel_down_sample(voxel_size=0.01)
-    pcd.remove_statistical_outlier(nb_neighbors=20, std_ratio=2.0)
-    pcd.remove_radius_outlier(nb_points=16, radius=0.05)
-    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
+    print("Starting with {} points".format(len(pcd.points)))
+    pcd = pcd.voxel_down_sample(voxel_size=0.01)
+    pcd, mask = pcd.remove_statistical_outlier(nb_neighbors=50, std_ratio=2.0)
+    pcd, mask = pcd.remove_radius_outlier(nb_points=16, radius=0.05)
+    print("Ending with {} points".format(len(pcd.points)))
+    # pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
 
     # Segment the planes
     print("Segmenting planes...")
@@ -34,11 +38,29 @@ def DetectPlanes(filename, minimum_number, waitingScreen):
         # Extract the inlier points
         inlier_cloud = pcd.select_by_index(inliers)
 
+        # Extract inlier points
+        inlier_points = np.asarray(pcd.points)[inliers, :]
+
+        # Perform DBSCAN clustering on inlier points
+        clustering = DBSCAN(eps=0.05, min_samples=10).fit(inlier_points)
+
+        # Identify main plane cluster by finding largest cluster
+        labels = clustering.labels_
+        unique_labels, counts = np.unique(labels, return_counts=True)
+        main_label = unique_labels[np.argmax(counts)]
+
+        # Extract points in main plane cluster
+        main_cluster_points = inlier_points[labels == main_label]
+
+        # Convert points to Open3D point cloud
+        plane = o3d.geometry.PointCloud()
+        plane.points = o3d.utility.Vector3dVector(main_cluster_points)
+
         # Extract the outlier points
         pcd = pcd.select_by_index(inliers, invert=True)
 
         # Add the plane to the list of planes
-        planes.append(inlier_cloud)
+        planes.append(plane)
 
     for plane in planes:
         if len(plane.points) < 4:
