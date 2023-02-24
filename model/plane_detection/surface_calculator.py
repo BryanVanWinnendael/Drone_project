@@ -20,7 +20,7 @@ def CalculateSurfaces():
             points = np.asarray(pcd.points)
 
             # Compute the surface area
-            surface_area = ConvexHull(points).area / 2
+            surface_area = ConvexHull(points, qhull_options="QJ").area / 2
 
             results[i + 1] = surface_area
 
