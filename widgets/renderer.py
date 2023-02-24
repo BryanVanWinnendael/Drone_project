@@ -137,7 +137,6 @@ def removePointsFromPointCloud(pointcloud, points_to_remove):
 
     indexes = [i for i in range(len(pc_points)) if np.any(np.all(pc_points[i] == points_to_mask, axis=1))]
 
-    print(len(indexes))
     mask = np.ones(len(pc_points), dtype=bool)
     mask[indexes] = False
     return pc_points[mask]

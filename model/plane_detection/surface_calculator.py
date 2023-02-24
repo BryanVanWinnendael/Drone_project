@@ -4,83 +4,70 @@ import numpy as np
 import os
 import csv
 
-def CalculateSurfaces():
+def CalculateSurfaces(waitingScreen):
     results = {}
-    # Check if directory exists, if not create it
-    if not os.path.exists("data/planes"):
-        os.makedirs("data/planes")
 
     # Iterate over all files in directory
+    print("Calculating surface areas...")
+    waitingScreen.progress.emit("Calculating surface areas...")
     for i, filename in enumerate(os.listdir("data/planes")):
         file_path = os.path.join("data/planes", filename)
 
-        if os.path.isfile(file_path):
-            # Load pointcloud from file
-            pcd = o3d.io.read_point_cloud(file_path)
-            points = np.asarray(pcd.points)
+        # Load pointcloud from file
+        pcd = o3d.io.read_point_cloud(file_path)
+        points = np.asarray(pcd.points)
 
-            # Compute the surface area
-            surface_area = ConvexHull(points).area / 2
+        # Compute the surface area
+        surface_area = ConvexHull(points, qhull_options='QJ').area / 2
 
-            results[i + 1] = surface_area
+        results[i + 1] = surface_area
 
-    if not os.path.exists("data/results"):
-            os.makedirs("data/results")
+    # Write the results to a csv file
+    print("Writing results to a csv file...")
+    waitingScreen.progress.emit("Writing results to a csv file...")
+    with open("data/results/output.csv", "w", newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(["Segment", "Surface area"])
+        for key, value in results.items():
+            writer.writerow([key, value])
 
-    # Add surface to csv
-    with open('data/results/planes.csv', 'r', newline='') as read_obj, \
-            open('data/results/output.csv', 'w', newline='') as write_obj:
-                # Create a csv.reader object from the input file object
-                reader = csv.reader(read_obj)
-                # Create a csv.writer object from the output file object
-                writer = csv.writer(write_obj)
-                # Read each row of the input csv file as list
-                for row in reader:
-                    # Append the default text in the row / list
-                    if row[0].isnumeric():
-                        row.append(results[int(row[0])])
-                    # Add the updated row / list to the output file
-                    writer.writerow(row)
+# Legacy code
+# def OldCalculateSurfaces():
+#     results = {}
+#     # Check if directory exists, if not create it
+#     if not os.path.exists("data/meshes"):
+#         os.makedirs("data/meshes")
 
-    # Delete planes.csv file
-    os.remove('data/results/planes.csv')
+#     # Iterate over all files in directory
+#     for i, filename in enumerate(os.listdir("data/meshes")):
+#         file_path = os.path.join("data/meshes", filename)
 
-def OldCalculateSurfaces():
-    results = {}
-    # Check if directory exists, if not create it
-    if not os.path.exists("data/meshes"):
-        os.makedirs("data/meshes")
+#         if os.path.isfile(file_path):
+#             # Load mesh from file
+#             mesh = o3d.io.read_triangle_mesh(file_path)
 
-    # Iterate over all files in directory
-    for i, filename in enumerate(os.listdir("data/meshes")):
-        file_path = os.path.join("data/meshes", filename)
+#             # Compute the surface area
+#             surface_area = mesh.get_surface_area()
 
-        if os.path.isfile(file_path):
-            # Load mesh from file
-            mesh = o3d.io.read_triangle_mesh(file_path)
+#             results[i + 1] = surface_area
 
-            # Compute the surface area
-            surface_area = mesh.get_surface_area()
+#     if not os.path.exists("data/results"):
+#             os.makedirs("data/results")
 
-            results[i + 1] = surface_area
+#     # Add surface to csv
+#     with open('data/results/planes.csv', 'r', newline='') as read_obj, \
+#             open('data/results/output.csv', 'w', newline='') as write_obj:
+#                 # Create a csv.reader object from the input file object
+#                 reader = csv.reader(read_obj)
+#                 # Create a csv.writer object from the output file object
+#                 writer = csv.writer(write_obj)
+#                 # Read each row of the input csv file as list
+#                 for row in reader:
+#                     # Append the default text in the row / list
+#                     if row[0].isnumeric():
+#                         row.append(results[int(row[0])])
+#                     # Add the updated row / list to the output file
+#                     writer.writerow(row)
 
-    if not os.path.exists("data/results"):
-            os.makedirs("data/results")
-
-    # Add surface to csv
-    with open('data/results/planes.csv', 'r', newline='') as read_obj, \
-            open('data/results/output.csv', 'w', newline='') as write_obj:
-                # Create a csv.reader object from the input file object
-                reader = csv.reader(read_obj)
-                # Create a csv.writer object from the output file object
-                writer = csv.writer(write_obj)
-                # Read each row of the input csv file as list
-                for row in reader:
-                    # Append the default text in the row / list
-                    if row[0].isnumeric():
-                        row.append(results[int(row[0])])
-                    # Add the updated row / list to the output file
-                    writer.writerow(row)
-
-    # Delete planes.csv file
-    os.remove('data/results/planes.csv')
+#     # Delete planes.csv file
+#     os.remove('data/results/planes.csv')
