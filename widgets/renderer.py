@@ -32,7 +32,7 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
         self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
-        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.5)
+        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
         self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
 
         self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
@@ -91,21 +91,15 @@ class RendererWidget(QtWidgets.QWidget):
 
         self.vis.clear_geometries()
 
-        pcds = []
-
         if fileName == self.fileName:
-            pcds.append(self.pcd)
+            self.vis.add_geometry(self.pcd)
 
         elif fileName == self.classified:
-            pcds.append(self.classified_pcd)
+            self.vis.add_geometry(self.classified_pcd)
         else:
-            cloud = o3d.io.read_point_cloud(fileName)
-            print(cloud.points)
-            pcds.append(cloud)
-            pcds.append(self.classified_pcd_downscaled)
+            self.vis.add_geometry(o3d.io.read_point_cloud(fileName))
+            self.vis.add_geometry(self.classified_pcd_downscaled)
 
-        for pcd in pcds:
-            self.vis.add_geometry(pcd)      
         self.vis.reset_view_point(True)
 
         self.timer = QtCore.QTimer(self)
