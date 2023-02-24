@@ -40,11 +40,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.worker = Worker(fileName)
         self.worker.start()
-        try:
-            self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
-            self.worker.progress.connect(lambda x: self.setLoadingText(x))
-        except:
-            pass
+        self.worker.finished.connect(lambda: self.navigateToSegmentation(fileName))
+        self.worker.progress.connect(lambda x: self.setLoadingText(x))
     
     def setLoadingText(self, text):
         try: 
@@ -54,7 +51,14 @@ class MainWindow(QtWidgets.QMainWindow):
     
         if not waitingWidgetexist:
             self.waitingWidget = WaitingWidget()
+            self.setCentralWidget(self.waitingWidget)
+
         self.waitingWidget.label.setText(text)
+    
+    def navigateToSegmentation(self, fileName):
+        self.waitingWidget = False
+        self.setCentralWidget(RendererWidget(self, fileName))
+       
 
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
