@@ -5,6 +5,10 @@ import os
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 from PyQt5.QtCore import QUrl
 
+defaultSettings = {
+    "value": 0.5
+}
+
 def saveFileName(fileName):
     savedFileNames = getFileNames()
     current_time = datetime.datetime.now()
@@ -34,6 +38,22 @@ def getRecentFile():
         return None
  
     return json_object.get("name")
+
+def saveSettings(settings):
+    savedsettings = QtCore.QSettings("Drone-app", "settings")
+    savedsettings.setValue("settings", settings)
+
+def getSettings():
+    savedsettings = QtCore.QSettings("Drone-app", "settings")
+
+    if savedsettings.value("settings") == None:
+        saveSettings(defaultSettings)
+    
+    return savedsettings.value("settings")
+
+def resetSettings():
+    saveSettings(defaultSettings)
+    return defaultSettings
 
 def cleanData(hard=False):
     if os.path.exists("data/planes"):

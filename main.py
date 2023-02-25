@@ -1,13 +1,12 @@
 from PyQt5 import QtWidgets
 from widgets.renderer import RendererWidget
 from widgets.home import HomeWidget
-from utils import saveFileName, getRecentFile, cleanData
+from utils import saveFileName, getRecentFile, cleanData, getSettings
 from model.segmentator import Segmentator
 from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtGui
 import ctypes
-
 class Worker(QThread):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
@@ -16,6 +15,8 @@ class Worker(QThread):
         self.fileName = fileName
 
     def run(self):
+        settings = getSettings()
+        
         self.segmentator = Segmentator(self)
         self.segmentator.segment(self.fileName)
         self.finished.emit()

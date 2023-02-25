@@ -25,7 +25,7 @@ def CalculateSurfaces():
             results[i + 1] = surface_area
 
     if not os.path.exists("data/results"):
-            os.makedirs("data/results")
+        os.makedirs("data/results")
 
     # Add surface to csv
     with open('data/results/planes.csv', 'r', newline='') as read_obj, \
@@ -65,7 +65,7 @@ def OldCalculateSurfaces():
             results[i + 1] = surface_area
 
     if not os.path.exists("data/results"):
-            os.makedirs("data/results")
+        os.makedirs("data/results")
 
     # Add surface to csv
     with open('data/results/planes.csv', 'r', newline='') as read_obj, \

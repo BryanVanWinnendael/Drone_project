@@ -109,3 +109,13 @@ QTableWidgetItem {
   border: none;
   background-color: white;
 }
+
+QToolButton::menu-indicator {
+  image: none;
+}
+
+QToolButton#buttonSettings {
+  border: none;
+  background-color: transparent;
+  padding-bottom: 10px;
+}
