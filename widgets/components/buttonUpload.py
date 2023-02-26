@@ -12,7 +12,6 @@ class ButtonUpload(QtWidgets.QPushButton):
         self.textLayout = QtWidgets.QHBoxLayout()
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
-
         self.fileIcon = QtWidgets.QPushButton()
         self.fileIcon.setObjectName("historyArrowbtn")
         self.fileIcon.setStyleSheet("background-color: transparent")

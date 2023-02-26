@@ -1,19 +1,18 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
-from PyQt5 import QtWidgets, QtCore, QtGui
-from utils import getSettings, saveSettings, resetSettings
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+from utils import getSettings, resetSettings, saveSettings
+
 
 class ButtonSettings(QtWidgets.QToolButton):
     def __init__(self):
         super(ButtonSettings, self).__init__()
-
-        self.settings = getSettings()
         
+        self.settings = getSettings()
         self.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.setIcon(QtGui.QIcon('assets/settings.svg'))
         self.setIconSize(QtCore.QSize(30, 30))
         self.setGeometry(QtCore.QRect(220, 120, 41, 41))
         self.setObjectName("buttonSettings")
-
         self.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
 
         widget = QtWidgets.QWidget()

@@ -8,37 +8,26 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
-import win32gui
+from widgets.components.renderWidget import RenderWidget
 
 class RendererWidget(QtWidgets.QWidget):
+    loadingSegment = pyqtSignal()
+    finishedLoadingSegment = pyqtSignal()
     def __init__(self, parent, fileName=None):
         super().__init__()
         self.fileName = fileName
-        self.classified = "data/results/result-classified.ply"
         self.parent = parent
+        self.acceptDrops = False 
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
-        self.acceptDrops = False       
-        self.night = False
 
         file = open("data/results/output.csv", "r")
         self.data = list(csv.DictReader(file, delimiter=","))
         file.close()
         
-        pcd = o3d.io.read_point_cloud(fileName)
-        self.vis = o3d.visualization.Visualizer()
-        self.vis.create_window()
-        self.vis.add_geometry(pcd)     
-        self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
-        self.canResetOriginalView = True
-
-        hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
-        
-        self.window = QtGui.QWindow.fromWinId(hwnd)    
-
-        self.windowcontainer = self.createWindowContainer(self.window, widget)
-        self.windowcontainer.setMinimumWidth(300)
-        self.windowcontainer.setMinimumHeight(300)
+        self.renderWidget = RenderWidget(self.fileName, self)
+        self.windowcontainer = self.renderWidget.windowcontainer
+        self.classified = self.renderWidget.classified
 
         self.topBar = ResultTopBar(self.fileName, self.parent)
         self.buttonSpace = ButtonSpace(self)
@@ -49,17 +38,22 @@ class RendererWidget(QtWidgets.QWidget):
         self.area_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.area_label.setAlignment(Qt.AlignCenter)
         self.area_label.setMaximumHeight(50)
+
+        self.vboxLoading = QtWidgets.QVBoxLayout()
+        self.labelLoading = QtWidgets.QLabel("Loading...")
+        self.labelLoading.setAlignment(Qt.AlignCenter)
     
         self.tableAndButtonSpace = QtWidgets.QWidget()
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
 
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
         self.tableAndButtonsLayout.addWidget(self.area_label)
+        self.tableAndButtonsLayout.addWidget(self.labelLoading)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
 
         self.splitter = QtWidgets.QSplitter(Qt.Vertical)
-        self.splitter.addWidget(self.windowcontainer)
+        self.splitter.addWidget(self.renderWidget)
         self.splitter.addWidget(self.tableAndButtonSpace)
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 5)
@@ -67,77 +61,22 @@ class RendererWidget(QtWidgets.QWidget):
        
         layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.splitter, 1, 0)
+        layout.addLayout(self.vboxLoading, 2, 0)
 
         self.setLayout(layout)
-
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.update_vis)
-        self.timer.start(1)
-
-    def update_vis(self):
-        self.vis.poll_events()
-        self.vis.update_renderer()
-
-    def changeGeometry(self, fileName):
-        if fileName != self.fileName and self.canResetOriginalView:
-            self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
-            self.canResetOriginalView = False
-
-        self.vis.clear_geometries()
-
-        pcd = o3d.io.read_point_cloud(fileName)
-
-        if fileName not in [self.fileName, self.classified]:
-            original_pcd = o3d.io.read_point_cloud(self.fileName)
-            if len(np.asarray(original_pcd.points)) > 200000:
-                original_pcd = original_pcd.voxel_down_sample(voxel_size=0.1)
-            original_points = removePointsFromPointCloud(original_pcd, pcd.points)
-            original_colors = np.full((len(original_points), 3), [0.5, 0.5, 0.5])
-            new_points = np.asarray(pcd.points)
-            new_colors = np.asarray(pcd.colors)
-            pcd.points = o3d.utility.Vector3dVector(np.concatenate((original_points, new_points)))
-            pcd.colors = o3d.utility.Vector3dVector(np.concatenate((original_colors, new_colors)))
-
-        self.vis.add_geometry(pcd)      
-        self.vis.reset_view_point(True)
-
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.update_vis)
-        self.timer.start(1)
-
-    def changeViewToOriginal(self):
-        ctr = self.vis.get_view_control()
-        ctr.convert_from_pinhole_camera_parameters(self.original_view)
-        self.canResetOriginalView = True
     
-    def resetOriginalView(self, *args):
-        self.vis.reset_view_point(True)
-        self.canResetOriginalView = True
-        self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
-
+    def resetOriginalView(self):
+        self.renderWidget.resetOriginalView()
+    
+    def changeGeometry(self, geometry):
+        self.renderWidget.changeGeometry(geometry)
+    
     def changeBackground(self):
-        opt = self.vis.get_render_option()
+        self.renderWidget.changeBackground()
+
         
-        if self.night:
-            opt.background_color = np.asarray([255, 255, 255])
-            self.night = False
-            self.buttonSpace.daynightSwitch.setText("Switch Black")
-        else:
-            opt.background_color = np.asarray([0, 0, 0])
-            self.night = True
-            self.buttonSpace.daynightSwitch.setText("Switch White")
 
-        self.timer = QtCore.QTimer(self)
-        self.timer.timeout.connect(self.update_vis)
-        self.timer.start(1)
+    
 
-def removePointsFromPointCloud(pointcloud, points_to_remove):
-    pc_points = np.asarray(pointcloud.points)
-    points_to_mask = np.asarray(points_to_remove)
+    
 
-    indexes = [i for i in range(len(pc_points)) if np.any(np.all(pc_points[i] == points_to_mask, axis=1))]
-
-    print(len(indexes))
-    mask = np.ones(len(pc_points), dtype=bool)
-    mask[indexes] = False
-    return pc_points[mask]
