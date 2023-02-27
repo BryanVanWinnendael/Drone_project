@@ -19,7 +19,7 @@ def CalculateSurfaces(waitingScreen):
         # Compute the surface area
         surface_area = ConvexHull(points, qhull_options='QJ').area / 2
 
-        results[i + 1] = [surface_area, np.asarray(pcd.colors)[0]]
+        results[i + 1] = [surface_area, [int(x * 255) for x in np.asarray(pcd.colors)[0]]]
 
     # Write the results to a csv file
     print("Writing results to a csv file...")
