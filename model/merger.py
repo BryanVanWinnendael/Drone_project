@@ -1,9 +1,8 @@
 import open3d as o3d
 import numpy as np
-from csv import writer
-from model.plane_detection.color_generator import GenerateColors
+from csv import writer, reader
 from scipy.spatial import ConvexHull
-
+import pandas as pd
 class Merger():
     def __init__(self):
         pass
@@ -20,15 +19,16 @@ class Merger():
 
         surface_area = ConvexHull(points, qhull_options='QJ').area / 2
 
-        colors = GenerateColors(1)
-        new_pcd.paint_uniform_color([colors[0][0] / 255, colors[0][1] / 255, colors[0][2] / 255])
-        self.saveSegment(new_pcd, surface_area, [colors[0][0], colors[0][1], colors[0][2]])
+        color = list(np.random.choice(range(256), size=3))
+        new_pcd.paint_uniform_color([color[0] / 255, color[1] / 255, color[2] / 255])
+        self.saveSegment(new_pcd, surface_area, color)
 
-    def saveSegment(self, pcd, surface_area, rgb):
-        with open("data/results/output.csv", "r") as f1:
-            last_id = f1.readlines()[-1].split(",")[0]
+    def saveSegment(self, pcd, surface_area, rgb):  
+        print("saving...")      
+        with open("data/results/output.csv", "r") as f:
+            last_id = f.readlines()[-1].split(",")[0]
             new_id = int(last_id) + 1
-            f1.close()
+            f.close()
 
         o3d.io.write_point_cloud(f"data/planes/plane_{new_id}.ply", pcd)
 
@@ -36,3 +36,4 @@ class Merger():
             writer_object = writer(f)
             writer_object.writerow([new_id, "MERGED" ,surface_area, rgb])
             f.close()
+        
