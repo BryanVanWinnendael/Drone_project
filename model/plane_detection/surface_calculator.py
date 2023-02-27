@@ -3,14 +3,18 @@ import open3d as o3d
 import numpy as np
 import os
 import csv
+import pandas as pd
 
 def CalculateSurfaces(waitingScreen):
     results = {}
 
     # Iterate over all files in directory
     waitingScreen.progress.emit("Calculating surface areas...")
-    for i, filename in enumerate(os.listdir("data/planes")):
+    for filename in os.listdir("data/planes"):
         file_path = os.path.join("data/planes", filename)
+
+        segment_number = filename.split(".")[0]
+        segment_number = segment_number.split("_")[1]
 
         # Load pointcloud from file
         pcd = o3d.io.read_point_cloud(file_path)
@@ -19,7 +23,7 @@ def CalculateSurfaces(waitingScreen):
         # Compute the surface area
         surface_area = ConvexHull(points, qhull_options='QJ').area / 2
 
-        results[i + 1] = [surface_area, [int(x * 255) for x in np.asarray(pcd.colors)[0]]]
+        results[segment_number] = [surface_area, [int(x * 255) for x in np.asarray(pcd.colors)[0]]]
 
     # Write the results to a csv file
     print("Writing results to a csv file...")
@@ -29,6 +33,15 @@ def CalculateSurfaces(waitingScreen):
         writer.writerow(["Segment", "Surface area", "rgb"])
         for key, value in results.items():
             writer.writerow([key, value[0], value[1]])
+
+    # Sort the csv file by segment number
+    print("Sorting csv file...")
+    waitingScreen.progress.emit("Sorting csv file...")
+    
+    df = pd.read_csv("data/results/output.csv")
+    df = df.sort_values(by=["Segment"])
+    df.to_csv("data/results/output.csv", index=False)
+
 
 # Legacy code
 # def OldCalculateSurfaces():
