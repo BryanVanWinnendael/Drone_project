@@ -110,7 +110,7 @@ class ButtonSettings(QtWidgets.QToolButton):
         widgetLayout = QtWidgets.QVBoxLayout(widget)
         widgetLayout.setSpacing(20)
 
-        self.treshholdWidget = TextInput(self.settings, 'Treshhold', 'Treshhold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
+        self.treshholdWidget = TextInput(self.settings, 'Treshold', 'Treshold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
         self.radiusWidget = TextInput(self.settings, 'Radius', 'number')
         self.minRatioWidget = TextInput(self.settings, 'Min. ratio', 'number')

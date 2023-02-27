@@ -22,9 +22,7 @@ class RendererWidget(QtWidgets.QWidget):
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
 
-        file = open("data/results/output.csv", "r")
-        self.data = list(csv.DictReader(file, delimiter=","))
-        file.close()
+        self.data = self.readData()
         
         self.renderWidget = RenderWidget(self.fileName, self)
 
@@ -52,14 +50,34 @@ class RendererWidget(QtWidgets.QWidget):
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 5)
         self.splitter.setSizes([100,200])
-       
+
+        self.mergeBtn = QPushButton()
+        self.mergeBtn.clicked.connect(lambda: self.resultTable.mergeSegments())
+        self.mergeBtn.setText("Merge")
+
         layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.splitter, 1, 0)
+        layout.addWidget(self.mergeBtn, 2, 0)
 
         self.setLayout(layout)
+
+        self.mergeBtn.hide()
     
     def changeGeometry(self, geometry):
         self.renderWidget.changeGeometry(geometry)
     
     def changeBackground(self):
         self.renderWidget.changeBackground()
+
+    def readData(self):
+        file = open("data/results/output.csv", "r")
+        data = list(csv.DictReader(file, delimiter=","))
+        file.close()
+        return data
+    
+    def dataChanged(self):
+        self.data = self.readData()
+        total_area = sum([float(info["Surface area"]) for info in self.data])
+        self.area_label.setText(f"Total area: {total_area} m²")
+        self.resultTable.data = self.data
+        self.resultTable.setData()

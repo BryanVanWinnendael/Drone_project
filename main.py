@@ -17,7 +17,7 @@ class Worker(QThread):
     def run(self):
         settings = getSettings()
         
-        self.segmentator = Segmentator(self)
+        self.segmentator = Segmentator(self, settings)
         self.segmentator.segment(self.fileName)
         self.finished.emit()
     
