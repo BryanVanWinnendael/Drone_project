@@ -52,8 +52,8 @@ QPushButton#recentbtn {
 
 QPushButton#buttonInfo {
   border: none;
-  background-color: red;
-  text-align: left;
+  background-color: transparent;
+  text-align: right;
 }
 
 QLabel#label-error {
@@ -101,7 +101,6 @@ QLabel#textUpload2 {
 QLabel#infoLabel {
   font-size: 12px;
   font-weight: 500;
-  background-color: #249ea7;
 }
 
 QTableWidget#resultTable {

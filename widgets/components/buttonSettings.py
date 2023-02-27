@@ -15,7 +15,7 @@ class TextInput(QtWidgets.QWidget):
 
         self.layoutText = QtWidgets.QHBoxLayout()
         self.layoutText.setContentsMargins(0, 0, 0, 10)
-        self.layoutText.setSpacing(0)
+        self.layoutText.setSpacing(10)
 
         self.textLabel = QtWidgets.QLabel(value)
         self.textLabel.setObjectName('infoLabel')
@@ -63,9 +63,11 @@ class ButtonSettings(QtWidgets.QToolButton):
 
         self.treshholdWidget = TextInput(self.settings, 'Treshhold', 'Treshhold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
+        self.radiusWidget = TextInput(self.settings, 'Radius', 'number')
 
         widgetLayout.addWidget(self.treshholdWidget)
         widgetLayout.addWidget(self.neigboursWidget)
+        widgetLayout.addWidget(self.radiusWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
         resetButton.clicked.connect(self.resetSettingsValue)
@@ -75,12 +77,15 @@ class ButtonSettings(QtWidgets.QToolButton):
         widgetAction.setDefaultWidget(widget)
 
         widgetMenu = QtWidgets.QMenu(self)
+        widgetMenu.setMinimumWidth(300)
         widgetMenu.addAction(widgetAction)
         self.setMenu(widgetMenu)
     
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
+
         self.treshholdWidget.resetValue(defaultSettings)
         self.neigboursWidget.resetValue(defaultSettings)
+        self.radiusWidget.resetValue(defaultSettings)
 
     

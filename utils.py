@@ -1,14 +1,12 @@
 import json
 from PyQt5 import QtCore
 import datetime
-import os
-from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
-from PyQt5.QtCore import QUrl
 from model.clean import clean
 
 defaultSettings = {
     "Treshhold": 0.5,
     "Number of neigbours": 10,
+    "Radius": 0.5,
 }
 
 def saveFileName(fileName):
@@ -32,14 +30,17 @@ def getFileNames():
     savedFileNames = QtCore.QSettings("Drone-app", "savedFileNames")
     return savedFileNames.value("savedFileNames")
 
+def saveRecentFile(fileName):
+    recentFile = QtCore.QSettings("Drone-app", "recentFile")
+    recentFile.setValue("recentFile", fileName)
+
 def getRecentFile():
     try :
-        with open('data/results/recent-file.json', 'r') as openfile:
-            json_object = json.load(openfile)
+        recentFile = QtCore.QSettings("Drone-app", "recentFile")
     except:
         return None
  
-    return json_object.get("name")
+    return recentFile.value("recentFile")
 
 def saveSettings(settings):
     savedsettings = QtCore.QSettings("Drone-app", "settings")
