@@ -18,6 +18,8 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
     target = points.copy()
     count = 0
 
+    print("Starting with {} points".format(N))
+
     # Loop until the minimum ratio of points is reached
     while count < (1 - min_ratio) * N:
         # Convert back to open3d point cloud
@@ -27,9 +29,6 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
         # Segment the plane
         inliers, mask = cloud.segment_plane(distance_threshold=threshold, ransac_n=3, num_iterations=iterations)
     
-        # Update the count
-        count += len(mask)
-
         # Extract the plane
         plane = cloud.select_by_index(mask)
 
@@ -56,11 +55,17 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
 
                     # Add the cluster point cloud to the list of planes
                     planes.append(cluster_pcd)
+
+                    # Update the count
+                    count += len(cluster_points)
                 else:
                     # Put the points back into the target
                     print("Not enough points to be a plane, adding points back to target")
                     remaining_clusters.append(cluster_points)
         else:
+            # Update the count
+            count += len(mask)
+
             # Add the plane to the list
             planes.append(plane)
 
@@ -73,6 +78,12 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
                 target = np.concatenate((target, remaining_cluster), axis=0)
 
     print("Found {} planes".format(len(planes)))
+
+    total_points = 0
+    for plane in planes:
+        total_points += len(np.asarray(plane.points))
+
+    print("Ending with {} points".format(total_points))
 
     return planes
 
@@ -97,7 +108,7 @@ def DetectPlanes(filename, waitingScreen, cluster=False, min_points=50):
     # Segment the planes
     print("Segmenting planes...")
     waitingScreen.progress.emit("Segmenting planes...")
-    planes = SegmentPlanes(pcd, waitingScreen, cluster=True, min_points=min_points)
+    planes = SegmentPlanes(pcd, waitingScreen, cluster=cluster, min_points=min_points, min_ratio=0.05, threshold=0.01, iterations=1000)
 
     # Generate range of colors
     colors = GenerateColors(len(planes))
