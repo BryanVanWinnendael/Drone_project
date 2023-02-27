@@ -81,7 +81,7 @@ def updateClass(row, col, newItem):
         data = infile.read()
         data = data.split("\n")
         data[row] = data[row].split(",")
-        data[row][col] = newItem
+        data[row][col - 1] = newItem
         data[row] = ",".join(data[row])
         data = "\n".join(data)
 

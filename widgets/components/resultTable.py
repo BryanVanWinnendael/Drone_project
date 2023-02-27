@@ -29,25 +29,7 @@ class ResultTable(QTableWidget):
     def setData(self): 
         self.setRowCount(len(self.data))
         for i in range(len(self.data)):
-            item_segment = QTableWidgetItem(self.data[i]["Segment"])
-            item_segment.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
-            item_segment.setText(self.data[i]["Segment"])
-
-            item_class = QTableWidgetItem(self.data[i]["Class"])
-            item_class.setFlags(QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable )
-            item_class.setText(self.data[i]["Class"])
-            print(self.data[i]["Class"])
-
-            item_area = QTableWidgetItem(self.data[i]["Surface area"])
-            item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
-            item_area.setText(self.data[i]["Surface area"])
-   
-            self.setCellWidget(i, 0, CheckMerge(self, int(self.data[i]["Segment"])))
-            self.setItem(i, 1, item_segment)
-            self.setItem(i, 2, item_class)
-            self.setItem(i, 3, item_area)
-            rgb = [int(x) for x in self.data[i]["rgb"][1:-1].split(",")]
-            self.setCellWidget(i, 4, ButtonTable(self.data[i], self.parent, rgb))
+            self.addResultRow(i)
 
         headers = list(self.data[0].keys())
         headers.insert(0, "")
@@ -83,3 +65,26 @@ class ResultTable(QTableWidget):
         merger.mergeSegments(self.checkedButtons)
         self.clearChecks()
         self.parent.dataChanged()
+        self.setRowCount(len(self.data))
+        self.addResultRow(len(self.data) - 1)
+
+    def addResultRow(self, row_number):
+        new_data = self.data[row_number]
+        item_segment = QTableWidgetItem(new_data["Segment"])
+        item_segment.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
+        item_segment.setText(new_data["Segment"])
+
+        item_class = QTableWidgetItem(new_data["Class"])
+        item_class.setFlags(QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable )
+        item_class.setText(new_data["Class"])
+
+        item_area = QTableWidgetItem(new_data["Surface area"])
+        item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
+        item_area.setText(new_data["Surface area"])
+
+        self.setCellWidget(row_number, 0, CheckMerge(self, int(new_data["Segment"])))
+        self.setItem(row_number, 1, item_segment)
+        self.setItem(row_number, 2, item_class)
+        self.setItem(row_number, 3, item_area)
+        rgb = [int(x) for x in new_data["rgb"][1:-1].split(",")]
+        self.setCellWidget(row_number, 4, ButtonTable(new_data, self.parent, rgb))
