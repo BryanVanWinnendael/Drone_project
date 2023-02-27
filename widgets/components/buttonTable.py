@@ -18,7 +18,6 @@ class ButtonTable(QtWidgets.QPushButton):
 
 
     def setDisabled(self, bool):
-        print("setDisabled", bool)
         self.disabled = bool
 
         if self.disabled:

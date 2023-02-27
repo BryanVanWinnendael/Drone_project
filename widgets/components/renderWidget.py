@@ -43,7 +43,12 @@ class RenderWidget(QtWidgets.QWidget):
         pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
-        self.vis.add_geometry(pcd)     
+        self.vis.add_geometry(pcd)
+        
+        self.classified_pcd = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
+        self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
 
         hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
         self.window = QtGui.QWindow.fromWinId(hwnd)    
