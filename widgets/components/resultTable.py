@@ -9,6 +9,7 @@ class ResultTable(QTableWidget):
         self.parent = parent
         self.data = data
         super(ResultTable, self).__init__(len(self.data), len(self.data[0]) + 1)
+
         self.checkedButtons = []
         self.verticalHeader().setVisible(False)
         self.setObjectName("resultTable")
@@ -35,6 +36,7 @@ class ResultTable(QTableWidget):
             item_class = QTableWidgetItem(self.data[i]["Class"])
             item_class.setFlags(QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable )
             item_class.setText(self.data[i]["Class"])
+            print(self.data[i]["Class"])
 
             item_area = QTableWidgetItem(self.data[i]["Surface area"])
             item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
@@ -51,6 +53,7 @@ class ResultTable(QTableWidget):
         headers.insert(0, "")
         headers[-1] = ""
         self.setHorizontalHeaderLabels(headers)
+        self.update()
     
     def itemChangedEvent(self, item):
         columns = range(self.columnCount())

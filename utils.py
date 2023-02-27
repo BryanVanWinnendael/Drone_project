@@ -74,7 +74,7 @@ def cleanData(hard=False):
     clean(hard=hard)
 
 def updateClass(row, col, newItem):
-    if col != 1: return
+    if col != 2: return
     row += 1
     res_path = "data/results/output.csv"
     with open(res_path, "r") as infile:

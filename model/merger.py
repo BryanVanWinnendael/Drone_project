@@ -36,4 +36,3 @@ class Merger():
             writer_object = writer(f)
             writer_object.writerow([new_id, "MERGED" ,surface_area, rgb])
             f.close()
-        
