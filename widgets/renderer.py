@@ -8,18 +8,18 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
-import win32gui
+from widgets.components.renderWidget import RenderWidget
 
 class RendererWidget(QtWidgets.QWidget):
+    loadingSegment = pyqtSignal()
+    finishedLoadingSegment = pyqtSignal()
     def __init__(self, parent, fileName=None):
         super().__init__()
         self.fileName = fileName
-        self.classified = "data/results/result-classified.ply"
         self.parent = parent
+        self.acceptDrops = False 
         widget = QtWidgets.QWidget()
         layout = QtWidgets.QGridLayout(widget)
-        self.acceptDrops = False       
-        self.night = False
 
         file = open("data/results/output.csv", "r")
         self.data = list(csv.DictReader(file, delimiter=","))
@@ -46,6 +46,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.windowcontainer.setMinimumWidth(300)
         self.windowcontainer.setMinimumHeight(300)
 
+
         self.topBar = ResultTopBar(self.fileName, self.parent)
         self.buttonSpace = ButtonSpace(self)
         self.resultTable = ResultTable(self, self.data)
@@ -55,7 +56,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.area_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.area_label.setAlignment(Qt.AlignCenter)
         self.area_label.setMaximumHeight(50)
-    
+
         self.tableAndButtonSpace = QtWidgets.QWidget()
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
 
@@ -65,7 +66,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
 
         self.splitter = QtWidgets.QSplitter(Qt.Vertical)
-        self.splitter.addWidget(self.windowcontainer)
+        self.splitter.addWidget(self.renderWidget)
         self.splitter.addWidget(self.tableAndButtonSpace)
         self.splitter.setStretchFactor(0, 1)
         self.splitter.setStretchFactor(1, 5)
@@ -73,6 +74,7 @@ class RendererWidget(QtWidgets.QWidget):
        
         layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.splitter, 1, 0)
+        layout.addLayout(self.vboxLoading, 2, 0)
 
         self.setLayout(layout)
 
@@ -111,11 +113,12 @@ class RendererWidget(QtWidgets.QWidget):
         ctr.convert_from_pinhole_camera_parameters(self.original_view)
         self.canResetOriginalView = True
     
-    def resetOriginalView(self, *args):
-        self.vis.reset_view_point(True)
-        self.canResetOriginalView = True
-        self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
-
+    def resetOriginalView(self):
+        self.renderWidget.resetOriginalView()
+    
+    def changeGeometry(self, geometry):
+        self.renderWidget.changeGeometry(geometry)
+    
     def changeBackground(self):
         opt = self.vis.get_render_option()
         

@@ -23,6 +23,7 @@ class ResultTopBar(QtWidgets.QWidget):
         name = fileName.split("/")[-1].split(".")[0]
         self.nameLabel.setText(name)
         self.nameLabel.setObjectName("filelabel")
+        
         self.layout.addWidget(self.backButton)
         self.layout.addWidget(self.nameLabel)
 
@@ -32,14 +33,14 @@ class ResultTopBar(QtWidgets.QWidget):
         self.saveButton.setObjectName("exportbtn")
         self.saveButton.setMinimumHeight(35)
         self.saveButton.setMaximumWidth(35)
+
         file = fileName.split("/")[-1]
         self.saveButton.setToolTip(f"Export {file} table to CSV")
         self.saveButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.saveButton.clicked.connect(self.saveFileDialog)
+
         self.layout.addWidget(self.saveButton)
-
         self.setLayout(self.layout)
-
     
     def saveFileDialog(self):
         try:

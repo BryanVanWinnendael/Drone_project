@@ -1,8 +1,9 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from utils import getFileNames
 from widgets.components.buttonHistory import ButtonHistory
 from PyQt5.QtCore import pyqtSignal
 from widgets.components.buttonUpload import ButtonUpload
+from widgets.components.buttonSettings import ButtonSettings
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -18,7 +19,11 @@ class HomeWidget(QtWidgets.QWidget):
         self.labelError.setObjectName("label-error")
         layout.addWidget(self.labelError)
 
-
+        self.settingsButtonLayout = QtWidgets.QHBoxLayout()
+        self.settingsButton = ButtonSettings()
+        self.settingsButtonLayout.addWidget(self.settingsButton)
+        self.settingsButtonLayout.setAlignment(QtCore.Qt.AlignRight)
+        layout.addLayout(self.settingsButtonLayout)
 
         widget = QtWidgets.QWidget()
         self.uploadButtonLayout = QtWidgets.QGridLayout(widget)

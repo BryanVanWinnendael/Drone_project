@@ -6,6 +6,10 @@ from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkRepl
 from PyQt5.QtCore import QUrl
 from model.clean import clean
 
+defaultSettings = {
+    "value": 0.5
+}
+
 def saveFileName(fileName):
     savedFileNames = getFileNames()
     current_time = datetime.datetime.now()
@@ -35,6 +39,22 @@ def getRecentFile():
         return None
  
     return json_object.get("name")
+
+def saveSettings(settings):
+    savedsettings = QtCore.QSettings("Drone-app", "settings")
+    savedsettings.setValue("settings", settings)
+
+def getSettings():
+    savedsettings = QtCore.QSettings("Drone-app", "settings")
+
+    if savedsettings.value("settings") == None:
+        saveSettings(defaultSettings)
+    
+    return savedsettings.value("settings")
+
+def resetSettings():
+    saveSettings(defaultSettings)
+    return defaultSettings
 
 def cleanData(hard=False):
     clean(hard=hard)

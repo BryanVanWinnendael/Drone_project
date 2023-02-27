@@ -1,15 +1,13 @@
 from PyQt5 import QtWidgets
 from widgets.renderer import RendererWidget
 from widgets.home import HomeWidget
-from utils import saveFileName, getRecentFile, cleanData
+from utils import saveFileName, getRecentFile, cleanData, getSettings
 from model.segmentator import Segmentator
 from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5 import QtGui
 import ctypes
-
 class Worker(QThread):
-    begin = pyqtSignal()
     finished = pyqtSignal()
     progress = pyqtSignal(str)
     def __init__(self, fileName):
@@ -17,7 +15,8 @@ class Worker(QThread):
         self.fileName = fileName
 
     def run(self):
-        self.begin.emit()
+        settings = getSettings()
+        
         self.segmentator = Segmentator(self)
         self.segmentator.segment(self.fileName)
         self.finished.emit()
@@ -42,16 +41,25 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.worker = Worker(fileName)
         self.worker.start()
-        try:
-            self.worker.begin.connect(self.createWaitingWidget)
-            self.worker.finished.connect(lambda: self.setCentralWidget(RendererWidget(self, fileName)))
-            self.worker.progress.connect(lambda x: self.waitingWidget.label.setText(x))
+        self.worker.finished.connect(lambda: self.navigateToSegmentation(fileName))
+        self.worker.progress.connect(lambda x: self.setLoadingText(x))
+    
+    def setLoadingText(self, text):
+        try: 
+            waitingWidgetexist = self.waitingWidget
         except:
-            pass
-            
-    def createWaitingWidget(self):
-        self.waitingWidget = WaitingWidget()
-        self.setCentralWidget(self.waitingWidget)
+            waitingWidgetexist = False
+    
+        if not waitingWidgetexist:
+            self.waitingWidget = WaitingWidget()
+            self.setCentralWidget(self.waitingWidget)
+
+        self.waitingWidget.label.setText(text)
+    
+    def navigateToSegmentation(self, fileName):
+        self.waitingWidget = False
+        self.setCentralWidget(RendererWidget(self, fileName))
+       
 
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
