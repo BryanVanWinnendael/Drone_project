@@ -61,12 +61,14 @@ class HomeWidget(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def openFileNameDialog(self):
+        self.uploadButton.setNormal()
         options = QtWidgets.QFileDialog.Options()
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Open point cloud file", "","Polygon Files (*.ply)", options=options)
         if fileName and fileName.endswith('.ply'):
             self.parent.navigateToRenderer(fileName)
     
     def dragEnterEvent(self, event):
+        self.uploadButton.setNormal()
         if event.mimeData().hasUrls():
             event.accept()
         else:
@@ -76,12 +78,7 @@ class HomeWidget(QtWidgets.QWidget):
         files = [u.toLocalFile() for u in event.mimeData().urls()]
         if (files[0].endswith('.ply') == True):
             print("Opening ply file")
-            self.label.clear()
             self.parent.navigateToRenderer(files[0])
         else:
-            self.label.setText("Not a ply file")
             print("Not a ply file")
-    
-    def renderIsLoading(self):
-        self.label.setText("Loading...")
-        self.uploadButton.setEnabled(False)
+            self.uploadButton.setError()

@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 from widgets.renderer import RendererWidget
 from widgets.home import HomeWidget
-from utils import saveFileName, getRecentFile, cleanData, getSettings
+from utils import saveFileName, getRecentFile, cleanData, getSettings, saveRecentFile
 from model.segmentator import Segmentator
 from widgets.waiting import WaitingWidget
 from PyQt5.QtCore import QThread, pyqtSignal
@@ -20,6 +20,10 @@ class Worker(QThread):
         self.segmentator = Segmentator(self)
         self.segmentator.segment(self.fileName)
         self.finished.emit()
+    
+    def stop(self):
+        self.threadactive = False
+        self.wait()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -38,6 +42,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return self.setCentralWidget(RendererWidget(self, fileName))
         else:
             cleanData(True)
+            saveRecentFile(fileName)
 
         self.worker = Worker(fileName)
         self.worker.start()

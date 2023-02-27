@@ -32,15 +32,20 @@ class ResultTable(QTableWidget):
             item_segment.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
             item_segment.setText(self.data[i]["Segment"])
 
+            item_class = QTableWidgetItem(self.data[i]["Class"])
+            item_class.setFlags(QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable )
+            item_class.setText(self.data[i]["Class"])
+
             item_area = QTableWidgetItem(self.data[i]["Surface area"])
             item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
             item_area.setText(self.data[i]["Surface area"])
    
             self.setCellWidget(i, 0, CheckMerge(self, int(self.data[i]["Segment"])))
             self.setItem(i, 1, item_segment)
-            self.setItem(i, 2, item_area)
+            self.setItem(i, 2, item_class)
+            self.setItem(i, 3, item_area)
             rgb = [int(x) for x in self.data[i]["rgb"][1:-1].split(",")]
-            self.setCellWidget(i, 3, ButtonTable(self.data[i], self.parent, rgb))
+            self.setCellWidget(i, 4, ButtonTable(self.data[i], self.parent, rgb))
 
         headers = list(self.data[0].keys())
         headers.insert(0, "")

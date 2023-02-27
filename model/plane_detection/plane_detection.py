@@ -10,7 +10,7 @@ def SaveResult(planes):
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
-def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False):
+def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False, min_points=50):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
     planes = []
@@ -39,6 +39,9 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
             # Perform DBSCAN clustering on the points
             labels = np.array(plane.cluster_dbscan(eps=0.1, min_points=20, print_progress=True))
 
+            # Remaining clusters
+            remaining_clusters = []
+
             # Extract points for each cluster
             for label in np.unique(labels):
                 # Get the points for this cluster
@@ -46,7 +49,7 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
 
                 print("Found cluster with {} points".format(len(cluster_points)))
 
-                if len(cluster_points) >= 200:
+                if len(cluster_points) >= min_points:
                     # Convert points to Open3D point cloud
                     cluster_pcd = o3d.geometry.PointCloud()
                     cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
@@ -55,9 +58,8 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
                     planes.append(cluster_pcd)
                 else:
                     # Put the points back into the target
-                    print("Not enough points to be a plane")
-                    print("Adding points back to target")
-                    target = np.concatenate((target, cluster_points), axis=0)
+                    print("Not enough points to be a plane, adding points back to target")
+                    remaining_clusters.append(cluster_points)
         else:
             # Add the plane to the list
             planes.append(plane)
@@ -65,12 +67,17 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
         # Remove the plane from the target
         target = np.delete(target, mask, axis=0)
 
+        # Add the remaining points back to the target
+        if cluster:
+            for remaining_cluster in remaining_clusters:
+                target = np.concatenate((target, remaining_cluster), axis=0)
+
     print("Found {} planes".format(len(planes)))
 
     return planes
 
 # Detect planes solely based on RANSAC
-def DetectPlanes(filename, minimum_number, waitingScreen, cluster=False):
+def DetectPlanes(filename, waitingScreen, cluster=False, min_points=50):
     # Load in point cloud
     print("Loading point cloud...")
     waitingScreen.progress.emit("Loading point cloud...")
@@ -90,7 +97,7 @@ def DetectPlanes(filename, minimum_number, waitingScreen, cluster=False):
     # Segment the planes
     print("Segmenting planes...")
     waitingScreen.progress.emit("Segmenting planes...")
-    planes = SegmentPlanes(pcd, waitingScreen, cluster=True)
+    planes = SegmentPlanes(pcd, waitingScreen, cluster=True, min_points=min_points)
 
     # Generate range of colors
     colors = GenerateColors(len(planes))
