@@ -57,9 +57,6 @@ class RendererWidget(QtWidgets.QWidget):
         layout.addWidget(self.splitter, 1, 0)
 
         self.setLayout(layout)
-
-    def resetOriginalView(self):
-        self.renderWidget.resetOriginalView()
     
     def changeGeometry(self, geometry):
         self.renderWidget.changeGeometry(geometry)

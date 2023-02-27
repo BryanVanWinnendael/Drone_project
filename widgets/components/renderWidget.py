@@ -7,29 +7,38 @@ from widgets.waiting import WaitingWidget
 
 
 class Worker(QThread):
-    finished = pyqtSignal(o3d.cpu.pybind.geometry.PointCloud)
+    finished = pyqtSignal()
     begin = pyqtSignal()
 
-    def __init__(self, fileName, newFileName):
+    def __init__(self, fileName, newFileName, vis, pcd, classified_pcd, classified_pcd_downscaled):
         super().__init__()
         self.fileName = fileName
         self.newFileName = newFileName
+        self.vis = vis
+        self.pcd = pcd
+        self.classified_pcd = classified_pcd
+        self.classified_pcd_downscaled = classified_pcd_downscaled
         self.classified = "data/results/result-classified.ply"
 
     def run(self):
         self.begin.emit()
-        pcd = o3d.io.read_point_cloud(self.newFileName)
-        if self.newFileName not in [self.fileName, self.classified]:
-            original_pcd = o3d.io.read_point_cloud(self.fileName)
-            if len(np.asarray(original_pcd.points)) > 200000:
-                original_pcd = original_pcd.voxel_down_sample(voxel_size=0.1)
-            original_points = removePointsFromPointCloud(original_pcd, pcd.points)
-            original_colors = np.full((len(original_points), 3), [0.5, 0.5, 0.5])
-            new_points = np.asarray(pcd.points)
-            new_colors = np.asarray(pcd.colors)
-            pcd.points = o3d.utility.Vector3dVector(np.concatenate((original_points, new_points)))
-            pcd.colors = o3d.utility.Vector3dVector(np.concatenate((original_colors, new_colors)))
-        self.finished.emit(pcd)
+        original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
+       
+        self.vis.clear_geometries()
+
+        if self.newFileName == self.fileName:
+            self.vis.add_geometry(self.pcd)
+
+        elif self.newFileName == self.classified:
+            self.vis.add_geometry(self.classified_pcd)
+        else:
+            self.vis.add_geometry(o3d.io.read_point_cloud(self.newFileName))
+            self.vis.add_geometry(self.classified_pcd_downscaled)
+
+        ctr = self.vis.get_view_control()
+        ctr.convert_from_pinhole_camera_parameters(original_view)
+
+        self.finished.emit()
 
 class RenderWidget(QtWidgets.QWidget):
     def __init__(self, fileName, parent):
@@ -40,10 +49,10 @@ class RenderWidget(QtWidgets.QWidget):
         self.classified = "data/results/result-classified.ply"
         self.night = False
 
-        pcd = o3d.io.read_point_cloud(fileName)
+        self.pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.Visualizer()
         self.vis.create_window()
-        self.vis.add_geometry(pcd)
+        self.vis.add_geometry(self.pcd)
         
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
         self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
@@ -70,20 +79,11 @@ class RenderWidget(QtWidgets.QWidget):
         self.vis.update_renderer()
     
     def changeGeometry(self, mewFileName):
-        self.worker = Worker(self.fileName, mewFileName)
+        self.worker = Worker(self.fileName, mewFileName,self.vis, self.pcd, self.classified_pcd, self.classified_pcd_downscaled)
         self.worker.start()
         self.worker.begin.connect(lambda: self.parent.loadingSegment.emit())
-        self.worker.finished.connect(lambda pcd: self.setNewPcd(pcd))
+        self.worker.finished.connect(lambda: self.parent.finishedLoadingSegment.emit())
   
-    def setNewPcd(self, pcd):
-        self.windowcontainer.show()
-        original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
-        self.vis.clear_geometries()
-        self.vis.add_geometry(pcd)
-        ctr = self.vis.get_view_control()
-        ctr.convert_from_pinhole_camera_parameters(original_view)
-        self.parent.finishedLoadingSegment.emit()
-
     def changeBackground(self):
         opt = self.vis.get_render_option()
         
@@ -96,12 +96,12 @@ class RenderWidget(QtWidgets.QWidget):
             self.night = True
             self.parent.buttonSpace.daynightSwitch.setText("Switch White")
 
-def removePointsFromPointCloud(pointcloud, points_to_remove):
-    pc_points = np.asarray(pointcloud.points)
-    points_to_mask = np.asarray(points_to_remove)
+# def removePointsFromPointCloud(pointcloud, points_to_remove):
+#     pc_points = np.asarray(pointcloud.points)
+#     points_to_mask = np.asarray(points_to_remove)
 
-    indexes = [i for i in range(len(pc_points)) if np.any(np.all(pc_points[i] == points_to_mask, axis=1))]
+#     indexes = [i for i in range(len(pc_points)) if np.any(np.all(pc_points[i] == points_to_mask, axis=1))]
 
-    mask = np.ones(len(pc_points), dtype=bool)
-    mask[indexes] = False
-    return pc_points[mask]
+#     mask = np.ones(len(pc_points), dtype=bool)
+#     mask[indexes] = False
+#     return pc_points[mask]
