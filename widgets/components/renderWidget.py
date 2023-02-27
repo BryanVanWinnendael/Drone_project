@@ -3,8 +3,6 @@ import open3d as o3d
 import win32gui
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
-from widgets.waiting import WaitingWidget
-
 
 class Worker(QThread):
     finished = pyqtSignal()
