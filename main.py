@@ -20,10 +20,6 @@ class Worker(QThread):
         self.segmentator = Segmentator(self, settings)
         self.segmentator.segment(self.fileName)
         self.finished.emit()
-    
-    def stop(self):
-        self.threadactive = False
-        self.wait()
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):

@@ -58,8 +58,6 @@ class RenderWidget(QtWidgets.QWidget):
 
         ctr = self.vis.get_view_control()
         ctr.convert_from_pinhole_camera_parameters(original_view)
-
-        self.parent.finishedLoadingSegment.emit()
   
     def changeBackground(self):
         opt = self.vis.get_render_option()

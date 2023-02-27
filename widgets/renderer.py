@@ -11,8 +11,6 @@ import csv
 from widgets.components.renderWidget import RenderWidget
 
 class RendererWidget(QtWidgets.QWidget):
-    loadingSegment = pyqtSignal()
-    finishedLoadingSegment = pyqtSignal()
     def __init__(self, parent, fileName=None):
         super().__init__()
         self.fileName = fileName
