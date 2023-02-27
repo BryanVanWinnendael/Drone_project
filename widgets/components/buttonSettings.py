@@ -17,7 +17,7 @@ class TextInput(QtWidgets.QWidget):
         self.layoutText.setContentsMargins(0, 0, 0, 10)
         self.layoutText.setSpacing(0)
 
-        self.textLabel = QtWidgets.QLabel(value.capitalize())
+        self.textLabel = QtWidgets.QLabel(value)
         self.textLabel.setObjectName('infoLabel')
         self.buttonInfo = QtWidgets.QPushButton()
         self.buttonInfo.setIcon(QtGui.QIcon('assets/info.svg'))
@@ -49,7 +49,6 @@ class TextInput(QtWidgets.QWidget):
 class ButtonSettings(QtWidgets.QToolButton):
     def __init__(self):
         super(ButtonSettings, self).__init__()
-
         self.settings = getSettings()
         self.setPopupMode(QtWidgets.QToolButton.InstantPopup)
         self.setIcon(QtGui.QIcon('assets/settings.svg'))
@@ -61,8 +60,10 @@ class ButtonSettings(QtWidgets.QToolButton):
         widget = QtWidgets.QWidget()
         widgetLayout = QtWidgets.QVBoxLayout(widget)
 
-        self.treshholdWidget = TextInput(self.settings, 'treshhold', 'Treshhold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
+        self.treshholdWidget = TextInput(self.settings, 'Treshhold', 'Treshhold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
+        self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
         widgetLayout.addWidget(self.treshholdWidget)
+        widgetLayout.addWidget(self.neigboursWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
         resetButton.clicked.connect(self.resetSettingsValue)
@@ -78,5 +79,6 @@ class ButtonSettings(QtWidgets.QToolButton):
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
         self.treshholdWidget.resetValue(defaultSettings)
+        self.neigboursWidget.resetValue(defaultSettings)
 
     

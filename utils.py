@@ -7,7 +7,8 @@ from PyQt5.QtCore import QUrl
 from model.clean import clean
 
 defaultSettings = {
-    "treshhold": 0.5
+    "Treshhold": 0.5,
+    "Number of neigbours": 10,
 }
 
 def saveFileName(fileName):
