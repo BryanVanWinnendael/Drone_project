@@ -1,6 +1,43 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import getSettings, resetSettings, saveSettings
+from utils import getSettings, resetSettings, saveSettings, saveRecentFile
+
+class DropDown(QtWidgets.QWidget):
+    def __init__(self, items, value, info):
+        super(DropDown, self).__init__()
+        self.items = items
+        self.value = value
+        self.info = info
+
+        self.layout = QtWidgets.QVBoxLayout()
+        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setSpacing(0)
+
+        self.layoutText = QtWidgets.QHBoxLayout()
+        self.layoutText.setContentsMargins(0, 0, 0, 10)
+        self.layoutText.setSpacing(10)
+
+        self.textLabel = QtWidgets.QLabel(self.value)
+        self.textLabel.setObjectName('infoLabel')
+        self.buttonInfo = QtWidgets.QPushButton()
+        self.buttonInfo.setIcon(QtGui.QIcon('assets/info.svg'))
+        self.buttonInfo.setIconSize(QtCore.QSize(20, 20))
+        self.buttonInfo.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.buttonInfo.setObjectName('buttonInfo')
+        self.buttonInfo.setToolTip(self.info)
+        self.buttonInfo.clicked.connect(lambda: QtWidgets.QMessageBox.information(self, 'Info', self.info))
+
+        self.layoutText.addWidget(self.textLabel)
+        self.layoutText.addWidget(self.buttonInfo)
+
+        self.dropDown = QtWidgets.QComboBox()
+        for item in self.items:
+            self.dropDown.addItem(item)
+
+        self.layout.addLayout(self.layoutText)
+        self.layout.addWidget(self.dropDown)
+
+        self.setLayout(self.layout)
 
 class TextInput(QtWidgets.QWidget):
     def __init__(self, settings, value, info):
@@ -17,7 +54,7 @@ class TextInput(QtWidgets.QWidget):
         self.layoutText.setContentsMargins(0, 0, 0, 10)
         self.layoutText.setSpacing(10)
 
-        self.textLabel = QtWidgets.QLabel(value)
+        self.textLabel = QtWidgets.QLabel(self.value)
         self.textLabel.setObjectName('infoLabel')
         self.buttonInfo = QtWidgets.QPushButton()
         self.buttonInfo.setIcon(QtGui.QIcon('assets/info.svg'))
@@ -42,9 +79,11 @@ class TextInput(QtWidgets.QWidget):
     def saveSettingsValue(self):
         self.settings[self.value] = self.TextWidget.value()
         saveSettings(self.settings)
+        saveRecentFile(None)
     
     def resetValue(self, defaultSettings):
         self.TextWidget.setValue(defaultSettings[self.value])
+        saveRecentFile(None)
 
 class ButtonSettings(QtWidgets.QToolButton):
     def __init__(self):
@@ -64,12 +103,19 @@ class ButtonSettings(QtWidgets.QToolButton):
         self.treshholdWidget = TextInput(self.settings, 'Treshhold', 'Treshhold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
         self.radiusWidget = TextInput(self.settings, 'Radius', 'number')
+        self.minRatioWidget = TextInput(self.settings, 'Min. ratio', 'number')
+        self.strategyWidget = DropDown(self.settings['Cluster strategy'], "Cluster strategy", "info cluster strategy")
 
+        widgetLayout.addWidget(self.strategyWidget)
         widgetLayout.addWidget(self.treshholdWidget)
         widgetLayout.addWidget(self.neigboursWidget)
         widgetLayout.addWidget(self.radiusWidget)
+        widgetLayout.addWidget(self.minRatioWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
+        resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        resetButton.setObjectName('buttonReset')
+        resetButton.setMinimumHeight(30)
         resetButton.clicked.connect(self.resetSettingsValue)
         widgetLayout.addWidget(resetButton)
 
@@ -88,4 +134,5 @@ class ButtonSettings(QtWidgets.QToolButton):
         self.neigboursWidget.resetValue(defaultSettings)
         self.radiusWidget.resetValue(defaultSettings)
 
+    
     

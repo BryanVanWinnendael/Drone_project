@@ -56,6 +56,19 @@ QPushButton#buttonInfo {
   text-align: right;
 }
 
+QPushButton#buttonReset {
+  background-color: #249ea7;
+  border-radius: 4px;
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+QPushButton#buttonReset:hover {
+  background-color: #2ca6af;
+}
+
 QLabel#label-error {
   color: #b22222;
 }
@@ -99,8 +112,7 @@ QLabel#textUpload2 {
 }
 
 QLabel#infoLabel {
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 17px;
 }
 
 QTableWidget#resultTable {
@@ -129,4 +141,23 @@ QToolButton#buttonSettings {
   border: none;
   background-color: transparent;
   padding-bottom: 10px;
+}
+
+QDoubleSpinBox {
+  border: 1px solid #d7e1fc;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 18px;
+}
+
+QMenu {
+  background-color: white;
+  border: 1px solid #d7e1fc;
+}
+
+QComboBox {
+  border: 1px solid #d7e1fc;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 18px;
 }
