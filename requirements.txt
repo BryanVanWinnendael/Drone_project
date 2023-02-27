@@ -2,3 +2,5 @@ open3d
 numpy
 PyQt5
 win32gui
+pandas
+colorsys
