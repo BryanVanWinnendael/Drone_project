@@ -1,10 +1,11 @@
 from PyQt5 import QtWidgets, QtGui, QtCore
 
 class ButtonTable(QtWidgets.QPushButton):
-    def __init__(self, data, parent):
+    def __init__(self, data, parent, rgb):
         super(ButtonTable, self).__init__()
         self.parent = parent
         self.disabled = False
+        self.rgb = rgb
         self.setText("View")
         self.setObjectName("viewButton")
         item_id = data["Segment"]
@@ -15,7 +16,7 @@ class ButtonTable(QtWidgets.QPushButton):
         
         self.parent.loadingSegment.connect(lambda: self.setDisabled(True))
         self.parent.finishedLoadingSegment.connect(lambda: self.setDisabled(False))
-
+        self.setStyleSheet(f"background-color: rgb({self.rgb[0]}, {self.rgb[1]}, {self.rgb[2]}); color: rgb(255, 255, 255);")
 
     def setDisabled(self, bool):
         self.disabled = bool

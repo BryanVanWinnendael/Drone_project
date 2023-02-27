@@ -1,12 +1,12 @@
 from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
 from widgets.components.buttonTable import ButtonTable
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtGui
 from utils import updateClass
 class ResultTable(QTableWidget):
     def __init__(self, parent, data):
         self.parent = parent
         self.data = data
-        super(ResultTable, self).__init__(len(self.data), len(self.data[0]) + 1)
+        super(ResultTable, self).__init__(len(self.data), len(self.data[0]))
         
         self.verticalHeader().setVisible(False)
         self.setObjectName("resultTable")
@@ -31,12 +31,14 @@ class ResultTable(QTableWidget):
             item_area = QTableWidgetItem(self.data[i]["Surface area"])
             item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
             item_area.setText(self.data[i]["Surface area"])
-
+   
             self.setItem(i, 0, item_segment)
             self.setItem(i, 1, item_area)
-            self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent))
+            rgb = [int(float(x) * 255) for x in self.data[i]["rgb"][1:-1].split(" ")]
+            self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent, rgb))
+
         headers = list(self.data[0].keys())
-        headers.append("")
+        headers[-1] = ""
         self.setHorizontalHeaderLabels(headers)
     
     def itemChangedEvent(self, item):
