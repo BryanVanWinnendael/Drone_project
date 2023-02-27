@@ -10,7 +10,7 @@ def SaveResult(planes):
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
-def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False, min_points=50, max_loops=10):
+def SegmentPlanes(pcd, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=None, min_points=50, max_loops=10):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
     planes = []
@@ -21,13 +21,14 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
     print("Starting with {} points".format(N))
 
     # Because infinite loops are possible we limit the max amount of loops
-
     # Loop until the minimum ratio of points is reached
     while count < (1 - min_ratio) * N and max_loops > 0 and len(target) >= min_points:
         # Convert back to open3d point cloud
         cloud = o3d.geometry.PointCloud()
         cloud.points = o3d.utility.Vector3dVector(target)
 
+        # Remaining clusters
+        remaining_clusters = []
 
         # Segment the plane
         inliers, mask = cloud.segment_plane(distance_threshold=threshold, ransac_n=3, num_iterations=iterations)
@@ -35,14 +36,12 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
         # Extract the plane
         plane = cloud.select_by_index(mask)
 
-        if cluster:
+        if cluster != None and cluster == "DBSCAN":
+            print("CLustering using DBSCAN")
             inlier_points = np.asarray(plane.points)
 
             # Perform DBSCAN clustering on the points
             labels = np.array(plane.cluster_dbscan(eps=0.1, min_points=20, print_progress=True))
-
-            # Remaining clusters
-            remaining_clusters = []
 
             # Extract points for each cluster
             for label in np.unique(labels):
@@ -93,7 +92,7 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
     return planes
 
 # Detect planes solely based on RANSAC
-def DetectPlanes(filename, waitingScreen, cluster=False, min_points=50):
+def DetectPlanes(filename, waitingScreen, cluster=None, treshold=0.05, neighbours=20, min_points=10, min_ratio=0.05):
     # Load in point cloud
     print("Loading point cloud...")
     waitingScreen.progress.emit("Loading point cloud...")
@@ -101,19 +100,16 @@ def DetectPlanes(filename, waitingScreen, cluster=False, min_points=50):
 
     # Preprocess the point cloud
     print("Preprocessing point cloud...")
-    print("Starting with {} points".format(len(pcd.points)))
     pcd = pcd.voxel_down_sample(voxel_size=0.01)
-    pcd, mask = pcd.remove_statistical_outlier(nb_neighbors=5, std_ratio=2.0)
+    pcd, mask = pcd.remove_statistical_outlier(nb_neighbors=neighbours, std_ratio=2.0)
     # This was removed for now because it was causing the point cloud to be too small
     # pcd, mask = pcd.remove_radius_outlier(nb_points=16, radius=0.05)
-    print("Ending with {} points".format(len(pcd.points)))
-    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
 
 
     # Segment the planes
     print("Segmenting planes...")
     waitingScreen.progress.emit("Segmenting planes...")
-    planes = SegmentPlanes(pcd, waitingScreen, cluster=cluster, min_points=min_points, min_ratio=0.05, threshold=0.01, iterations=1000)
+    planes = SegmentPlanes(pcd, cluster=cluster, min_points=min_points, min_ratio=min_ratio, threshold=treshold, iterations=1000)
 
     # Generate range of colors
     colors = GenerateColors(len(planes))
