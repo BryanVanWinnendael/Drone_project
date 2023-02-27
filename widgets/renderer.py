@@ -39,16 +39,11 @@ class RendererWidget(QtWidgets.QWidget):
         self.area_label.setAlignment(Qt.AlignCenter)
         self.area_label.setMaximumHeight(50)
 
-        self.vboxLoading = QtWidgets.QVBoxLayout()
-        self.labelLoading = QtWidgets.QLabel("Loading...")
-        self.labelLoading.setAlignment(Qt.AlignCenter)
-    
         self.tableAndButtonSpace = QtWidgets.QWidget()
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
 
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
         self.tableAndButtonsLayout.addWidget(self.area_label)
-        self.tableAndButtonsLayout.addWidget(self.labelLoading)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
 
@@ -73,10 +68,3 @@ class RendererWidget(QtWidgets.QWidget):
     
     def changeBackground(self):
         self.renderWidget.changeBackground()
-
-        
-
-    
-
-    
-
