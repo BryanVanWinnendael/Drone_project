@@ -1,10 +1,12 @@
-import json
+import os
 from PyQt5 import QtCore
 import datetime
 from model.clean import clean
 
+clusterStrategies = ["DBSCAN", "test"]
+
 defaultSettings = {
-    "Cluster strategy": ["DBSCAN"],
+    "Cluster strategy": "DBSCAN",
     "Treshhold": 0.5,
     "Number of neigbours": 10,
     "Radius": 0.5,
@@ -38,6 +40,8 @@ def saveRecentFile(fileName):
     recentFile.setValue("recentFile", fileName)
 
 def getRecentFile():
+    isdir = os.path.isdir("data/results")
+    if not isdir: return None
     try :
         recentFile = QtCore.QSettings("Drone-app", "recentFile")
     except:

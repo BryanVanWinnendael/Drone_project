@@ -1,13 +1,14 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import getSettings, resetSettings, saveSettings, saveRecentFile
+from utils import getSettings, resetSettings, saveSettings, saveRecentFile, clusterStrategies
 
 class DropDown(QtWidgets.QWidget):
-    def __init__(self, items, value, info):
+    def __init__(self, items, value, info, settings):
         super(DropDown, self).__init__()
         self.items = items
         self.value = value
         self.info = info
+        self.settings = settings
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -33,11 +34,20 @@ class DropDown(QtWidgets.QWidget):
         self.dropDown = QtWidgets.QComboBox()
         for item in self.items:
             self.dropDown.addItem(item)
+        
+        self.dropDown.setCurrentText(self.settings[self.value])
+
+        self.dropDown.currentIndexChanged.connect(self.saveSettingsValue)
 
         self.layout.addLayout(self.layoutText)
         self.layout.addWidget(self.dropDown)
 
         self.setLayout(self.layout)
+
+    def saveSettingsValue(self):
+        self.settings[self.value] = self.dropDown.currentText()
+        saveSettings(self.settings)
+        saveRecentFile(None)
 
 class TextInput(QtWidgets.QWidget):
     def __init__(self, settings, value, info):
@@ -104,7 +114,7 @@ class ButtonSettings(QtWidgets.QToolButton):
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
         self.radiusWidget = TextInput(self.settings, 'Radius', 'number')
         self.minRatioWidget = TextInput(self.settings, 'Min. ratio', 'number')
-        self.strategyWidget = DropDown(self.settings['Cluster strategy'], "Cluster strategy", "info cluster strategy")
+        self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", "info cluster strategy", self.settings)
 
         widgetLayout.addWidget(self.strategyWidget)
         widgetLayout.addWidget(self.treshholdWidget)
@@ -133,6 +143,3 @@ class ButtonSettings(QtWidgets.QToolButton):
         self.treshholdWidget.resetValue(defaultSettings)
         self.neigboursWidget.resetValue(defaultSettings)
         self.radiusWidget.resetValue(defaultSettings)
-
-    
-    
