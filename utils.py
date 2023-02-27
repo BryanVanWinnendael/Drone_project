@@ -4,9 +4,12 @@ import datetime
 from model.clean import clean
 
 defaultSettings = {
+    "Cluster strategy": ["DBSCAN"],
     "Treshhold": 0.5,
     "Number of neigbours": 10,
     "Radius": 0.5,
+    "Min. points": 10,
+    "Min. ratio": 0.5,
 }
 
 def saveFileName(fileName):
@@ -48,6 +51,11 @@ def saveSettings(settings):
 
 def getSettings():
     savedsettings = QtCore.QSettings("Drone-app", "settings")
+
+    for key in defaultSettings.keys():
+        if key not in savedsettings.value("settings").keys():
+            saveSettings(defaultSettings)
+            return defaultSettings
 
     if savedsettings.value("settings") == None:
         saveSettings(defaultSettings)

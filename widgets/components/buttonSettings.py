@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import getSettings, resetSettings, saveSettings
+from utils import getSettings, resetSettings, saveSettings, saveRecentFile
 
 class TextInput(QtWidgets.QWidget):
     def __init__(self, settings, value, info):
@@ -42,9 +42,11 @@ class TextInput(QtWidgets.QWidget):
     def saveSettingsValue(self):
         self.settings[self.value] = self.TextWidget.value()
         saveSettings(self.settings)
+        saveRecentFile(None)
     
     def resetValue(self, defaultSettings):
         self.TextWidget.setValue(defaultSettings[self.value])
+        saveRecentFile(None)
 
 class ButtonSettings(QtWidgets.QToolButton):
     def __init__(self):
@@ -64,12 +66,18 @@ class ButtonSettings(QtWidgets.QToolButton):
         self.treshholdWidget = TextInput(self.settings, 'Treshhold', 'Treshhold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
         self.radiusWidget = TextInput(self.settings, 'Radius', 'number')
+        self.minRatioWidget = TextInput(self.settings, 'Min. ratio', 'number')
+
 
         widgetLayout.addWidget(self.treshholdWidget)
         widgetLayout.addWidget(self.neigboursWidget)
         widgetLayout.addWidget(self.radiusWidget)
+        widgetLayout.addWidget(self.minRatioWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
+        resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        resetButton.setObjectName('buttonReset')
+        resetButton.setMinimumHeight(30)
         resetButton.clicked.connect(self.resetSettingsValue)
         widgetLayout.addWidget(resetButton)
 
@@ -88,4 +96,5 @@ class ButtonSettings(QtWidgets.QToolButton):
         self.neigboursWidget.resetValue(defaultSettings)
         self.radiusWidget.resetValue(defaultSettings)
 
+    
     
