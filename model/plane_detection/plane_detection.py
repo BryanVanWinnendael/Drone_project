@@ -53,6 +53,11 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
 
                     # Add the cluster point cloud to the list of planes
                     planes.append(cluster_pcd)
+                else:
+                    # Put the points back into the target
+                    print("Not enough points to be a plane")
+                    print("Adding points back to target")
+                    target = np.concatenate((target, cluster_points), axis=0)
         else:
             # Add the plane to the list
             planes.append(plane)
@@ -65,7 +70,7 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
     return planes
 
 # Detect planes solely based on RANSAC
-def DetectPlanes(filename, minimum_number, waitingScreen):
+def DetectPlanes(filename, minimum_number, waitingScreen, cluster=False):
     # Load in point cloud
     print("Loading point cloud...")
     waitingScreen.progress.emit("Loading point cloud...")
