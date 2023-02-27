@@ -112,7 +112,7 @@ QLabel#textUpload2 {
 }
 
 QLabel#infoLabel {
-  font-size: 18px;
+  font-size: 17px;
 }
 
 QTableWidget#resultTable {
@@ -153,4 +153,11 @@ QDoubleSpinBox {
 QMenu {
   background-color: white;
   border: 1px solid #d7e1fc;
+}
+
+QComboBox {
+  border: 1px solid #d7e1fc;
+  border-radius: 4px;
+  padding: 5px;
+  font-size: 18px;
 }
