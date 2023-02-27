@@ -32,7 +32,7 @@ class Merger():
 
         o3d.io.write_point_cloud(f"data/planes/plane_{new_id}.ply", pcd)
 
-        with open("data/results/output.csv", "a") as f: 
+        with open("data/results/output.csv", "a", newline='') as f: 
             writer_object = writer(f)
-            writer_object.writerow([new_id, surface_area, rgb])
+            writer_object.writerow([new_id, "MERGED" ,surface_area, rgb])
             f.close()

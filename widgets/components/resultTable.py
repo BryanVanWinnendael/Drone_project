@@ -44,6 +44,9 @@ class ResultTable(QTableWidget):
             self.setItem(i, 1, item_segment)
             self.setItem(i, 2, item_class)
             self.setItem(i, 3, item_area)
+            print(self.data[i]["rgb"])
+            print(self.data[i]["rgb"][1:-1])
+            print(self.data[i]["rgb"][1:-1].split(","))
             rgb = [int(x) for x in self.data[i]["rgb"][1:-1].split(",")]
             self.setCellWidget(i, 4, ButtonTable(self.data[i], self.parent, rgb))
 
