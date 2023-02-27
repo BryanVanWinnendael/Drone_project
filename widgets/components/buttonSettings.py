@@ -112,14 +112,14 @@ class ButtonSettings(QtWidgets.QToolButton):
 
         self.treshholdWidget = TextInput(self.settings, 'Treshold', 'Treshold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
-        self.radiusWidget = TextInput(self.settings, 'Radius', 'number')
+        self.iterationsWidget = TextInput(self.settings, 'Iterations * 100', 'number')
         self.minRatioWidget = TextInput(self.settings, 'Min. ratio', 'number')
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", "info cluster strategy", self.settings)
 
         widgetLayout.addWidget(self.strategyWidget)
         widgetLayout.addWidget(self.treshholdWidget)
         widgetLayout.addWidget(self.neigboursWidget)
-        widgetLayout.addWidget(self.radiusWidget)
+        widgetLayout.addWidget(self.iterationsWidget)
         widgetLayout.addWidget(self.minRatioWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
@@ -142,4 +142,4 @@ class ButtonSettings(QtWidgets.QToolButton):
 
         self.treshholdWidget.resetValue(defaultSettings)
         self.neigboursWidget.resetValue(defaultSettings)
-        self.radiusWidget.resetValue(defaultSettings)
+        self.iterationsWidget.resetValue(defaultSettings)
