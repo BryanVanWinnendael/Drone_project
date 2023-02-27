@@ -10,8 +10,6 @@ class Segmentator:
         self.settings = settings
 
     def segment(self, filename):
-        print(self.settings)
-
         cluster_strategy = self.settings["Cluster strategy"]
         treshold = self.settings["Treshold"]
         neighbours = int(self.settings["Number of neigbours"])

@@ -8,7 +8,6 @@ def PlanesToMeshes(waitingScreen):
 
     # Iterate over all files in directory
     for filename in os.listdir("data/planes"):
-        print(filename)
         file_path = os.path.join("data/planes", filename)
         mesh_file = filename.replace("plane", "mesh")
         if os.path.isfile(file_path):

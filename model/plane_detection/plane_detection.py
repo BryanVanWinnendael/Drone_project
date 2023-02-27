@@ -39,7 +39,6 @@ def SegmentPlanes(pcd, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=
         plane = cloud.select_by_index(mask)
 
         if cluster != None and cluster == "DBSCAN":
-            print("CLustering using DBSCAN")
             inlier_points = np.asarray(plane.points)
 
             # Perform DBSCAN clustering on the points
