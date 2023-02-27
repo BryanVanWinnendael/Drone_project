@@ -7,7 +7,7 @@ from PyQt5.QtCore import QUrl
 from model.clean import clean
 
 defaultSettings = {
-    "value": 0.5
+    "treshhold": 0.5
 }
 
 def saveFileName(fileName):
@@ -73,20 +73,3 @@ def updateClass(row, col, newItem):
 
     with open(res_path, "w") as outfile:
         outfile.write(data)
-
-def doRequest(self):   
-    url = "https://names.drycodes.com/10"
-    req = QNetworkRequest(QUrl(url))
-    
-    self.nam = QNetworkAccessManager()
-    self.nam.finished.connect(self.handleResponse)
-    self.nam.get(req)
-
-def handleResponse(self, reply):
-    er = reply.error()
-    if er == QNetworkReply.NoError:
-        bytes_string = reply.readAll()
-        print(str(bytes_string, 'utf-8'))
-    else:
-        print("Error occured: ", er)
-        print(reply.errorString())
