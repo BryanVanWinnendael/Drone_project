@@ -4,6 +4,7 @@ import datetime
 import os
 from PyQt5.QtNetwork import QNetworkAccessManager, QNetworkRequest, QNetworkReply
 from PyQt5.QtCore import QUrl
+from model.clean import clean
 
 defaultSettings = {
     "value": 0.5
@@ -56,15 +57,7 @@ def resetSettings():
     return defaultSettings
 
 def cleanData(hard=False):
-    if os.path.exists("data/planes"):
-        for filename in os.listdir('data/planes'):
-            os.remove("data/planes/" + filename)
-    if os.path.exists("data/meshes"):
-        for filename in os.listdir('data/meshes'):
-            os.remove("data/meshes/" + filename)
-    if hard and os.path.exists("data/results"):
-        for filename in os.listdir('data/results'):
-            os.remove("data/results/" + filename)
+    clean(hard=hard)
 
 def updateClass(row, col, newItem):
     if col != 1: return

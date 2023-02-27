@@ -3,7 +3,6 @@ import sys
 
 def ViewMesh(filename):
     mesh = o3d.io.read_triangle_mesh(filename)
-    print(mesh)
     o3d.visualization.draw_geometries([mesh])
 
 def ViewPointCloud(filename):

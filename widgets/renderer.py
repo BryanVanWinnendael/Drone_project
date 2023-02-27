@@ -25,9 +25,27 @@ class RendererWidget(QtWidgets.QWidget):
         self.data = list(csv.DictReader(file, delimiter=","))
         file.close()
         
-        self.renderWidget = RenderWidget(self.fileName, self)
-        self.windowcontainer = self.renderWidget.windowcontainer
-        self.classified = self.renderWidget.classified
+        self.pcd = o3d.io.read_point_cloud(fileName)
+        self.vis = o3d.visualization.Visualizer()
+        self.vis.create_window()
+        self.vis.add_geometry(self.pcd)    
+
+        self.classified_pcd = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
+        self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
+
+        self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
+        self.canResetOriginalView = True
+
+        hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
+        
+        self.window = QtGui.QWindow.fromWinId(hwnd)    
+
+        self.windowcontainer = self.createWindowContainer(self.window, widget)
+        self.windowcontainer.setMinimumWidth(300)
+        self.windowcontainer.setMinimumHeight(300)
+
 
         self.topBar = ResultTopBar(self.fileName, self.parent)
         self.buttonSpace = ButtonSpace(self)
@@ -59,6 +77,41 @@ class RendererWidget(QtWidgets.QWidget):
         layout.addLayout(self.vboxLoading, 2, 0)
 
         self.setLayout(layout)
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_vis)
+        self.timer.start(1)
+
+    def update_vis(self):
+        self.vis.poll_events()
+        self.vis.update_renderer()
+
+    def changeGeometry(self, fileName):
+        if fileName != self.fileName and self.canResetOriginalView:
+            self.original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
+            self.canResetOriginalView = False
+
+        self.vis.clear_geometries()
+
+        if fileName == self.fileName:
+            self.vis.add_geometry(self.pcd)
+
+        elif fileName == self.classified:
+            self.vis.add_geometry(self.classified_pcd)
+        else:
+            self.vis.add_geometry(o3d.io.read_point_cloud(fileName))
+            self.vis.add_geometry(self.classified_pcd_downscaled)
+
+        self.vis.reset_view_point(True)
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_vis)
+        self.timer.start(1)
+
+    def changeViewToOriginal(self):
+        ctr = self.vis.get_view_control()
+        ctr.convert_from_pinhole_camera_parameters(self.original_view)
+        self.canResetOriginalView = True
     
     def resetOriginalView(self):
         self.renderWidget.resetOriginalView()
@@ -67,4 +120,27 @@ class RendererWidget(QtWidgets.QWidget):
         self.renderWidget.changeGeometry(geometry)
     
     def changeBackground(self):
-        self.renderWidget.changeBackground()
+        opt = self.vis.get_render_option()
+        
+        if self.night:
+            opt.background_color = np.asarray([255, 255, 255])
+            self.night = False
+            self.buttonSpace.daynightSwitch.setText("Switch Black")
+        else:
+            opt.background_color = np.asarray([0, 0, 0])
+            self.night = True
+            self.buttonSpace.daynightSwitch.setText("Switch White")
+
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_vis)
+        self.timer.start(1)
+
+def removePointsFromPointCloud(pointcloud, points_to_remove):
+    pc_points = np.asarray(pointcloud.points)
+    points_to_mask = np.asarray(points_to_remove)
+
+    indexes = [i for i in range(len(pc_points)) if np.any(np.all(pc_points[i] == points_to_mask, axis=1))]
+
+    mask = np.ones(len(pc_points), dtype=bool)
+    mask[indexes] = False
+    return pc_points[mask]

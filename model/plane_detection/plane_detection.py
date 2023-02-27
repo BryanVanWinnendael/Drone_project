@@ -1,166 +1,110 @@
-import json
-import numpy as np
 import open3d as o3d
-import os
 from model.plane_detection.color_generator import GenerateColors
-import csv
+import numpy as np
+from sklearn.cluster import DBSCAN
 
-def ReadPlyPoint(fname):
-    pcd = o3d.io.read_point_cloud(fname)
-    return PCDToNumpy(pcd)
+def SaveResult(planes):
+    pcds = o3d.geometry.PointCloud()
+    for plane in planes:
+        pcds += plane
 
-def NumpyToPCD(xyz):
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(xyz)
-    return pcd
+    o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
-def PCDToNumpy(pcd):
-    return np.asarray(pcd.points)
-
-def RemoveNan(points):
-    return points[~np.isnan(points[:, 0])]
-
-def RemoveNoiseStatistical(pc, nb_neighbors=20, std_ratio=2.0):
-    pcd = NumpyToPCD(pc)
-    cl, ind = pcd.remove_statistical_outlier(
-        nb_neighbors=nb_neighbors, std_ratio=std_ratio)
-    return PCDToNumpy(cl)
-
-def DownSample(pts, voxel_size=0.003):
-    p = NumpyToPCD(pts).voxel_down_sample(voxel_size=voxel_size)
-    return PCDToNumpy(p)
-
-def PlaneRegression(points, threshold=0.01, init_n=3, iter=1000):
-    pcd = NumpyToPCD(points)
-    w, index = pcd.segment_plane(
-        threshold, init_n, iter)
-    return w, index
-
-def DrawResult(points, colors):
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(points)
-    pcd.colors = o3d.utility.Vector3dVector(colors)
-    o3d.visualization.draw_geometries([pcd])
-
-def SaveResult(points, colors, filename):
-    pcd = o3d.geometry.PointCloud()
-    pcd.points = o3d.utility.Vector3dVector(points)
-    pcd.colors = o3d.utility.Vector3dVector(colors)
-
-    # Create directory to save results
-    if not os.path.exists("data/results"):
-                os.makedirs("data/results")
-
-    o3d.io.write_point_cloud("data/results/result-classified.ply", pcd)
-    recent_file = {
-        "name": filename,
-    }
-
-    json_object = json.dumps(recent_file, indent=4)
-
-    with open("data/results/recent-file.json", "w") as outfile:
-        outfile.write(json_object)
-
-
-
-def DetectMultiPlanes(points, min_ratio=0.05, threshold=0.01, iterations=1000):
-    plane_list = []
+def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False):
+    # Prepare necessary variables
+    points = np.asarray(pcd.points)
+    planes = []
     N = len(points)
     target = points.copy()
     count = 0
 
+    # Loop until the minimum ratio of points is reached
     while count < (1 - min_ratio) * N:
-        w, index = PlaneRegression(
-            target, threshold=threshold, init_n=3, iter=iterations)
+        # Convert back to open3d point cloud
+        cloud = o3d.geometry.PointCloud()
+        cloud.points = o3d.utility.Vector3dVector(target)
+
+        # Segment the plane
+        inliers, mask = cloud.segment_plane(distance_threshold=threshold, ransac_n=3, num_iterations=iterations)
     
-        count += len(index)
-        plane_points = target[index]
-        plane_list.append((w, target[index]))
-        target = np.delete(target, index, axis=0)
+        # Update the count
+        count += len(mask)
 
-    return plane_list
+        # Extract the plane
+        plane = cloud.select_by_index(mask)
 
-def GetColor(class_name):
-    if class_name == "roof":
-        return [0.7, 0, 0]
-    elif class_name == "wall":
-        return [0, 0.7, 0]
-    elif class_name == "window":
-        return [0, 0, 0.7]
-    else:
-        return [0, 0, 0]
+        if cluster:
+            inlier_points = np.asarray(plane.points)
 
-def DetectPlanes(filename, waitingScreen):
-    import random
-    import time
+            # Perform DBSCAN clustering on the points
+            labels = np.array(plane.cluster_dbscan(eps=0.1, min_points=20, print_progress=True))
 
-    points = ReadPlyPoint(filename)
+            # Extract points for each cluster
+            for label in np.unique(labels):
+                # Get the points for this cluster
+                cluster_points = inlier_points[labels == label]
 
-    # pre-processing
-    print('Pre-processing the point cloud...')
-    waitingScreen.progress.emit('Pre-processing the point cloud...')
+                print("Found cluster with {} points".format(len(cluster_points)))
 
-    points = RemoveNan(points)
-    points = DownSample(points,voxel_size=0.003)
-    # points = RemoveNoiseStatistical(points, nb_neighbors=50, std_ratio=0.5)
+                if len(cluster_points) >= 200:
+                    # Convert points to Open3D point cloud
+                    cluster_pcd = o3d.geometry.PointCloud()
+                    cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
 
-    t0 = time.time()
-    results = DetectMultiPlanes(points, min_ratio=0.05, threshold=0.005, iterations=2000)
+                    # Add the cluster point cloud to the list of planes
+                    planes.append(cluster_pcd)
+        else:
+            # Add the plane to the list
+            planes.append(plane)
 
-    print('Done detection planes after: ', time.time() - t0, " seconds")
+        # Remove the plane from the target
+        target = np.delete(target, mask, axis=0)
 
-    planes = []
-    generated_colors = GenerateColors(len(results))
-    colors = []
+    print("Found {} planes".format(len(planes)))
 
-    classes = ["roof", "wall", "window"]
-    csv_planes = {}
+    return planes
 
-    # Create directory to save planes
-    if not os.path.exists("data/planes"):
-        os.makedirs("data/planes")
+# Detect planes solely based on RANSAC
+def DetectPlanes(filename, minimum_number, waitingScreen):
+    # Load in point cloud
+    print("Loading point cloud...")
+    waitingScreen.progress.emit("Loading point cloud...")
+    pcd = o3d.io.read_point_cloud(filename)
 
-    for i, (w, plane) in enumerate(results):
-        # Grab a random class
-        # class_name = random.choice(classes)
+    # Preprocess the point cloud
+    print("Preprocessing point cloud...")
+    print("Starting with {} points".format(len(pcd.points)))
+    pcd = pcd.voxel_down_sample(voxel_size=0.01)
+    pcd, mask = pcd.remove_statistical_outlier(nb_neighbors=5, std_ratio=2.0)
+    # This was removed for now because it was causing the point cloud to be too small
+    # pcd, mask = pcd.remove_radius_outlier(nb_points=16, radius=0.05)
+    print("Ending with {} points".format(len(pcd.points)))
+    pcd.estimate_normals(search_param=o3d.geometry.KDTreeSearchParamHybrid(radius=0.1, max_nn=30))
 
-        r = generated_colors[i][0] / 255
-        g = generated_colors[i][1] / 255
-        b = generated_colors[i][2] / 255
 
-        # Get color from class
-        # r, g, b = GetColor(class_name)
+    # Segment the planes
+    print("Segmenting planes...")
+    waitingScreen.progress.emit("Segmenting planes...")
+    planes = SegmentPlanes(pcd, waitingScreen, cluster=True)
 
-        color = np.zeros((plane.shape[0], plane.shape[1]))
-        color[:, 0] = r
-        color[:, 1] = g
-        color[:, 2] = b
+    # Generate range of colors
+    colors = GenerateColors(len(planes))
 
-        colors.append(color)
-        planes.append(plane)
+    print("Planes detected: " + str(len(planes)))
+    waitingScreen.progress.emit("Planes detected: " + str(len(planes)))
 
-        # Save plane to PLY file
-        pcd = o3d.geometry.PointCloud()
-        pcd.points = o3d.utility.Vector3dVector(plane)
-        pcd.colors = o3d.utility.Vector3dVector(colors[i])
+    # Loop through each plane and save it to a file
+    print("Saving planes...")
+    waitingScreen.progress.emit("Saving planes...")
+    for i, plane in enumerate(planes):
+        r = colors[i][0] / 255
+        g = colors[i][1] / 255
+        b = colors[i][2] / 255
 
-        o3d.io.write_point_cloud(f'data/planes/plane_{i + 1}.ply', pcd)
-
-        csv_planes[i + 1] = "unclassified"
-
-    # Write class and segment to csv
-    if not os.path.exists('data/results'):
-        os.makedirs('data/results')
-    with open('data/results/planes.csv', mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(['Segment', 'Class', 'Surface area']) # Write header row
-        for key, value in csv_planes.items():
-            writer.writerow([key, value])
-
-    planes = np.concatenate(planes, axis=0)
-    colors = np.concatenate(colors, axis=0)
-
-    print('Saving results...')
-    waitingScreen.progress.emit('Saving results...')
-
-    SaveResult(planes, colors, filename)
+        plane.paint_uniform_color([r, g, b])
+        o3d.io.write_point_cloud("data/planes/plane_" + str(i + 1) + ".ply", plane)
+    
+    # Save the result
+    print("Saving result...")
+    waitingScreen.progress.emit("Saving result...")
+    SaveResult(planes)
