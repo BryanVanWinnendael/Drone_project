@@ -22,7 +22,7 @@ def SegmentPointCloud(filename, minimum_number, waitingScreen):
         os.makedirs("data/results")
 
     print("Detecting planes...")
-    DetectPlanes(filename, minimum_number, waitingScreen)
+    DetectPlanes(filename, minimum_number, waitingScreen, cluster=True)
 
     print("Calculating surface areas...")
     CalculateSurfaces(waitingScreen)
