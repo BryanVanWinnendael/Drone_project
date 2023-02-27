@@ -35,3 +35,17 @@ class ButtonUpload(QtWidgets.QPushButton):
         self.setLayout(self.layout)
         self.setMinimumWidth(400)
         self.clicked.connect(self.parent.openFileNameDialog)
+
+    def setError(self):
+        self.text.setText("Error: File is not a valid .ply file")
+        self.text2.setText("")
+        self.text.setStyleSheet("color: #b22222")
+        self.text2.setStyleSheet("color: #b22222")
+        self.setStyleSheet("border-color: #b22222")
+    
+    def setNormal(self):
+        self.text.setText("Drag file here or")
+        self.text2.setText("browse")
+        self.text.setStyleSheet("color: black")
+        self.text2.setStyleSheet("color: #249ea7")
+        self.setStyleSheet("border-color: #d7e1fc")
