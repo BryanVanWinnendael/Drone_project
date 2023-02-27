@@ -9,7 +9,7 @@ defaultSettings = {
     "Cluster strategy": "DBSCAN",
     "Treshold": 0.01,
     "Number of neigbours": 10,
-    "Radius": 0.5,
+    "Iterations * 100": 10,
     "Min. points": 30,
     "Min. ratio": 0.05,
 }

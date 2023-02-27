@@ -14,12 +14,9 @@ class Segmentator:
 
         cluster_strategy = self.settings["Cluster strategy"]
         treshold = self.settings["Treshold"]
-        neighbours = self.settings["Number of neigbours"]
-        # radius = self.settings["Radius"]
-        min_points = self.settings["Min. points"]
+        neighbours = int(self.settings["Number of neigbours"])
+        iterations = int(self.settings["Iterations * 100"] * 100)
+        min_points = int(self.settings["Min. points"])
         min_ratio = self.settings["Min. ratio"]
 
-        print(cluster_strategy)
-        print(treshold)
-
-        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, treshold=treshold, neighbours=neighbours, min_points=min_points, min_ratio=min_ratio)
+        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, treshold=treshold, neighbours=neighbours, min_points=min_points, min_ratio=min_ratio, iterations=iterations)
