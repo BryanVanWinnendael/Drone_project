@@ -10,7 +10,7 @@ def SaveResult(planes):
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
-def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False, min_points=50):
+def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations=1000, cluster=False, min_points=50, max_loops=10):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
     planes = []
@@ -20,11 +20,14 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
 
     print("Starting with {} points".format(N))
 
+    # Because infinite loops are possible we limit the max amount of loops
+
     # Loop until the minimum ratio of points is reached
-    while count < (1 - min_ratio) * N:
+    while count < (1 - min_ratio) * N and max_loops > 0 and len(target) >= min_points:
         # Convert back to open3d point cloud
         cloud = o3d.geometry.PointCloud()
         cloud.points = o3d.utility.Vector3dVector(target)
+
 
         # Segment the plane
         inliers, mask = cloud.segment_plane(distance_threshold=threshold, ransac_n=3, num_iterations=iterations)
@@ -76,6 +79,8 @@ def SegmentPlanes(pcd, waitingScreen, min_ratio=0.05, threshold=0.01, iterations
         if cluster:
             for remaining_cluster in remaining_clusters:
                 target = np.concatenate((target, remaining_cluster), axis=0)
+
+        max_loops -= 1
 
     print("Found {} planes".format(len(planes)))
 
