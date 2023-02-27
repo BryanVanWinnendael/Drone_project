@@ -3,11 +3,11 @@ from PyQt5 import QtCore
 import datetime
 from model.clean import clean
 
-clusterStrategies = ["DBSCAN", "test"]
+clusterStrategies = ["DBSCAN", "None"]
 
 defaultSettings = {
     "Cluster strategy": "DBSCAN",
-    "Treshhold": 0.5,
+    "Treshold": 0.01,
     "Number of neigbours": 10,
     "Radius": 0.5,
     "Min. points": 30,
