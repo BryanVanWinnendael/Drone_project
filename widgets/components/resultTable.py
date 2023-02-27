@@ -1,13 +1,15 @@
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox
 from widgets.components.buttonTable import ButtonTable
+from widgets.components.checkMerge import CheckMerge
 from PyQt5 import QtCore, QtGui
 from utils import updateClass
+from model.merger import Merger
 class ResultTable(QTableWidget):
     def __init__(self, parent, data):
         self.parent = parent
         self.data = data
-        super(ResultTable, self).__init__(len(self.data), len(self.data[0]))
-        
+        super(ResultTable, self).__init__(len(self.data), len(self.data[0]) + 1)
+        self.checkedButtons = []
         self.verticalHeader().setVisible(False)
         self.setObjectName("resultTable")
        
@@ -16,13 +18,15 @@ class ResultTable(QTableWidget):
         self.resizeRowsToContents()
 
         header = self.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.Stretch)
+        header.setSectionResizeMode(0, QHeaderView.ResizeToContents)
         header.setSectionResizeMode(1, QHeaderView.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.Stretch)
+        header.setSectionResizeMode(3, QHeaderView.ResizeToContents)
         header.setObjectName("resultTableHeader")
         self.itemChanged.connect(self.itemChangedEvent)
  
     def setData(self): 
+        self.setRowCount(len(self.data))
         for i in range(len(self.data)):
             item_segment = QTableWidgetItem(self.data[i]["Segment"])
             item_segment.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
@@ -32,12 +36,14 @@ class ResultTable(QTableWidget):
             item_area.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsUserCheckable | QtCore.Qt.ItemIsEnabled )
             item_area.setText(self.data[i]["Surface area"])
    
-            self.setItem(i, 0, item_segment)
-            self.setItem(i, 1, item_area)
+            self.setCellWidget(i, 0, CheckMerge(self, int(self.data[i]["Segment"])))
+            self.setItem(i, 1, item_segment)
+            self.setItem(i, 2, item_area)
             rgb = [int(x) for x in self.data[i]["rgb"][1:-1].split(",")]
-            self.setCellWidget(i, 2, ButtonTable(self.data[i], self.parent, rgb))
+            self.setCellWidget(i, 3, ButtonTable(self.data[i], self.parent, rgb))
 
         headers = list(self.data[0].keys())
+        headers.insert(0, "")
         headers[-1] = ""
         self.setHorizontalHeaderLabels(headers)
     
@@ -48,3 +54,24 @@ class ResultTable(QTableWidget):
             for row in rows:
                 if item == self.item(row, column):
                     updateClass(row, column, item.text())
+
+    def clearChecks(self):
+        rows = range(self.rowCount())
+        for i in rows:
+            self.cellWidget(i, 0).setChecked(False)
+    
+    def checkChanged(self, segment_id):
+        if segment_id in self.checkedButtons:
+            self.checkedButtons.remove(segment_id)
+            if len(self.checkedButtons) == 0:
+                # Hide merge button
+                self.parent.mergeBtn.hide()
+        else:
+            self.checkedButtons.append(segment_id)
+            self.parent.mergeBtn.show()
+
+    def mergeSegments(self):
+        merger = Merger()
+        merger.mergeSegments(self.checkedButtons)
+        self.clearChecks()
+        self.parent.dataChanged()
