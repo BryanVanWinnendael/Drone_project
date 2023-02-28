@@ -70,3 +70,7 @@ class RenderWidget(QtWidgets.QWidget):
             opt.background_color = np.asarray([0, 0, 0])
             self.night = True
             self.parent.buttonSpace.daynightSwitch.setText("Switch White")
+
+    def updateClassified(self):
+        self.classified_pcd = o3d.io.read_point_cloud(self.classified)
+        self.changeGeometry(self.classified)
