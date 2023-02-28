@@ -32,6 +32,8 @@ class Merger():
             self.constructNewClassifiedPointCloud()
 
             self.parent.classifiedResultChanged()
+            self.parent.dataChanged()
+            # self.reassignSegmentIds()
 
     def saveSegment(self, pcd, surface_area, rgb):  
         print("saving...")      
@@ -59,6 +61,8 @@ class Merger():
         # Delete PLY
         os.remove(f"data/planes/plane_{id}.ply")
 
+        self.parent.dataChanged()
+
     def constructNewClassifiedPointCloud(self):
         # Load in all point clouds
         pcds = []
@@ -74,4 +78,17 @@ class Merger():
 
         # Save point cloud
         o3d.io.write_point_cloud("data/results/result-classified.ply", new_pcd)
+
+    def reassignSegmentIds(self):
+        with open("data/results/output.csv", "r") as f:
+            lines = f.readlines()
+
+            for i, line in enumerate(lines):
+                # Rename plane to new id
+                print(f"data/planes/plane_{line.split(',')[0]}.ply")
+                os.rename(f"data/planes/plane_{line.split(',')[0]}.ply", f"data/planes/plane_{i + 1}.ply")
+
+            f.close()
+
+        
         
