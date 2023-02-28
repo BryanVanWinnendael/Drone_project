@@ -1,12 +1,17 @@
-from PyQt5 import QtWidgets
-from widgets.renderer import RendererWidget
-from widgets.home import HomeWidget
-from utils import saveFileName, getRecentFile, cleanData, getSettings, saveRecentFile
-from model.segmentator import Segmentator
-from widgets.waiting import WaitingWidget
-from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5 import QtGui
 import ctypes
+
+from PyQt5 import QtGui, QtWidgets
+from PyQt5.QtCore import QThread, pyqtSignal
+
+from model.segmentator import Segmentator
+from utils import (cleanData, getRecentFile, getSettings, saveFileName,
+                   saveRecentFile)
+from widgets.home import HomeWidget
+from widgets.renderer import RendererWidget
+from widgets.settings import SettingsWidget
+from widgets.waiting import WaitingWidget
+
+
 class Worker(QThread):
     finished = pyqtSignal()
     progress = pyqtSignal(str)
@@ -60,11 +65,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def navigateToSegmentation(self, fileName):
         self.waitingWidget = False
         self.setCentralWidget(RendererWidget(self, fileName))
-       
 
     def navigateToHome(self):
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)
+    
+    def navigateToSettings(self):
+        settingsWidget = SettingsWidget(self)
+        self.setCentralWidget(settingsWidget)
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])

@@ -20,7 +20,7 @@ class HomeWidget(QtWidgets.QWidget):
         layout.addWidget(self.labelError)
 
         self.settingsButtonLayout = QtWidgets.QHBoxLayout()
-        self.settingsButton = ButtonSettings()
+        self.settingsButton = ButtonSettings(self.parent)
         self.settingsButtonLayout.addWidget(self.settingsButton)
         self.settingsButtonLayout.setAlignment(QtCore.Qt.AlignRight)
         layout.addLayout(self.settingsButtonLayout)
