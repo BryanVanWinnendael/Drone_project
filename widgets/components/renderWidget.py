@@ -20,6 +20,7 @@ class RenderWidget(QtWidgets.QWidget):
     def __init__(self, fileName, parent):
         super(RenderWidget, self).__init__()
         self.fileName = fileName
+        self.newFileName = fileName
         self.widget = QtWidgets.QWidget()
         self.parent = parent
         self.classified = "data/results/result-classified.ply"
@@ -27,6 +28,7 @@ class RenderWidget(QtWidgets.QWidget):
 
         self.pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.VisualizerWithVertexSelection()
+        self.vis.register_selection_changed_callback(self.onSelectionChanged)
         worker = WorkerCloseScreen(self)
         worker.start()
 
@@ -61,8 +63,10 @@ class RenderWidget(QtWidgets.QWidget):
         self.vis.update_renderer()
     
     def changeGeometry(self, newFileName):
-        original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters() 
+        original_view = self.vis.get_view_control().convert_to_pinhole_camera_parameters()
+        self.newFileName = newFileName 
        
+        self.clearSelectedPoints()
         self.vis.clear_geometries()
 
         if newFileName == self.fileName:
@@ -91,7 +95,6 @@ class RenderWidget(QtWidgets.QWidget):
     
     def clearSelectedPoints(self):
         self.vis.clear_picked_points()
-        self.vis.update_renderer()
     
     def getSelectedPoints(self):
         return self.vis.get_picked_points()
@@ -99,3 +102,7 @@ class RenderWidget(QtWidgets.QWidget):
     def updateClassified(self):
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
         self.changeGeometry(self.classified)
+    
+    def onSelectionChanged(self):
+        if self.newFileName == self.fileName or self.newFileName == self.classified:
+            self.clearSelectedPoints()
