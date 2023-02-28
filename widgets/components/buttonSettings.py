@@ -78,6 +78,7 @@ class TextInput(QtWidgets.QWidget):
         self.layoutText.addWidget(self.buttonInfo)
 
         self.TextWidget = QtWidgets.QDoubleSpinBox()
+        self.TextWidget.setRange(0, 100000)
         self.TextWidget.setValue(self.settings[self.value])
         self.TextWidget.valueChanged.connect(self.saveSettingsValue)
 
@@ -110,16 +111,24 @@ class ButtonSettings(QtWidgets.QToolButton):
         widgetLayout = QtWidgets.QVBoxLayout(widget)
         widgetLayout.setSpacing(20)
 
-        self.treshholdWidget = TextInput(self.settings, 'Treshold', 'Treshold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
-        self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
-        self.iterationsWidget = TextInput(self.settings, 'Iterations * 100', 'number')
-        self.minRatioWidget = TextInput(self.settings, 'Min. ratio', 'number')
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", "info cluster strategy", self.settings)
+        self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', 'number')
+        self.iterationsWidget = TextInput(self.settings, 'Iterations', 'number')
+        self.maxLoopsWidget = TextInput(self.settings, 'Maximum number of loops', 'number')
+        self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
+        self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', 'number')
+        self.treshholdWidget = TextInput(self.settings, 'Treshold', 'Treshold is the minimum value of the point cloud to be rendered. The higher the value, the less points will be rendered.')
+        self.standardDeviationWidget = TextInput(self.settings, 'Standard deviation ratio', 'number')
+        self.minRatioWidget = TextInput(self.settings, 'Minimum ratio', 'number')
 
         widgetLayout.addWidget(self.strategyWidget)
-        widgetLayout.addWidget(self.treshholdWidget)
-        widgetLayout.addWidget(self.neigboursWidget)
+        widgetLayout.addWidget(self.minimumPointsWidget)
         widgetLayout.addWidget(self.iterationsWidget)
+        widgetLayout.addWidget(self.maxLoopsWidget)
+        widgetLayout.addWidget(self.neigboursWidget)
+        widgetLayout.addWidget(self.voxelSizeWidget)
+        widgetLayout.addWidget(self.treshholdWidget)
+        widgetLayout.addWidget(self.standardDeviationWidget)
         widgetLayout.addWidget(self.minRatioWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
@@ -140,6 +149,11 @@ class ButtonSettings(QtWidgets.QToolButton):
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
 
-        self.treshholdWidget.resetValue(defaultSettings)
-        self.neigboursWidget.resetValue(defaultSettings)
+        self.minimumPointsWidget.resetValue(defaultSettings)
         self.iterationsWidget.resetValue(defaultSettings)
+        self.maxLoopsWidget.resetValue(defaultSettings)
+        self.neigboursWidget.resetValue(defaultSettings)
+        self.voxelSizeWidget.resetValue(defaultSettings)
+        self.treshholdWidget.resetValue(defaultSettings)
+        self.standardDeviationWidget.resetValue(defaultSettings)
+        self.minRatioWidget.resetValue(defaultSettings)

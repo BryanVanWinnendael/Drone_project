@@ -11,10 +11,14 @@ class Segmentator:
 
     def segment(self, filename):
         cluster_strategy = self.settings["Cluster strategy"]
-        treshold = self.settings["Treshold"]
+        min_points = int(self.settings["Minimum points"])
+        iterations = int(self.settings["Iterations"])
+        max_loops = int(self.settings["Maximum number of loops"])
         neighbours = int(self.settings["Number of neigbours"])
-        iterations = int(self.settings["Iterations * 100"] * 100)
-        min_points = int(self.settings["Min. points"])
-        min_ratio = self.settings["Min. ratio"]
+        voxel_size = self.settings["Voxel size"]
+        treshold = self.settings["Treshold"]
+        min_std_ratio = self.settings["Standard deviation ratio"]
+        min_ratio = self.settings["Minimum ratio"]
+        
 
-        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, treshold=treshold, neighbours=neighbours, min_points=min_points, min_ratio=min_ratio, iterations=iterations)
+        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, min_points=min_points, iterations=iterations, max_loops=max_loops, neighbours=neighbours, voxel_size=voxel_size, treshold=treshold, min_std_ratio=min_std_ratio, min_ratio=min_ratio)

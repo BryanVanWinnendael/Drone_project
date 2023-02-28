@@ -6,12 +6,15 @@ from model.clean import clean
 clusterStrategies = ["DBSCAN", "None"]
 
 defaultSettings = {
-    "Cluster strategy": "DBSCAN",
-    "Treshold": 0.01,
+    "Cluster strategy": "None",
+    "Minimum points": 30,
+    "Iterations": 1000,
+    "Maximum number of loops": 100,
     "Number of neigbours": 10,
-    "Iterations * 100": 10,
-    "Min. points": 30,
-    "Min. ratio": 0.05,
+    "Voxel size": 0.01,
+    "Treshold": 0.01,
+    "Standard deviation ratio": 2.0,
+    "Minimum ratio": 0.05,
 }
 
 def saveFileName(fileName):
