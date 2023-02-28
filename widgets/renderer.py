@@ -83,4 +83,5 @@ class RendererWidget(QtWidgets.QWidget):
     def mergepoints(self):
         self.renderWidget.mergepoints()
     
-    
+    def classifiedResultChanged(self):
+        self.renderWidget.updateClassified()

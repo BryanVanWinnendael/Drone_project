@@ -59,13 +59,13 @@ def saveSettings(settings):
 def getSettings():
     savedsettings = QtCore.QSettings("Drone-app", "settings")
 
+    if savedsettings.value("settings") == None:
+        saveSettings(defaultSettings)
+
     for key in defaultSettings.keys():
         if key not in savedsettings.value("settings").keys():
             saveSettings(defaultSettings)
             return defaultSettings
-
-    if savedsettings.value("settings") == None:
-        saveSettings(defaultSettings)
     
     return savedsettings.value("settings")
 

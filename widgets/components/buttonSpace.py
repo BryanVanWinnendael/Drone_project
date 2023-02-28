@@ -24,14 +24,10 @@ class ButtonSpace(QtWidgets.QWidget):
         self.buttonClear = QtWidgets.QPushButton("Clear selected points")
         self.buttonClear.setObjectName("rendererbtn")
         self.buttonClear.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.buttonClear.clicked.connect(lambda: self.clearSelectedPoints())
+        self.buttonClear.clicked.connect(lambda: self.parent.clearSelectedPoints())
 
         self.layout.addWidget(self.originalButton)
         self.layout.addWidget(self.classifiedButton)
         self.layout.addWidget(self.daynightSwitch)
         self.layout.addWidget(self.buttonClear)
         self.setLayout(self.layout)
-
-    
-    def clearSelectedPoints(self):
-        self.parent.clearSelectedPoints()

@@ -27,7 +27,6 @@ class RenderWidget(QtWidgets.QWidget):
 
         self.pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.VisualizerWithVertexSelection()
-        self.vis.register_selection_changed_callback(self.selectedPointsChanged)
         worker = WorkerCloseScreen(self)
         worker.start()
 
@@ -97,6 +96,7 @@ class RenderWidget(QtWidgets.QWidget):
     def mergepoints(self):
         picked_points = self.vis.get_picked_points()
         print(picked_points)
-    
-    def selectedPointsChanged(self):
-        print("change")
+
+    def updateClassified(self):
+        self.classified_pcd = o3d.io.read_point_cloud(self.classified)
+        self.changeGeometry(self.classified)

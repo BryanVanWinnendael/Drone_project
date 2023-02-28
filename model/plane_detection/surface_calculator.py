@@ -32,7 +32,7 @@ def CalculateSurfaces(waitingScreen):
         writer = csv.writer(f)
         writer.writerow(["Segment", "Class", "Surface area", "rgb"])
         for key, value in results.items():
-            writer.writerow([key,"Unkown", value[0], value[1]])
+            writer.writerow([key,"Unknown", value[0], value[1]])
 
     # Sort the csv file by segment number
     print("Sorting csv file...")
