@@ -9,11 +9,13 @@ class Merger():
         self.parent = parent
 
     def mergeSegments(self, ids):
-        if len(ids) < 2:
+        selected_poiunts = self.parent.getSelectedPoints()
+        if len(ids) < 2 and len(selected_poiunts) == 0:
             print("Select at least 2 segments to merge")
         else:
             new_pcd = o3d.geometry.PointCloud()
-            points = []
+            points = [point.coord for point in selected_poiunts]
+            self.parent.clearSelectedPoints()
             for seg_id in ids:
                 if os.path.isfile(f"data/planes/plane_{seg_id}.ply"):
                     pcd = o3d.io.read_point_cloud(f"data/planes/plane_{seg_id}.ply")

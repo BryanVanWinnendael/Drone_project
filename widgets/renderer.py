@@ -82,3 +82,12 @@ class RendererWidget(QtWidgets.QWidget):
 
     def classifiedResultChanged(self):
         self.renderWidget.updateClassified()
+    
+    def clearSelectedPoints(self):
+        self.renderWidget.clearSelectedPoints()
+    
+    def mergepoints(self):
+        self.renderWidget.mergepoints()
+    
+    def getSelectedPoints(self):
+        return self.renderWidget.getSelectedPoints()
