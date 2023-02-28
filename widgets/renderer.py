@@ -78,6 +78,7 @@ class RendererWidget(QtWidgets.QWidget):
         total_area = sum([float(info["Surface area"]) for info in self.data])
         self.area_label.setText(f"Total area: {total_area} m²")
         self.resultTable.data = self.data
+        self.resultTable.setData()
 
     def classifiedResultChanged(self):
         self.renderWidget.updateClassified()

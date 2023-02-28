@@ -61,8 +61,6 @@ class Merger():
         # Delete PLY
         os.remove(f"data/planes/plane_{id}.ply")
 
-        self.parent.dataChanged()
-
     def constructNewClassifiedPointCloud(self):
         # Load in all point clouds
         pcds = []
