@@ -3,7 +3,7 @@ from PyQt5 import QtCore
 import datetime
 from model.clean import clean
 
-clusterStrategies = ["DBSCAN", "None"]
+clusterStrategies = ["DBSCAN", "None", "Agglomerative"]
 
 defaultSettings = {
     "Cluster strategy": "None",

@@ -1,7 +1,7 @@
 import open3d as o3d
 from model.plane_detection.color_generator import GenerateColors
 import numpy as np
-from sklearn.cluster import DBSCAN
+from sklearn.cluster import AgglomerativeClustering
 
 def SaveResult(planes):
     pcds = o3d.geometry.PointCloud()
@@ -18,7 +18,7 @@ def SegmentPlanes(pcd, cluster=None, min_points=100, iterations=1000, max_loops=
     target = points.copy()
     count = 0
 
-    print("Starting with {} points".format(N))
+    print(f"Starting with {N} points")
 
     # Because infinite loops are possible we limit the max amount of loops
     # Loop until the minimum ratio of points is reached
@@ -46,6 +46,33 @@ def SegmentPlanes(pcd, cluster=None, min_points=100, iterations=1000, max_loops=
             for label in np.unique(labels):
                 # Get the points for this cluster
                 cluster_points = inlier_points[labels == label]
+
+                print(f"Found cluster with {len(cluster_points)} points")
+
+                if len(cluster_points) >= min_points:
+                    # Convert points to Open3D point cloud
+                    cluster_pcd = o3d.geometry.PointCloud()
+                    cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
+
+                    # Add the cluster point cloud to the list of planes
+                    planes.append(cluster_pcd)
+
+                    # Update the count
+                    count += len(cluster_points)
+                else:
+                    # Put the points back into the target
+                    print("Not enough points to be a plane, adding points back to target")
+                    remaining_clusters.append(cluster_points)
+        elif cluster != None and cluster == "Agglomerative":
+            inlier_points = np.asarray(plane.points)
+
+            # Perform agglomerative clustering on the points
+            cluster_labels = AgglomerativeClustering(n_clusters=3).fit_predict(inlier_points)
+
+            # Extract points for each cluster
+            for label in np.unique(cluster_labels):
+                # Get the points for this cluster
+                cluster_points = inlier_points[cluster_labels == label]
 
                 print("Found cluster with {} points".format(len(cluster_points)))
 
@@ -88,13 +115,7 @@ def SegmentPlanes(pcd, cluster=None, min_points=100, iterations=1000, max_loops=
         planes.append(plane)
 
 
-    print("Found {} planes".format(len(planes)))
-
-    total_points = 0
-    for plane in planes:
-        total_points += len(np.asarray(plane.points))
-
-    print("Ending with {} points".format(total_points))
+    print(f"Found {len(planes)} planes")
 
     return planes
 
