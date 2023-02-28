@@ -27,6 +27,7 @@ class RenderWidget(QtWidgets.QWidget):
 
         self.pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.VisualizerWithVertexSelection()
+        self.vis.register_selection_changed_callback(self.selectedPointsChanged)
         worker = WorkerCloseScreen(self)
         worker.start()
 
@@ -89,5 +90,13 @@ class RenderWidget(QtWidgets.QWidget):
             self.night = True
             self.parent.buttonSpace.daynightSwitch.setText("Switch White")
     
-    def showEditor(self):
-        pass
+    def clearSelectedPoints(self):
+        self.vis.clear_picked_points()
+        self.vis.update_renderer()
+    
+    def mergepoints(self):
+        picked_points = self.vis.get_picked_points()
+        print(picked_points)
+    
+    def selectedPointsChanged(self):
+        print("change")

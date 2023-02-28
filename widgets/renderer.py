@@ -1,9 +1,7 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-import open3d as o3d
+from PyQt5 import QtWidgets
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
 from widgets.components.buttonSpace import ButtonSpace
-import numpy as np
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
@@ -78,6 +76,11 @@ class RendererWidget(QtWidgets.QWidget):
         total_area = sum([float(info["Surface area"]) for info in self.data])
         self.area_label.setText(f"Total area: {total_area} m²")
         self.resultTable.data = self.data
+
+    def clearSelectedPoints(self):
+        self.renderWidget.clearSelectedPoints()
     
-    def showEditor(self):
-        self.renderWidget.showEditor()
+    def mergepoints(self):
+        self.renderWidget.mergepoints()
+    
+    
