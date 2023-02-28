@@ -1,8 +1,20 @@
 import numpy as np
-import open3d as o3d
+import open3d as o3d    
 import win32gui
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThread, pyqtSignal
+
+class WorkerCloseScreen(QtCore.QThread):
+    def __init__(self, parent=None):
+        super(WorkerCloseScreen, self).__init__(parent)
+        self.parent = parent
+
+    def run(self):
+        on = True
+        while on:
+            hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D - free view")
+            if hwnd != 0:
+                on = False
+                self.parent.vis.close()
 
 class RenderWidget(QtWidgets.QWidget):
     def __init__(self, fileName, parent):
@@ -14,16 +26,22 @@ class RenderWidget(QtWidgets.QWidget):
         self.night = False
 
         self.pcd = o3d.io.read_point_cloud(fileName)
-        self.vis = o3d.visualization.Visualizer()
+        self.vis = o3d.visualization.VisualizerWithVertexSelection()
+        worker = WorkerCloseScreen(self)
+        worker.start()
+
         self.vis.create_window()
         self.vis.add_geometry(self.pcd)
-        
+        self.vis.run()
+
+        win32gui.CloseWindow(win32gui.FindWindowEx(0, 0, None, "Open3D - free view"))
+
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
         self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
         self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
         self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
 
-        hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D")
+        hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D - free view")
         self.window = QtGui.QWindow.fromWinId(hwnd)    
 
         self.Vbox = QtWidgets.QVBoxLayout(self)
@@ -70,3 +88,6 @@ class RenderWidget(QtWidgets.QWidget):
             opt.background_color = np.asarray([0, 0, 0])
             self.night = True
             self.parent.buttonSpace.daynightSwitch.setText("Switch White")
+    
+    def showEditor(self):
+        pass

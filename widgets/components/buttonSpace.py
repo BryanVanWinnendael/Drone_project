@@ -21,7 +21,13 @@ class ButtonSpace(QtWidgets.QWidget):
         self.daynightSwitch.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.daynightSwitch.clicked.connect(lambda: self.parent.changeBackground())
 
+        self.buttonEditor = QtWidgets.QPushButton("Edit")
+        self.buttonEditor.setObjectName("rendererbtn")
+        self.buttonEditor.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.buttonEditor.clicked.connect(lambda: self.parent.showEditor())
+
         self.layout.addWidget(self.originalButton)
         self.layout.addWidget(self.classifiedButton)
         self.layout.addWidget(self.daynightSwitch)
+        self.layout.addWidget(self.buttonEditor)
         self.setLayout(self.layout)
