@@ -78,6 +78,7 @@ class TextInput(QtWidgets.QWidget):
         self.layoutText.addWidget(self.buttonInfo)
 
         self.TextWidget = QtWidgets.QDoubleSpinBox()
+        self.TextWidget.setRange(0, 100000)
         self.TextWidget.setValue(self.settings[self.value])
         self.TextWidget.valueChanged.connect(self.saveSettingsValue)
 
@@ -112,7 +113,7 @@ class ButtonSettings(QtWidgets.QToolButton):
 
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", "info cluster strategy", self.settings)
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', 'number')
-        self.iterationsWidget = TextInput(self.settings, 'Iterations * 100', 'number')
+        self.iterationsWidget = TextInput(self.settings, 'Iterations', 'number')
         self.maxLoopsWidget = TextInput(self.settings, 'Maximum number of loops', 'number')
         self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', 'number')
         self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', 'number')
@@ -148,7 +149,6 @@ class ButtonSettings(QtWidgets.QToolButton):
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
 
-        self.strategyWidget.resetValue(defaultSettings)
         self.minimumPointsWidget.resetValue(defaultSettings)
         self.iterationsWidget.resetValue(defaultSettings)
         self.maxLoopsWidget.resetValue(defaultSettings)

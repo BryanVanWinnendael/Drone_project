@@ -12,7 +12,7 @@ class Segmentator:
     def segment(self, filename):
         cluster_strategy = self.settings["Cluster strategy"]
         min_points = int(self.settings["Minimum points"])
-        iterations = int(self.settings["Iterations * 100"] * 100)
+        iterations = int(self.settings["Iterations"])
         max_loops = int(self.settings["Maximum number of loops"])
         neighbours = int(self.settings["Number of neigbours"])
         voxel_size = self.settings["Voxel size"]
