@@ -1,11 +1,9 @@
 import os
 from model.plane_detection.plane_detection import DetectPlanes
 from model.plane_detection.surface_calculator import CalculateSurfaces
-from model.view_data import ViewPointCloud, ViewMesh, ViewResult
+from model.model_utils import getDefaulftParameters
 
-
-
-def SegmentPointCloud(filename, waitingScreen, cluster=None, min_points=100, iterations=1000, max_loops=100, neighbours=20, voxel_size=0.01, treshold=0.01, min_std_ratio=2.0, min_ratio=0.05):
+def SegmentPointCloud(filename, waitingScreen, cluster=None, parameters=getDefaulftParameters()):
     # Check if the file exists
     print("Checking if the file exists...")
     if not os.path.exists(filename):
@@ -22,7 +20,7 @@ def SegmentPointCloud(filename, waitingScreen, cluster=None, min_points=100, ite
         os.makedirs("data/results")
 
     print("Detecting planes...")
-    DetectPlanes(filename, waitingScreen, cluster=cluster, min_points=min_points, iterations=iterations, max_loops=max_loops, neighbours=neighbours, voxel_size=voxel_size, treshold=treshold, min_std_ratio=min_std_ratio, min_ratio=min_ratio)
+    DetectPlanes(filename, waitingScreen, cluster=cluster, parameters=parameters)
 
     print("Calculating surface areas...")
     CalculateSurfaces(waitingScreen)
