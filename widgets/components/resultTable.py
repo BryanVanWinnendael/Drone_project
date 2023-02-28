@@ -61,7 +61,7 @@ class ResultTable(QTableWidget):
 
     def mergeSegments(self):
         merger = Merger(self.parent)
-        merger.mergeSegments(self.checkedButtons)
+        merger.mergeSegments(self.checkedButtons, self.parent.getRenderedFile())
         self.clearChecks()
         self.parent.dataChanged()
         self.setRowCount(len(self.data))

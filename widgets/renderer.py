@@ -91,3 +91,6 @@ class RendererWidget(QtWidgets.QWidget):
     
     def getSelectedPoints(self):
         return self.renderWidget.getSelectedPoints()
+    
+    def getRenderedFile(self):
+        return self.renderWidget.newFileName

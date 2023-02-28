@@ -4,22 +4,25 @@ from csv import writer, reader
 from scipy.spatial import ConvexHull
 import pandas as pd
 import os
+
 class Merger():
     def __init__(self, parent):
         self.parent = parent
         self.ids = []
 
-    def mergeSegments(self, ids):
+    def mergeSegments(self, ids, fileName=None):
         self.ids = ids
-        selected_poiunts = self.parent.getSelectedPoints()
-        if len(self.ids) < 2 and len(selected_poiunts) == 0:
+        selected_points = self.parent.getSelectedPoints()
+        if len(self.ids) < 2 and len(selected_points) == 0:
             print("Select at least 2 segments to merge")
         else:
             # Create new point cloud
             new_pcd = o3d.geometry.PointCloud()
-            
+            points = [point.coord for point in selected_points]
+            if fileName is not None and len(points) > 0:
+                self.removePointsFromPointCloud(fileName, points)
+
             # Add points from all selected segments to new point cloud
-            points = [point.coord for point in selected_poiunts]
             self.parent.clearSelectedPoints()
             for seg_id in self.ids:
                 if os.path.isfile(f"data/planes/plane_{seg_id}.ply"):
@@ -110,5 +113,13 @@ class Merger():
         df["Segment"] = range(1, len(df) + 1)
         df.to_csv("data/results/output.csv", index=False)
 
-        
-        
+    def removePointsFromPointCloud(self, fileName, points_to_remove):
+        pcd = o3d.io.read_point_cloud(fileName)
+        pc_points = np.asarray(pcd.points)
+        points_to_mask = np.asarray(points_to_remove)  
+        indexes = [i for i in range(len(pc_points)) if np.any(np.all(pc_points[i] == points_to_mask, axis=1))] 
+        new_points = np.delete(pc_points, indexes, axis=0)
+        new_points = new_points.tolist()
+        pcd.points = o3d.utility.Vector3dVector(new_points)
+        pcd.paint_uniform_color(np.asarray(pcd.colors)[0])
+        o3d.io.write_point_cloud(fileName, pcd)
