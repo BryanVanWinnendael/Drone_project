@@ -7,14 +7,16 @@ import os
 class Merger():
     def __init__(self, parent):
         self.parent = parent
+        self.ids = []
 
     def mergeSegments(self, ids):
-        if len(ids) < 2:
+        self.ids = ids
+        if len(self.ids) < 2:
             print("Select at least 2 segments to merge")
         else:
             new_pcd = o3d.geometry.PointCloud()
             points = []
-            for seg_id in ids:
+            for seg_id in self.ids:
                 if os.path.isfile(f"data/planes/plane_{seg_id}.ply"):
                     pcd = o3d.io.read_point_cloud(f"data/planes/plane_{seg_id}.ply")
                     for point in np.asarray(pcd.points):
@@ -49,7 +51,9 @@ class Merger():
 
         with open("data/results/output.csv", "a", newline='') as f: 
             writer_object = writer(f)
-            writer_object.writerow([new_id, "MERGED" ,surface_area, rgb])
+            str_ids = [str(seg_id) for seg_id in self.ids]
+            class_name = "MERGED_" + '_'.join(str_ids)
+            writer_object.writerow([new_id, class_name, surface_area, rgb])
             f.close()
 
     def deleteSegment(self, id):
