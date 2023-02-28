@@ -3,6 +3,7 @@ import numpy as np
 from csv import writer, reader
 from scipy.spatial import ConvexHull
 import pandas as pd
+import os
 class Merger():
     def __init__(self):
         pass
@@ -11,9 +12,9 @@ class Merger():
         new_pcd = o3d.geometry.PointCloud()
         points = []
         for seg_id in ids:
-            pcd = o3d.io.read_point_cloud(f"data/planes/plane_{seg_id}.ply")
-            for point in np.asarray(pcd.points):
-                points.append(point)
+            if os.path.isfile(f"data/planes/plane_{seg_id}.ply"):
+                pcd = o3d.io.read_point_cloud(f"data/planes/plane_{seg_id}.ply")
+                points.append(np.asarray(pcd.points))
 
         new_pcd.points = o3d.utility.Vector3dVector(points)
 
