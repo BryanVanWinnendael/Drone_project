@@ -93,9 +93,8 @@ class RenderWidget(QtWidgets.QWidget):
         self.vis.clear_picked_points()
         self.vis.update_renderer()
     
-    def mergepoints(self):
-        picked_points = self.vis.get_picked_points()
-        print(picked_points)
+    def getSelectedPoints(self):
+        return self.vis.get_picked_points()
 
     def updateClassified(self):
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)

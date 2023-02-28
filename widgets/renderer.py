@@ -85,3 +85,6 @@ class RendererWidget(QtWidgets.QWidget):
     
     def classifiedResultChanged(self):
         self.renderWidget.updateClassified()
+
+    def getSelectedPoints(self):
+        return self.renderWidget.getSelectedPoints()
