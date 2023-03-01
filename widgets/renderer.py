@@ -33,6 +33,7 @@ class RendererWidget(QtWidgets.QWidget):
 
         total_area = sum([float(info["Surface area"]) for info in self.data])
         self.area_label = QtWidgets.QLabel(f"Total area: {total_area} m²")
+        self.area_label.setObjectName("info_label")
         self.area_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.area_label.setAlignment(Qt.AlignCenter)
         self.area_label.setMaximumHeight(50)
@@ -43,6 +44,8 @@ class RendererWidget(QtWidgets.QWidget):
             self.correctness_label = QtWidgets.QLabel(f"No estimated planes provided")
         if estimated_planes > 0:
             self.correctness_label = QtWidgets.QLabel(f"Segmentation correctness: {self.calculateCorrectness(estimated_planes)}%")
+        
+        self.correctness_label.setObjectName("info_label")
 
         self.correctness_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
         self.correctness_label.setAlignment(Qt.AlignCenter)

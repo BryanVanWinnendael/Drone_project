@@ -76,7 +76,6 @@ class RenderWidget(QtWidgets.QWidget):
             self.vis.add_geometry(self.classified_pcd)
         else:
             cloud = o3d.io.read_point_cloud(newFileName)
-            print("Cloud with {} points".format(len(cloud.points)))
             self.vis.add_geometry(cloud)
             self.vis.add_geometry(self.classified_pcd_downscaled)
 
