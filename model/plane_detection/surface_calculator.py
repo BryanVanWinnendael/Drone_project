@@ -5,7 +5,7 @@ import os
 import csv
 import pandas as pd
 
-def CalculateSurfaces(waitingScreen):
+def CalculateSurfaces(strategy, waitingScreen):
     results = {}
 
     # Iterate over all files in directory
@@ -18,10 +18,15 @@ def CalculateSurfaces(waitingScreen):
 
         # Load pointcloud from file
         pcd = o3d.io.read_point_cloud(file_path)
-        points = np.asarray(pcd.points)
 
         # Compute the surface area
-        surface_area = ConvexHull(points, qhull_options='QJ').area / 2
+        
+        if strategy == "mesh_poisson":
+            surface_area = CalculateSurfaceMeshPoissonMethod(pcd)
+        elif strategy == "mesh_ball_pivoting":
+            surface_area = CalculateSurfaceMeshBallPivotingMethod(pcd)
+        else:
+            surface_area = CalculateSurfaceConvexHull(pcd)
 
         results[segment_number] = [surface_area, [int(x * 255) for x in np.asarray(pcd.colors)[0]]]
 
@@ -41,6 +46,35 @@ def CalculateSurfaces(waitingScreen):
     df = pd.read_csv("data/results/output.csv")
     df = df.sort_values(by=["Segment"])
     df.to_csv("data/results/output.csv", index=False)
+
+
+def CalculateSurfaceMeshPoissonMethod(pcd):
+    # Estimate normals for the point cloud
+    pcd.estimate_normals()
+
+    # Create a mesh using Poisson
+    mesh, _ = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(pcd, depth=3)
+
+    # Get surface area
+    return mesh.get_surface_area()
+
+def CalculateSurfaceMeshBallPivotingMethod(pcd):
+    # Estimate normals for the point cloud
+    pcd.estimate_normals()
+
+    # Create a mesh from the point cloud, with ball pivoting
+    radii = [0.005, 0.01, 0.02, 0.04]
+    mesh = o3d.geometry.TriangleMesh.create_from_point_cloud_ball_pivoting(
+        pcd, o3d.utility.DoubleVector(radii))
+
+    # Get surface area
+    return mesh.get_surface_area()
+
+def CalculateSurfaceConvexHull(pcd):
+    points = np.asarray(pcd.points)
+
+    # Calculate surface area
+    return ConvexHull(points, qhull_options='QJ').area / 2
 
 
 # Legacy code
