@@ -43,7 +43,8 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
 
             if cluster == "DBSCAN":
                 # Perform DBSCAN clustering on the points
-                labels = np.array(plane.cluster_dbscan(eps=parameters["epsilon"], min_points=parameters["min_points"]))
+                # The minimum number of points is set to 20, because if the parameter value is used it gives weird results
+                labels = np.array(plane.cluster_dbscan(eps=parameters["epsilon"], min_points=20))
             elif cluster == "Agglomerative":
                 # Perform agglomerative clustering on the points
                 labels = AgglomerativeClustering(n_clusters=parameters["number_of_clusters"]).fit_predict(inlier_points)

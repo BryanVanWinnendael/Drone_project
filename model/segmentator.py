@@ -12,7 +12,7 @@ class Segmentator:
             "min_points": int(self.settings["Minimum points"]),
             "iterations": int(self.settings["Iterations"]),
             "max_loops": int(self.settings["Maximum number of loops"]),
-            "neighbours": int(self.settings["Number of neigbours"]),
+            "neighbours": int(self.settings["Number of neighbours"]),
             "voxel_size": self.settings["Voxel size"],
             "treshold": self.settings["Treshold"],
             "min_std_ratio": self.settings["Standard deviation ratio"],

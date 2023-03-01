@@ -10,7 +10,7 @@ defaultSettings = {
     "Minimum points": 30,
     "Iterations": 1000,
     "Maximum number of loops": 100,
-    "Number of neigbours": 10,
+    "Number of neighbours": 10,
     "Voxel size": 0.01,
     "Treshold": 0.01,
     "Standard deviation ratio": 2.0,

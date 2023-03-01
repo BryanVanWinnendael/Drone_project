@@ -13,4 +13,4 @@ def GetDefaulftParameters():
     }
 
 def GetValidClusterStrategies():
-    return ["None", "DBSCAN", "Agglomerative"]
+    return ["DBSCAN", "Agglomerative"]
