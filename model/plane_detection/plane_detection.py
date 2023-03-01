@@ -2,7 +2,7 @@ import open3d as o3d
 from model.plane_detection.color_generator import GenerateColors
 import numpy as np
 from sklearn.cluster import AgglomerativeClustering
-from model.model_utils import getDefaulftParameters
+from model.model_utils import GetDefaulftParameters, GetValidClusterStrategies
 
 def SaveResult(planes):
     pcds = o3d.geometry.PointCloud()
@@ -11,7 +11,7 @@ def SaveResult(planes):
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
-def SegmentPlanes(pcd, cluster=None, parameters=getDefaulftParameters()):
+def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
     planes = []
@@ -29,54 +29,31 @@ def SegmentPlanes(pcd, cluster=None, parameters=getDefaulftParameters()):
         cloud = o3d.geometry.PointCloud()
         cloud.points = o3d.utility.Vector3dVector(target)
 
-        # Remaining clusters
-        remaining_clusters = []
-
         # Segment the plane
         inliers, mask = cloud.segment_plane(distance_threshold=parameters["treshold"], ransac_n=3, num_iterations=parameters["iterations"])
 
         # Extract the plane
         plane = cloud.select_by_index(mask)
 
-        if cluster != None and cluster == "DBSCAN":
+        if cluster != None and cluster in GetValidClusterStrategies():
             inlier_points = np.asarray(plane.points)
 
-            # Perform DBSCAN clustering on the points
-            labels = np.array(plane.cluster_dbscan(eps=0.1, min_points=20, print_progress=True))
+            # Remaining clusters
+            remaining_clusters = []
 
+            if cluster == "DBSCAN":
+                # Perform DBSCAN clustering on the points
+                labels = np.array(plane.cluster_dbscan(eps=0.1, min_points=20, print_progress=True))
+            elif cluster == "Agglomerative":
+                # Perform agglomerative clustering on the points
+                labels = AgglomerativeClustering(n_clusters=3).fit_predict(inlier_points)
+            
             # Extract points for each cluster
             for label in np.unique(labels):
                 # Get the points for this cluster
                 cluster_points = inlier_points[labels == label]
 
                 print(f"Found cluster with {len(cluster_points)} points")
-
-                if len(cluster_points) >= parameters["min_points"]:
-                    # Convert points to Open3D point cloud
-                    cluster_pcd = o3d.geometry.PointCloud()
-                    cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
-
-                    # Add the cluster point cloud to the list of planes
-                    planes.append(cluster_pcd)
-
-                    # Update the count
-                    count += len(cluster_points)
-                else:
-                    # Put the points back into the target
-                    print("Not enough points to be a plane, adding points back to target")
-                    remaining_clusters.append(cluster_points)
-        elif cluster != None and cluster == "Agglomerative":
-            inlier_points = np.asarray(plane.points)
-
-            # Perform agglomerative clustering on the points
-            cluster_labels = AgglomerativeClustering(n_clusters=3).fit_predict(inlier_points)
-
-            # Extract points for each cluster
-            for label in np.unique(cluster_labels):
-                # Get the points for this cluster
-                cluster_points = inlier_points[cluster_labels == label]
-
-                print("Found cluster with {} points".format(len(cluster_points)))
 
                 if len(cluster_points) >= parameters["min_points"]:
                     # Convert points to Open3D point cloud
@@ -122,7 +99,7 @@ def SegmentPlanes(pcd, cluster=None, parameters=getDefaulftParameters()):
     return planes
 
 # Detect planes solely based on RANSAC
-def DetectPlanes(filename, waitingScreen, cluster=None, parameters=getDefaulftParameters()):
+def DetectPlanes(filename, waitingScreen, cluster=None, parameters=GetDefaulftParameters()):
     # Load in point cloud
     print("Loading point cloud...")
     waitingScreen.progress.emit("Loading point cloud...")

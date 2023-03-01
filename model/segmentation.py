@@ -1,9 +1,9 @@
 import os
 from model.plane_detection.plane_detection import DetectPlanes
 from model.plane_detection.surface_calculator import CalculateSurfaces
-from model.model_utils import getDefaulftParameters
+from model.model_utils import GetDefaulftParameters
 
-def SegmentPointCloud(filename, waitingScreen, cluster=None, parameters=getDefaulftParameters()):
+def SegmentPointCloud(filename, waitingScreen, cluster=None, parameters=GetDefaulftParameters()):
     # Check if the file exists
     print("Checking if the file exists...")
     if not os.path.exists(filename):

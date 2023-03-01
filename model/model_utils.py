@@ -1,4 +1,4 @@
-def getDefaulftParameters():
+def GetDefaulftParameters():
     return {
         "min_points": 100,
         "iterations": 1000,
@@ -9,3 +9,6 @@ def getDefaulftParameters():
         "min_std_ratio": 2.0,
         "min_ratio": 0.05,
     }
+
+def GetValidClusterStrategies():
+    return ["None", "DBSCAN", "Agglomerative"]
