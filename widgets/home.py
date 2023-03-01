@@ -4,6 +4,9 @@ from widgets.components.buttonHistory import ButtonHistory
 from PyQt5.QtCore import pyqtSignal
 from widgets.components.buttonUpload import ButtonUpload
 from widgets.components.buttonSettings import ButtonSettings
+from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
+import os
+from utils import copyDirectory
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -14,32 +17,24 @@ class HomeWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.setAcceptDrops(True)
 
+        # Set error message label
         self.labelError = QtWidgets.QLabel()
         self.labelError.setMaximumHeight(25)
         self.labelError.setObjectName("label-error")
         layout.addWidget(self.labelError)
 
+        # Set settings button
         self.settingsButtonLayout = QtWidgets.QHBoxLayout()
         self.settingsButton = ButtonSettings(self.parent)
         self.settingsButtonLayout.addWidget(self.settingsButton)
         self.settingsButtonLayout.setAlignment(QtCore.Qt.AlignRight)
         layout.addLayout(self.settingsButtonLayout)
 
-        widget = QtWidgets.QWidget()
-        self.uploadButtonLayout = QtWidgets.QGridLayout(widget)
-        self.textLayout = QtWidgets.QHBoxLayout()
-
-        self.uploadText = QtWidgets.QLabel("Drag file here or")
-        self.uploadText.setObjectName("uploadtext")
-        self.textLayout.addWidget(self.uploadText)
-
-        self.uploadText2 = QtWidgets.QLabel("browse")
-        self.uploadText2.setObjectName("uploadtext2")
-        self.textLayout.addWidget(self.uploadText2)
-
+        # Set upload button
         self.uploadButton = ButtonUpload(self)
         layout.addWidget(self.uploadButton)
 
+        # Set recent files
         vbox = QtWidgets.QVBoxLayout()
         
         self.label = QtWidgets.QLabel("Recent files")
@@ -58,6 +53,10 @@ class HomeWidget(QtWidgets.QWidget):
         vbox.setSpacing(0)
         layout.addLayout(vbox)
 
+        # Set upload pre-processed data button
+        self.uploadPreProcessedDataButton = ButtonUploadPreProcessedData(self)
+        layout.addWidget(self.uploadPreProcessedDataButton)
+
         self.setLayout(layout)
 
     def openFileNameDialog(self):
@@ -66,6 +65,31 @@ class HomeWidget(QtWidgets.QWidget):
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Open point cloud file", "","Polygon Files (*.ply)", options=options)
         if fileName and fileName.endswith('.ply'):
             self.parent.navigateToRenderer(fileName)
+
+    def openDirectoryDialog(self):
+        self.uploadButton.setNormal()
+        options = QtWidgets.QFileDialog.Options()
+        directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Open exported data file", "", options=options)
+        if directory:
+            contents = os.listdir(directory)
+            
+            # Check if the correct folders exist
+            if "planes" not in contents or "results" not in contents:
+                self.uploadPreProcessedDataButton.setError()
+                return
+            
+            # Check if the results folder contains the correct files
+            results = os.listdir(os.path.join(directory, "results"))
+            if "original.ply" not in results or "result-classified.ply" not in results or "output.csv" not in results:
+                self.uploadPreProcessedDataButton.setError()
+                return
+            
+            # Copy the files to the data folder
+            copyDirectory(directory, "data")
+
+            # Navigate to the renderer
+            self.parent.navigateToRendererFromPreProcessedData(os.path.join("data", "results", "original.ply"))
+            
     
     def dragEnterEvent(self, event):
         self.uploadButton.setNormal()

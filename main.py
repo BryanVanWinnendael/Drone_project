@@ -30,7 +30,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setObjectName("mainWindow")
-        self.setWindowTitle("Point cloud renderer")
+        self.setWindowTitle("Point cloud Processor")
 
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)
@@ -49,6 +49,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.worker.start()
         self.worker.finished.connect(lambda: self.navigateToSegmentation(fileName))
         self.worker.progress.connect(lambda x: self.setLoadingText(x))
+
+    def navigateToRendererFromPreProcessedData(self, fileName):
+        return self.setCentralWidget(RendererWidget(self, fileName))
     
     def setLoadingText(self, text):
         try: 

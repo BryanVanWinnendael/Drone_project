@@ -95,3 +95,14 @@ def updateClass(row, col, newItem):
 
     with open(res_path, "w") as outfile:
         outfile.write(data)
+
+import shutil
+
+def copyDirectory(src, dest):
+    try:
+        shutil.copytree(src, dest)
+        print("Directory copied successfully")
+    except shutil.Error as e:
+        print(f"Error copying directory: {e}")
+    except OSError as e:
+        print(f"Error copying directory: {e}")
