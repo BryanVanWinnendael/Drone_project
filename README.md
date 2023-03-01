@@ -12,6 +12,9 @@ Our project was about detecting planes inside a point cloud, in order to get inf
 
 ## Usage
 To run the project you first need to install the required dependencies.
+```bash
+pip install -r requirements.txt
+```
 
 After the dependencies have been installed you can run the project by running the following command:
 ```bash
