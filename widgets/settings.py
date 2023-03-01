@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import (clusterStrategies, getSettings, resetSettings,
+from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSettings,
                    saveRecentFile, saveSettings)
 
 
@@ -119,6 +119,9 @@ class SettingsWidget(QtWidgets.QWidget):
 
         info_strategy = "Select the clustering strategy."
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings)
+        
+        info_surfaceStrategy = "Select the surface calculation strategy."
+        self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
 
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
@@ -152,6 +155,7 @@ class SettingsWidget(QtWidgets.QWidget):
 
         widgetLayout.addWidget(self.backButton)
         widgetLayout.addWidget(self.strategyWidget)
+        widgetLayout.addWidget(self.surfaceStrategyWidget)
         widgetLayout.addWidget(self.minimumPointsWidget)
         widgetLayout.addWidget(self.iterationsWidget)
         widgetLayout.addWidget(self.maxLoopsWidget)
