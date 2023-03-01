@@ -1,5 +1,7 @@
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QFileDialog
+import os
+import zipfile
 
 class ResultTopBar(QtWidgets.QWidget):
     def __init__(self, fileName, parent):
@@ -37,11 +39,12 @@ class ResultTopBar(QtWidgets.QWidget):
         file = fileName.split("/")[-1]
         self.saveButton.setToolTip(f"Export {file} table to CSV")
         self.saveButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.saveButton.clicked.connect(self.saveFileDialog)
+        self.saveButton.clicked.connect(self.saveDirectoryDialog)
 
         self.layout.addWidget(self.saveButton)
         self.setLayout(self.layout)
     
+    # Save CSV file
     def saveFileDialog(self):
         try:
             filePath, _ = QFileDialog.getSaveFileName(self, "Save file", "",
@@ -55,3 +58,21 @@ class ResultTopBar(QtWidgets.QWidget):
                 outfile.write(data)
         except:
             print("No file selected")
+
+    # Export the entire data directory to a zip file
+    def saveDirectoryDialog(self):
+        try:
+            dirPath = QFileDialog.getExistingDirectory(self, "Select Directory")
+            resultPath = "data"
+            zipPath = os.path.join(dirPath, "result.zip")
+
+            with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
+                for root, dirs, files in os.walk(resultPath):
+                    for file in files:
+                        absPath = os.path.join(root, file)
+                        relPath = os.path.relpath(absPath, resultPath)
+                        zip.write(absPath, relPath)
+
+            print("Directory zipped and exported to:", zipPath)
+        except:
+            print("No directory selected")
