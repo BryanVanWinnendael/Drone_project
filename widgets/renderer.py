@@ -9,6 +9,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 import csv
 from widgets.components.renderWidget import RenderWidget
+from utils import getSettings
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -34,11 +35,23 @@ class RendererWidget(QtWidgets.QWidget):
         self.area_label.setAlignment(Qt.AlignCenter)
         self.area_label.setMaximumHeight(50)
 
+        self.settings = getSettings()
+        estimated_planes = self.settings["Estimated planes"]
+        if estimated_planes == 0:
+            self.correctness_label = QtWidgets.QLabel(f"No estimated planes provided")
+        if estimated_planes > 0:
+            self.correctness_label = QtWidgets.QLabel(f"Segmentation correctness: {self.calculateCorrectness(estimated_planes)}%")
+
+        self.correctness_label.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.correctness_label.setAlignment(Qt.AlignCenter)
+        self.correctness_label.setMaximumHeight(50)
+
         self.tableAndButtonSpace = QtWidgets.QWidget()
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
 
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
         self.tableAndButtonsLayout.addWidget(self.area_label)
+        self.tableAndButtonsLayout.addWidget(self.correctness_label)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
         self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
 
@@ -77,6 +90,9 @@ class RendererWidget(QtWidgets.QWidget):
         self.data = self.readData()
         total_area = sum([float(info["Surface area"]) for info in self.data])
         self.area_label.setText(f"Total area: {total_area} m²")
+        if self.settings["Estimated planes"] > 0:
+            estimated_planes = self.settings["Estimated planes"]
+            self.correctness_label.setText(f"Segmentation correctness: {self.calculateCorrectness(estimated_planes)}%")
         self.resultTable.data = self.data
         self.resultTable.setData()
 
@@ -94,3 +110,9 @@ class RendererWidget(QtWidgets.QWidget):
     
     def getRenderedFile(self):
         return self.renderWidget.newFileName
+    
+    def calculateCorrectness(self, estimated_planes):
+        if len(self.data) > estimated_planes:
+            return estimated_planes / len(self.data) * 100
+        else:
+            return len(self.data) / int(estimated_planes) * 100

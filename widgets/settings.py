@@ -132,6 +132,9 @@ class SettingsWidget(QtWidgets.QScrollArea):
         info_surfaceStrategy = "Select the surface calculation strategy."
         self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
 
+        info_estimatedPlanes = "The number of planes you think will be in the point cloud. This is used to calculate the correctness of the segmentation."
+        self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes)
+
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
 
@@ -165,6 +168,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.widgetLayout.addLayout(self.layoutButton)
         self.widgetLayout.addWidget(self.strategyWidget)
         self.widgetLayout.addWidget(self.surfaceStrategyWidget)
+        self.widgetLayout.addWidget(self.estimatedPlanesWidget)
         self.widgetLayout.addWidget(self.minimumPointsWidget)
         self.widgetLayout.addWidget(self.iterationsWidget)
         self.widgetLayout.addWidget(self.maxLoopsWidget)
@@ -190,6 +194,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
 
+        self.estimatedPlanesWidget.resetValue(defaultSettings)
         self.minimumPointsWidget.resetValue(defaultSettings)
         self.iterationsWidget.resetValue(defaultSettings)
         self.maxLoopsWidget.resetValue(defaultSettings)
@@ -217,13 +222,3 @@ class SettingsWidget(QtWidgets.QScrollArea):
             self.epsilonWidget.setParent(None)
             self.widgetLayout.removeWidget(self.clustersWidget)
             self.clustersWidget.setParent(None)
-
-            
-        
-        
-
-    
-
-
-        
-    
