@@ -17,35 +17,24 @@ class HomeWidget(QtWidgets.QWidget):
         layout = QtWidgets.QVBoxLayout()
         self.setAcceptDrops(True)
 
+        # Set error message label
         self.labelError = QtWidgets.QLabel()
         self.labelError.setMaximumHeight(25)
         self.labelError.setObjectName("label-error")
         layout.addWidget(self.labelError)
 
+        # Set settings button
         self.settingsButtonLayout = QtWidgets.QHBoxLayout()
         self.settingsButton = ButtonSettings(self.parent)
         self.settingsButtonLayout.addWidget(self.settingsButton)
         self.settingsButtonLayout.setAlignment(QtCore.Qt.AlignRight)
         layout.addLayout(self.settingsButtonLayout)
 
-        widget = QtWidgets.QWidget()
-        self.uploadButtonLayout = QtWidgets.QGridLayout(widget)
-        self.textLayout = QtWidgets.QHBoxLayout()
-
-        self.uploadText = QtWidgets.QLabel("Drag file here or")
-        self.uploadText.setObjectName("uploadtext")
-        self.textLayout.addWidget(self.uploadText)
-
-        self.uploadText2 = QtWidgets.QLabel("browse")
-        self.uploadText2.setObjectName("uploadtext2")
-        self.textLayout.addWidget(self.uploadText2)
-
+        # Set upload button
         self.uploadButton = ButtonUpload(self)
         layout.addWidget(self.uploadButton)
 
-        self.uploadPreProcessedDataButton = ButtonUploadPreProcessedData(self)
-        layout.addWidget(self.uploadPreProcessedDataButton)
-
+        # Set recent files
         vbox = QtWidgets.QVBoxLayout()
         
         self.label = QtWidgets.QLabel("Recent files")
@@ -63,6 +52,10 @@ class HomeWidget(QtWidgets.QWidget):
         vbox.setContentsMargins(0, 0, 0, 0)
         vbox.setSpacing(0)
         layout.addLayout(vbox)
+
+        # Set upload pre-processed data button
+        self.uploadPreProcessedDataButton = ButtonUploadPreProcessedData(self)
+        layout.addWidget(self.uploadPreProcessedDataButton)
 
         self.setLayout(layout)
 
