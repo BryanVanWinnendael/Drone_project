@@ -166,3 +166,12 @@ QScrollArea {
   border: none;
   background-color: white;
 }
+
+QWidget#widgetSettings {
+  background-color: white;
+}
+
+QLabel#info_label {
+  font-size: 12px;
+  font-weight: 300;
+}

@@ -108,7 +108,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         
         self.widget = QtWidgets.QWidget()
         self.layout = QtWidgets.QVBoxLayout()
-        self.widget.setStyleSheet("background-color: white;")
+        self.widget.setObjectName("widgetSettings")
 
         self.widgetLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.setSpacing(20)
