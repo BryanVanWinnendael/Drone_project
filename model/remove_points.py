@@ -3,6 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 from scipy.spatial import ConvexHull
+from scipy.spatial.qhull import QhullError
 
 def constructNewClassifiedPointCloud():
         # Load in all point clouds
@@ -39,16 +40,25 @@ def remove_points(file, remove_points, remove_segments):
         new_points = np.delete(points, indexes, axis=0)
         new_points = new_points.tolist()
 
-        surface_area = ConvexHull(new_points, qhull_options='QJ').area / 2
-        seg_id = int(file.split("_")[1].split(".")[0])
-        df = pd.read_csv("data/results/output.csv")
-        df.loc[df.Segment == seg_id, 'Surface area'] = surface_area
-        df.to_csv("data/results/output.csv", index=False)
+        if len(new_points) > 3:
+            try:
+                surface_area = ConvexHull(new_points, qhull_options='QJ').area / 2
+            except QhullError:
+                print("Qhull error: surface area could not be calculated")
+                surface_area = 0
 
-        pcd.points = o3d.utility.Vector3dVector(new_points)
-        pcd.paint_uniform_color(np.asarray(pcd.colors)[0])
-        o3d.io.write_point_cloud(file, pcd)
-    
+            seg_id = int(file.split("_")[1].split(".")[0])
+            df = pd.read_csv("data/results/output.csv")
+            df.loc[df.Segment == seg_id, 'Surface area'] = surface_area
+            df.to_csv("data/results/output.csv", index=False)
+
+            pcd.points = o3d.utility.Vector3dVector(new_points)
+            pcd.paint_uniform_color(np.asarray(pcd.colors)[0])
+            o3d.io.write_point_cloud(file, pcd)
+        else:
+            print("Deleting segment, reason: less than 4 points left")
+            remove_segments.append(int(file.split("_")[1].split(".")[0]))
+
     if len(remove_segments) > 0:
         for segment_id in remove_segments:
             deleteSegment(segment_id)

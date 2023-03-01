@@ -76,8 +76,15 @@ class RenderWidget(QtWidgets.QWidget):
             self.vis.add_geometry(self.classified_pcd)
         else:
             cloud = o3d.io.read_point_cloud(newFileName)
-            self.vis.add_geometry(cloud)
-            self.vis.add_geometry(self.classified_pcd_downscaled)
+            try:
+                self.vis.add_geometry(cloud)
+                self.vis.add_geometry(self.classified_pcd_downscaled)
+            except RuntimeError as error:
+                print("Error: Could not load file")
+                print(error)
+                self.changeGeometry(self.classified)
+            except:
+                print("other error")
 
         ctr = self.vis.get_view_control()
         ctr.convert_from_pinhole_camera_parameters(original_view)
