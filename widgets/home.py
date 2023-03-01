@@ -4,6 +4,9 @@ from widgets.components.buttonHistory import ButtonHistory
 from PyQt5.QtCore import pyqtSignal
 from widgets.components.buttonUpload import ButtonUpload
 from widgets.components.buttonSettings import ButtonSettings
+from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
+import os
+from utils import copyDirectory
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -40,6 +43,9 @@ class HomeWidget(QtWidgets.QWidget):
         self.uploadButton = ButtonUpload(self)
         layout.addWidget(self.uploadButton)
 
+        self.uploadPreProcessedDataButton = ButtonUploadPreProcessedData(self)
+        layout.addWidget(self.uploadPreProcessedDataButton)
+
         vbox = QtWidgets.QVBoxLayout()
         
         self.label = QtWidgets.QLabel("Recent files")
@@ -66,6 +72,31 @@ class HomeWidget(QtWidgets.QWidget):
         fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self,"Open point cloud file", "","Polygon Files (*.ply)", options=options)
         if fileName and fileName.endswith('.ply'):
             self.parent.navigateToRenderer(fileName)
+
+    def openDirectoryDialog(self):
+        self.uploadButton.setNormal()
+        options = QtWidgets.QFileDialog.Options()
+        directory = QtWidgets.QFileDialog.getExistingDirectory(self,"Open exported data file", "", options=options)
+        if directory:
+            contents = os.listdir(directory)
+            
+            # Check if the correct folders exist
+            if "planes" not in contents or "results" not in contents:
+                self.uploadPreProcessedDataButton.setError()
+                return
+            
+            # Check if the results folder contains the correct files
+            results = os.listdir(os.path.join(directory, "results"))
+            if "original.ply" not in results or "result-classified.ply" not in results or "output.csv" not in results:
+                self.uploadPreProcessedDataButton.setError()
+                return
+            
+            # Copy the files to the data folder
+            copyDirectory(directory, "data")
+
+            # Navigate to the renderer
+            self.parent.navigateToRendererFromPreProcessedData(os.path.join("data", "results", "original.ply"))
+            
     
     def dragEnterEvent(self, event):
         self.uploadButton.setNormal()
