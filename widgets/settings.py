@@ -12,14 +12,12 @@ class DropDown(QtWidgets.QWidget):
         self.info = info
         self.settings = settings
         self.callback = callback
-        print(self.callback)
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
         self.layout.setSpacing(0)
-
+        self.layout.setContentsMargins(0, 0, 100, 0)
         self.layoutText = QtWidgets.QHBoxLayout()
-        self.layoutText.setContentsMargins(0, 0, 0, 10)
+        self.layoutText.setContentsMargins(0, 0, 0, 0)
         self.layoutText.setSpacing(10)
 
         self.textLabel = QtWidgets.QLabel(self.value)
@@ -62,11 +60,11 @@ class TextInput(QtWidgets.QWidget):
         self.info = info
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 0, 0)
+        self.layout.setContentsMargins(0, 0, 100, 0)
         self.layout.setSpacing(0)
 
         self.layoutText = QtWidgets.QHBoxLayout()
-        self.layoutText.setContentsMargins(0, 0, 0, 10)
+        self.layoutText.setContentsMargins(0, 0, 0, 0)
         self.layoutText.setSpacing(10)
 
         self.textLabel = QtWidgets.QLabel(self.value)
@@ -102,17 +100,23 @@ class TextInput(QtWidgets.QWidget):
         self.TextWidget.setValue(defaultSettings[self.value])
         saveRecentFile(None)
 
-class SettingsWidget(QtWidgets.QWidget):
+class SettingsWidget(QtWidgets.QScrollArea):
     def __init__(self, parent):
         super().__init__()
         self.parent = parent
         self.settings = getSettings()
-
-        self.widgetLayout = QtWidgets.QVBoxLayout(self)
+        
+        self.widget = QtWidgets.QWidget()
+        self.layout = QtWidgets.QVBoxLayout()
+        self.widgetLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.setSpacing(20)
+        self.widgetLayout.setContentsMargins(0, 0, 0, 20)
+
+        self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
+        self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.setWidgetResizable(True)
 
         self.layoutButton = QtWidgets.QHBoxLayout()
-        self.layoutButton.setContentsMargins(-10, 0, 0, 10)
         self.backButton = QtWidgets.QPushButton("Back")
         self.backButton.setObjectName("backbtn")
         self.backButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -170,15 +174,18 @@ class SettingsWidget(QtWidgets.QWidget):
         self.widgetLayout.addWidget(self.standardDeviationWidget)
         self.widgetLayout.addWidget(self.minRatioWidget)
 
-        resetButton = QtWidgets.QPushButton('Reset')
-        resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        resetButton.setObjectName('buttonReset')
-        resetButton.setMinimumHeight(30)
-        resetButton.clicked.connect(self.resetSettingsValue)
+        self.resetButton = QtWidgets.QPushButton('Reset')
+        self.resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
+        self.resetButton.setObjectName('buttonReset')
+        self.resetButton.setMinimumHeight(30)
+        self.resetButton.clicked.connect(self.resetSettingsValue)
+
+        self.layout.addLayout(self.widgetLayout)
+        self.layout.addWidget(self.resetButton)
+        self.widget.setLayout(self.layout)
 
         self.showSettings()
-
-        self.setLayout(self.widgetLayout)
+        self.setWidget(self.widget)
     
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
