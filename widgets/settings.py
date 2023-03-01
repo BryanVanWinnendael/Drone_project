@@ -5,12 +5,13 @@ from utils import (clusterStrategies, getSettings, resetSettings,
 
 
 class DropDown(QtWidgets.QWidget):
-    def __init__(self, items, value, info, settings):
+    def __init__(self, items, value, info, settings, callback=None):
         super(DropDown, self).__init__()
         self.items = items
         self.value = value
         self.info = info
         self.settings = settings
+        self.callback = callback
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -47,6 +48,7 @@ class DropDown(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def saveSettingsValue(self):
+        self.callback()
         self.settings[self.value] = self.dropDown.currentText()
         saveSettings(self.settings)
         saveRecentFile(None)
@@ -105,10 +107,11 @@ class SettingsWidget(QtWidgets.QWidget):
         self.parent = parent
         self.settings = getSettings()
 
-        widgetLayout = QtWidgets.QVBoxLayout(self)
-        widgetLayout.setSpacing(20)
+        self.widgetLayout = QtWidgets.QVBoxLayout(self)
+        self.widgetLayout.setSpacing(20)
 
         self.layoutButton = QtWidgets.QHBoxLayout()
+        self.layoutButton.setContentsMargins(-10, 0, 0, 10)
         self.backButton = QtWidgets.QPushButton("Back")
         self.backButton.setObjectName("backbtn")
         self.backButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -116,9 +119,10 @@ class SettingsWidget(QtWidgets.QWidget):
         self.backButton.setIcon(QtGui.QIcon('assets/back.svg'))
         self.backButton.setIconSize(QtCore.QSize(30, 30))
         self.backButton.setToolTip("Back to home")
+        self.layoutButton.addWidget(self.backButton)
 
         info_strategy = "Select the clustering strategy."
-        self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings)
+        self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings, callback=self.showSettings)
 
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
@@ -149,19 +153,17 @@ class SettingsWidget(QtWidgets.QWidget):
 
         info_clusters = "The number of clusters to be used in Agglomerative clustering. This parameter will be ignored with other strategies. It indicates the number of clusters to be created. This number will be static so it will always create the same number of clusters per segment. This could be useful if you manually want to merge."
         self.clustersWidget = TextInput(self.settings, 'Number of Clusters (Agglomerative)', info_clusters)
-
-        widgetLayout.addWidget(self.backButton)
-        widgetLayout.addWidget(self.strategyWidget)
-        widgetLayout.addWidget(self.minimumPointsWidget)
-        widgetLayout.addWidget(self.iterationsWidget)
-        widgetLayout.addWidget(self.maxLoopsWidget)
-        widgetLayout.addWidget(self.neighboursWidget)
-        widgetLayout.addWidget(self.voxelSizeWidget)
-        widgetLayout.addWidget(self.treshholdWidget)
-        widgetLayout.addWidget(self.standardDeviationWidget)
-        widgetLayout.addWidget(self.minRatioWidget)
-        widgetLayout.addWidget(self.epsilonWidget)
-        widgetLayout.addWidget(self.clustersWidget)
+        
+        self.widgetLayout.addLayout(self.layoutButton)
+        self.widgetLayout.addWidget(self.strategyWidget)
+        self.widgetLayout.addWidget(self.minimumPointsWidget)
+        self.widgetLayout.addWidget(self.iterationsWidget)
+        self.widgetLayout.addWidget(self.maxLoopsWidget)
+        self.widgetLayout.addWidget(self.neighboursWidget)
+        self.widgetLayout.addWidget(self.voxelSizeWidget)
+        self.widgetLayout.addWidget(self.treshholdWidget)
+        self.widgetLayout.addWidget(self.standardDeviationWidget)
+        self.widgetLayout.addWidget(self.minRatioWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
         resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -169,7 +171,9 @@ class SettingsWidget(QtWidgets.QWidget):
         resetButton.setMinimumHeight(30)
         resetButton.clicked.connect(self.resetSettingsValue)
 
-        self.setLayout(widgetLayout)
+        self.showSettings()
+
+        self.setLayout(self.widgetLayout)
     
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
@@ -184,6 +188,29 @@ class SettingsWidget(QtWidgets.QWidget):
         self.minRatioWidget.resetValue(defaultSettings)
         self.epsilonWidget.resetValue(defaultSettings)
         self.clustersWidget.resetValue(defaultSettings)
+    
+    def showSettings(self):
+        cluster_strategy = self.strategyWidget.dropDown.currentText()
+
+        if cluster_strategy == 'DBSCAN':
+            self.widgetLayout.addWidget(self.epsilonWidget)
+            self.widgetLayout.removeWidget(self.clustersWidget)
+            self.clustersWidget.setParent(None)
+        elif cluster_strategy == 'Agglomerative':
+            self.widgetLayout.addWidget(self.clustersWidget)
+            self.widgetLayout.removeWidget(self.epsilonWidget)
+            self.epsilonWidget.setParent(None)
+        else:
+            self.widgetLayout.removeWidget(self.epsilonWidget)
+            self.epsilonWidget.setParent(None)
+            self.widgetLayout.removeWidget(self.clustersWidget)
+            self.clustersWidget.setParent(None)
+
+            
+        
+        
+
+    
 
 
         
