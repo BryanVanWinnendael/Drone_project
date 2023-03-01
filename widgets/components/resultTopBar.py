@@ -37,7 +37,7 @@ class ResultTopBar(QtWidgets.QWidget):
         self.saveButton.setMaximumWidth(35)
 
         file = fileName.split("/")[-1]
-        self.saveButton.setToolTip(f"Export {file} table to CSV")
+        self.saveButton.setToolTip(f"Export {file} data")
         self.saveButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.saveButton.clicked.connect(self.saveDirectoryDialog)
 

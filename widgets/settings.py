@@ -108,6 +108,8 @@ class SettingsWidget(QtWidgets.QScrollArea):
         
         self.widget = QtWidgets.QWidget()
         self.layout = QtWidgets.QVBoxLayout()
+        self.widget.setStyleSheet("background-color: white;")
+
         self.widgetLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.setSpacing(20)
         self.widgetLayout.setContentsMargins(0, 0, 0, 20)
@@ -133,7 +135,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
 
         info_estimatedPlanes = "The number of planes you think will be in the point cloud. This is used to calculate the correctness of the segmentation."
-        self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes)
+        self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes, steps=1)
 
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
