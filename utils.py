@@ -4,9 +4,11 @@ import datetime
 from model.clean import clean
 
 clusterStrategies = ["DBSCAN", "None", "Agglomerative"]
+surfaceStrategies = ["Poisson", "Convex Hull", "Ball Pivoting"]
 
 defaultSettings = {
     "Cluster strategy": "None",
+    "Surface strategy": "Convex Hull",
     "Minimum points": 30,
     "Iterations": 1000,
     "Maximum number of loops": 100,

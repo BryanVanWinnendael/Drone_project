@@ -7,6 +7,7 @@ class Segmentator:
 
     def segment(self, filename):
         cluster_strategy = self.settings["Cluster strategy"]
+        surface_strategy = self.settings["Surface strategy"]
 
         segmentation_parameters = {
             "min_points": int(self.settings["Minimum points"]),
@@ -21,4 +22,4 @@ class Segmentator:
             "number_of_clusters": int(self.settings["Number of Clusters (Agglomerative)"]),
         }
 
-        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, parameters=segmentation_parameters)
+        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, surface=surface_strategy, parameters=segmentation_parameters)

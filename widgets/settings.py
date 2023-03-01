@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import (clusterStrategies, getSettings, resetSettings,
+from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSettings,
                    saveRecentFile, saveSettings)
 
 
@@ -12,6 +12,7 @@ class DropDown(QtWidgets.QWidget):
         self.info = info
         self.settings = settings
         self.callback = callback
+        print(self.callback)
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setContentsMargins(0, 0, 0, 0)
@@ -48,7 +49,7 @@ class DropDown(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
     def saveSettingsValue(self):
-        self.callback()
+        if self.callback: self.callback()
         self.settings[self.value] = self.dropDown.currentText()
         saveSettings(self.settings)
         saveRecentFile(None)
@@ -123,6 +124,9 @@ class SettingsWidget(QtWidgets.QWidget):
 
         info_strategy = "Select the clustering strategy."
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings, callback=self.showSettings)
+        
+        info_surfaceStrategy = "Select the surface calculation strategy."
+        self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
 
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
@@ -156,6 +160,7 @@ class SettingsWidget(QtWidgets.QWidget):
         
         self.widgetLayout.addLayout(self.layoutButton)
         self.widgetLayout.addWidget(self.strategyWidget)
+        self.widgetLayout.addWidget(self.surfaceStrategyWidget)
         self.widgetLayout.addWidget(self.minimumPointsWidget)
         self.widgetLayout.addWidget(self.iterationsWidget)
         self.widgetLayout.addWidget(self.maxLoopsWidget)

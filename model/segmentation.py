@@ -3,7 +3,7 @@ from model.plane_detection.plane_detection import DetectPlanes
 from model.plane_detection.surface_calculator import CalculateSurfaces
 from model.model_utils import GetDefaulftParameters
 
-def SegmentPointCloud(filename, waitingScreen, cluster=None, parameters=GetDefaulftParameters()):
+def SegmentPointCloud(filename, waitingScreen, cluster=None, surface="Convex Hull", parameters=GetDefaulftParameters()):
     # Check if the file exists
     print("Checking if the file exists...")
     if not os.path.exists(filename):
@@ -23,4 +23,4 @@ def SegmentPointCloud(filename, waitingScreen, cluster=None, parameters=GetDefau
     DetectPlanes(filename, waitingScreen, cluster=cluster, parameters=parameters)
 
     print("Calculating surface areas...")
-    CalculateSurfaces(waitingScreen)
+    CalculateSurfaces(surface, waitingScreen)
