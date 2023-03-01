@@ -10,6 +10,8 @@ from PyQt5.QtCore import *
 import csv
 from widgets.components.renderWidget import RenderWidget
 from utils import getSettings
+from model.remove_points import remove_points
+import os
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -66,13 +68,19 @@ class RendererWidget(QtWidgets.QWidget):
         self.mergeBtn.clicked.connect(lambda: self.resultTable.mergeSegments())
         self.mergeBtn.setText("Merge")
 
+        self.deleteButton = QPushButton()
+        self.deleteButton.clicked.connect(lambda: self.removeSelectedPoints())
+        self.deleteButton.setText("Delete selection")
+
         layout.addWidget(self.topBar, 0, 0)
         layout.addWidget(self.splitter, 1, 0)
         layout.addWidget(self.mergeBtn, 2, 0)
+        layout.addWidget(self.deleteButton, 3, 0)
 
         self.setLayout(layout)
 
         self.mergeBtn.hide()
+        self.deleteButton.hide()
     
     def changeGeometry(self, geometry):
         self.renderWidget.changeGeometry(geometry)
@@ -97,7 +105,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.resultTable.setData()
 
     def classifiedResultChanged(self):
-        self.renderWidget.updateClassified()
+        self.renderWidget.updateRenderClassified()
     
     def clearSelectedPoints(self):
         self.renderWidget.clearSelectedPoints()
@@ -116,3 +124,20 @@ class RendererWidget(QtWidgets.QWidget):
             return estimated_planes / len(self.data) * 100
         else:
             return len(self.data) / int(estimated_planes) * 100
+        
+    def removeSelectedPoints(self):
+        remove_points(self.renderWidget.newFileName, self.getSelectedPoints(), self.resultTable.checkedButtons)
+        self.clearSelectedPoints()
+        self.deleteButton.hide()
+        self.deleteButton.setEnabled(False)
+        self.renderWidget.update_vis()
+        self.renderWidget.updateClassified()
+        if not os.path.exists(self.renderWidget.newFileName):
+            self.changeGeometry(self.renderWidget.classified)
+        else:
+            self.changeGeometry(self.renderWidget.newFileName)
+        self.resultTable.clearChecks()
+        self.dataChanged()
+        
+
+    

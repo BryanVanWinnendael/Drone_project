@@ -95,9 +95,15 @@ class RenderWidget(QtWidgets.QWidget):
             self.night = True
             self.parent.buttonSpace.daynightSwitch.setText("Switch White")
 
-    def updateClassified(self):
+    def updateRenderClassified(self):
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
         self.changeGeometry(self.classified)
+
+    def updateClassified(self):
+        self.classified_pcd = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
+        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
+        self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
     
     def clearSelectedPoints(self):
         self.vis.clear_picked_points()
@@ -108,3 +114,10 @@ class RenderWidget(QtWidgets.QWidget):
     def onSelectionChanged(self):
         if self.newFileName == self.fileName or self.newFileName == self.classified:
             self.clearSelectedPoints()
+        else:
+            if len(self.getSelectedPoints()) > 0:
+                self.parent.deleteButton.setEnabled(True)
+                self.parent.deleteButton.show()
+            else:
+                self.parent.deleteButton.setEnabled(False)
+                self.parent.deleteButton.hide()
