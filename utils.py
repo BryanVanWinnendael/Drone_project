@@ -15,6 +15,8 @@ defaultSettings = {
     "Treshold": 0.01,
     "Standard deviation ratio": 2.0,
     "Minimum ratio": 0.05,
+    "Epsilon (DBSCAN)": 0.1,
+    "Number of Clusters (Agglomerative)": 3,
 }
 
 def saveFileName(fileName):

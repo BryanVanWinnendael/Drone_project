@@ -17,6 +17,8 @@ class Segmentator:
             "treshold": self.settings["Treshold"],
             "min_std_ratio": self.settings["Standard deviation ratio"],
             "min_ratio": self.settings["Minimum ratio"],
+            "epsilon": self.settings["Epsilon (DBSCAN)"],
+            "number_of_clusters": int(self.settings["Number of Clusters (Agglomerative)"]),
         }
 
         SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, parameters=segmentation_parameters)

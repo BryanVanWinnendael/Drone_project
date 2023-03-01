@@ -117,43 +117,51 @@ class SettingsWidget(QtWidgets.QWidget):
         self.backButton.setIconSize(QtCore.QSize(30, 30))
         self.backButton.setToolTip("Back to home")
 
-        info_strategy = ""
+        info_strategy = "Select the clustering strategy."
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings)
 
-        info_minimumPoints = ""
+        info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
 
-        info_iterations = ""
+        info_iterations = "The number of iterations to run the RANSAC algorithm for."
         self.iterationsWidget = TextInput(self.settings, 'Iterations', info_iterations)
 
-        info_maxLoops = ""
+        info_maxLoops = "The maximum number of loops to run the RANSAC algorithm for, this is to prevent infinite loops or if you manually want to limit the amount of segments."
         self.maxLoopsWidget = TextInput(self.settings, 'Maximum number of loops', info_maxLoops)
 
-        info_neigbours = ""
-        self.neigboursWidget = TextInput(self.settings, 'Number of neigbours', info_neigbours)
+        neighbourhbours = "The number of neighbours that are used to remove outliers."
+        self.neighboursWidget = TextInput(self.settings, 'Number of neighbours', neighbourhbours)
 
-        info_voxelSize = ""
+        info_voxelSize = "The size of the voxel for downsampling the point cloud. The smaller the voxel size, the more points will be removed."
         self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', info_voxelSize)
 
-        info_treshhold = ""
+        info_treshhold = "The treshold for the RANSAC algorithm. The smaller the treshold, the more points will be removed."
         self.treshholdWidget = TextInput(self.settings, 'Treshold', info_treshhold, 0.01)
 
-        info_standardDeviation = ""
+        info_standardDeviation = "The standard deviation ratio to remove statistical outliers."
         self.standardDeviationWidget = TextInput(self.settings, 'Standard deviation ratio', info_standardDeviation)
 
-        info_minRatio = ""
+        info_minRatio = "The ratio parameter determines when the segmenting stops, segmenting will stop if the ratio of points is reached. For example if the ratio is 0.1, the segmenting will stop when 10% of the points are left."
         self.minRatioWidget = TextInput(self.settings, 'Minimum ratio', info_minRatio, 0.01)
+
+        info_epsilon = "The epsilon parameter is used in DBSCAN only. This parameter will be ignored with other strategies. It indicates the distances between clusters."
+        self.epsilonWidget = TextInput(self.settings, 'Epsilon (DBSCAN)', info_epsilon)
+
+        info_clusters = "The number of clusters to be used in Agglomerative clustering. This parameter will be ignored with other strategies. It indicates the number of clusters to be created. This number will be static so it will always create the same number of clusters per segment. This could be useful if you manually want to merge."
+        self.clustersWidget = TextInput(self.settings, 'Number of Clusters (Agglomerative)', info_clusters)
 
         widgetLayout.addWidget(self.backButton)
         widgetLayout.addWidget(self.strategyWidget)
         widgetLayout.addWidget(self.minimumPointsWidget)
         widgetLayout.addWidget(self.iterationsWidget)
         widgetLayout.addWidget(self.maxLoopsWidget)
-        widgetLayout.addWidget(self.neigboursWidget)
+        widgetLayout.addWidget(self.neighboursWidget)
         widgetLayout.addWidget(self.voxelSizeWidget)
         widgetLayout.addWidget(self.treshholdWidget)
         widgetLayout.addWidget(self.standardDeviationWidget)
         widgetLayout.addWidget(self.minRatioWidget)
+        widgetLayout.addWidget(self.epsilonWidget)
+        widgetLayout.addWidget(self.clustersWidget)
 
         resetButton = QtWidgets.QPushButton('Reset')
         resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -169,11 +177,13 @@ class SettingsWidget(QtWidgets.QWidget):
         self.minimumPointsWidget.resetValue(defaultSettings)
         self.iterationsWidget.resetValue(defaultSettings)
         self.maxLoopsWidget.resetValue(defaultSettings)
-        self.neigboursWidget.resetValue(defaultSettings)
+        self.neighboursWidget.resetValue(defaultSettings)
         self.voxelSizeWidget.resetValue(defaultSettings)
         self.treshholdWidget.resetValue(defaultSettings)
         self.standardDeviationWidget.resetValue(defaultSettings)
         self.minRatioWidget.resetValue(defaultSettings)
+        self.epsilonWidget.resetValue(defaultSettings)
+        self.clustersWidget.resetValue(defaultSettings)
 
 
         

@@ -8,6 +8,8 @@ def GetDefaulftParameters():
         "treshold": 0.01,
         "min_std_ratio": 2.0,
         "min_ratio": 0.05,
+        "epsilon": 0.1,
+        "number_of_clusters": 3,
     }
 
 def GetValidClusterStrategies():
