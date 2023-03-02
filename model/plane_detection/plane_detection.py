@@ -11,6 +11,18 @@ def SaveResult(planes):
 
     o3d.io.write_point_cloud("data/results/result-classified.ply", pcds)
 
+def findLargestCluster(points, labels):
+    largest_cluster = 0
+    largest_cluster_size = 0
+
+    for label in np.unique(labels):
+        cluster_size = len(points[labels == label])
+        if cluster_size > largest_cluster_size:
+            largest_cluster = label
+            largest_cluster_size = cluster_size
+
+    return largest_cluster
+
 def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
@@ -48,15 +60,16 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
             elif cluster == "Agglomerative":
                 # Perform agglomerative clustering on the points
                 labels = AgglomerativeClustering(n_clusters=parameters["number_of_clusters"]).fit_predict(inlier_points)
+
+            # Find the largest cluster
+            largest_cluster = findLargestCluster(inlier_points, labels)
             
             # Extract points for each cluster
             for label in np.unique(labels):
                 # Get the points for this cluster
                 cluster_points = inlier_points[labels == label]
 
-                print(f"Found cluster with {len(cluster_points)} points")
-
-                if len(cluster_points) >= parameters["min_points"]:
+                if label == largest_cluster and len(cluster_points) >= parameters["min_points"]:
                     # Convert points to Open3D point cloud
                     cluster_pcd = o3d.geometry.PointCloud()
                     cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
