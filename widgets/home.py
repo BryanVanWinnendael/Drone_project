@@ -6,6 +6,7 @@ from widgets.components.buttonUpload import ButtonUpload
 from widgets.components.buttonSettings import ButtonSettings
 from utils import checkDataDirectory, copyDirectory, cleanData
 from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
+from widgets.components.toggle import AnimatedToggle
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -13,6 +14,7 @@ class HomeWidget(QtWidgets.QWidget):
     def __init__(self,parent):
         super(HomeWidget, self).__init__()
         self.parent = parent
+        self.folderButton = False
         layout = QtWidgets.QVBoxLayout()
         self.setAcceptDrops(True)
 
@@ -22,12 +24,32 @@ class HomeWidget(QtWidgets.QWidget):
         self.labelError.setObjectName("label-error")
         layout.addWidget(self.labelError)
 
+        topLayout = QtWidgets.QHBoxLayout()
+
+        toggleLayout = QtWidgets.QHBoxLayout()
+        mainToggle = AnimatedToggle()
+        mainToggle.setCursor(QtCore.Qt.PointingHandCursor)
+        mainToggle.setMaximumHeight(200)
+        mainToggle.setMaximumWidth(60)
+        mainToggle.clicked.connect(self.changeUploadButton)
+        toggleLayout.addWidget(mainToggle)
+        toggleText = QtWidgets.QLabel("Browse folder")
+        toggleText.setMaximumHeight(40)
+        toggleText.setMaximumWidth(90)
+        toggleText.setObjectName("toggleText")
+        toggleText.setAlignment(QtCore.Qt.AlignCenter)
+        toggleLayout.addWidget(toggleText)
+
+        topLayout.addLayout(toggleLayout)
+
         # Set settings button
         self.settingsButtonLayout = QtWidgets.QHBoxLayout()
         self.settingsButton = ButtonSettings(self.parent)
         self.settingsButtonLayout.addWidget(self.settingsButton)
         self.settingsButtonLayout.setAlignment(QtCore.Qt.AlignRight)
-        layout.addLayout(self.settingsButtonLayout)
+        topLayout.addLayout(self.settingsButtonLayout)
+
+        layout.addLayout(topLayout)
 
         # Set upload buttons in horizontal layout
         uploadButtonsLayout = QtWidgets.QHBoxLayout()
@@ -63,6 +85,13 @@ class HomeWidget(QtWidgets.QWidget):
         layout.addLayout(vbox)
 
         self.setLayout(layout)
+        self.changeUploadButton()
+    
+    def changeUploadButton(self):
+        self.folderButton = not self.folderButton
+        self.uploadButton.setVisible(self.folderButton)
+        self.uploadPreProcessedDataButton.setVisible(not self.folderButton)
+
 
     def openFileNameDialog(self):
         self.uploadButton.setNormal()

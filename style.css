@@ -115,6 +115,11 @@ QLabel#infoLabel {
   font-size: 17px;
 }
 
+QLabel#toggleText {
+  font-size: 15px;
+  font-weight: 300;
+}
+
 QTableWidget#resultTable {
   background-color: white;
   border: none;
