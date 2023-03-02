@@ -140,7 +140,5 @@ class RendererWidget(QtWidgets.QWidget):
         else:
             self.changeGeometry(self.renderWidget.newFileName)
         self.resultTable.clearChecks()
-        self.dataChanged()
-        
 
     

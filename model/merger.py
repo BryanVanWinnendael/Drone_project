@@ -4,6 +4,7 @@ from csv import writer, reader
 from scipy.spatial import ConvexHull
 import pandas as pd
 import os
+from model.model_utils import reassignSegmentIds, constructNewClassifiedPointCloud, deleteSegment
 
 class Merger():
     def __init__(self, parent):
@@ -31,7 +32,7 @@ class Merger():
                         points.append(point)
 
                     # Delete the segments
-                    self.deleteSegment(seg_id)
+                    deleteSegment(seg_id)
 
             new_pcd.points = o3d.utility.Vector3dVector(points)
 
@@ -43,11 +44,11 @@ class Merger():
             self.saveSegment(new_pcd, surface_area, color)
 
             # Update the classified point cloud
-            self.constructNewClassifiedPointCloud()
+            constructNewClassifiedPointCloud()
             self.parent.classifiedResultChanged()
 
             # Update the ids
-            self.reassignSegmentIds()
+            reassignSegmentIds()
 
     def saveSegment(self, pcd, surface_area, rgb):  
         print("saving...")      
@@ -67,51 +68,6 @@ class Merger():
             class_name = "MERGED_" + '_'.join(str_ids)
             writer_object.writerow([new_id, class_name, surface_area, rgb])
             f.close()
-
-    def deleteSegment(self, id):
-        # Update CSV
-        df = pd.read_csv("data/results/output.csv")
-        df = df[df["Segment"] != id]
-        df.to_csv("data/results/output.csv", index=False)
-
-        # Delete PLY
-        os.remove(f"data/planes/plane_{id}.ply")
-
-    def constructNewClassifiedPointCloud(self):
-        # Load in all point clouds
-        pcds = []
-        for file in os.listdir("data/planes"):
-            if file.endswith(".ply"):
-                pcd = o3d.io.read_point_cloud(f"data/planes/{file}")
-                pcds.append(pcd)
-
-        # Merge point clouds
-        new_pcd = o3d.geometry.PointCloud()
-        for pcd in pcds:
-            new_pcd += pcd
-
-        # Save point cloud
-        o3d.io.write_point_cloud("data/results/result-classified.ply", new_pcd)
-
-    def reassignSegmentIds(self):
-        with open("data/results/output.csv", "r") as f:
-            lines = f.readlines()[1:]
-
-            # Temporarily rename all files
-            for line in lines:
-                print(f"data/planes/plane_{line.split(',')[0]}.ply")
-                os.rename(f"data/planes/plane_{line.split(',')[0]}.ply", f"data/planes/plane_{line.split(',')[0]}_temp.ply")
-            
-            # Rename plane to new id
-            for i, line in enumerate(lines):
-                os.rename(f"data/planes/plane_{line.split(',')[0]}_temp.ply", f"data/planes/plane_{i + 1}.ply")
-
-            f.close()
-
-        # Update CSV
-        df = pd.read_csv("data/results/output.csv")
-        df["Segment"] = range(1, len(df) + 1)
-        df.to_csv("data/results/output.csv", index=False)
 
     def removePointsFromPointCloud(self, fileName, points_to_remove):
         pcd = o3d.io.read_point_cloud(fileName)

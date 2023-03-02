@@ -4,34 +4,7 @@ import os
 import pandas as pd
 from scipy.spatial import ConvexHull
 from scipy.spatial.qhull import QhullError
-
-def constructNewClassifiedPointCloud():
-        # Load in all point clouds
-        pcds = []
-        for file in os.listdir("data/planes"):
-            if file.endswith(".ply"):
-                print(file)
-                pcd = o3d.io.read_point_cloud(f"data/planes/{file}")
-                pcds.append(pcd)
-
-        # Merge point clouds
-        new_pcd = o3d.geometry.PointCloud()
-        for pcd in pcds:
-            new_pcd += pcd
-
-        # Save point cloud
-        o3d.io.write_point_cloud("data/results/result-classified.ply", new_pcd)
-
-def deleteSegment(id):
-        print(id)
-        # Update CSV
-        df = pd.read_csv("data/results/output.csv")
-        df = df[df["Segment"] != id]
-        df.to_csv("data/results/output.csv", index=False)
-
-        # Delete PLY
-        if os.path.exists(f"data/planes/plane_{id}.ply"):
-            os.remove(f"data/planes/plane_{id}.ply")
+from model.model_utils import constructNewClassifiedPointCloud, deleteSegment, reassignSegmentIds
 
 def remove_points(file, remove_points, remove_segments):
     if len(remove_points) > 0:
@@ -64,5 +37,6 @@ def remove_points(file, remove_points, remove_segments):
     if len(remove_segments) > 0:
         for segment_id in remove_segments:
             deleteSegment(segment_id)
-
-    constructNewClassifiedPointCloud()  
+        reassignSegmentIds()
+    
+    constructNewClassifiedPointCloud() 

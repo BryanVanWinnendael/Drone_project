@@ -45,24 +45,25 @@ class ResultTable(QTableWidget):
                     updateClass(row, column, item.text())
 
     def clearChecks(self):
+        self.checkedButtons = []
         rows = range(self.rowCount())
         for i in rows:
             self.cellWidget(i, 0).setChecked(False)
     
-    def checkChanged(self, segment_id):
-        if segment_id in self.checkedButtons:
-            self.checkedButtons.remove(segment_id)
-            if len(self.checkedButtons) == 0:
-                # Hide merge button
-                self.parent.mergeBtn.hide()
-                if len(self.parent.getSelectedPoints()) == 0:
-                    self.parent.deleteButton.hide()
-                    self.parent.deleteButton.setEnabled(False)
-        else:
-            self.checkedButtons.append(segment_id)
-            self.parent.mergeBtn.show()
-            self.parent.deleteButton.show()
-            self.parent.deleteButton.setEnabled(True)
+    # def checkChanged(self, segment_id):
+    #     if segment_id in self.checkedButtons:
+    #         self.checkedButtons.remove(segment_id)
+    #         if len(self.checkedButtons) == 0:
+    #             # Hide merge button
+    #             self.parent.mergeBtn.hide()
+    #             if len(self.parent.getSelectedPoints()) == 0:
+    #                 self.parent.deleteButton.hide()
+    #                 self.parent.deleteButton.setEnabled(False)
+    #     else:
+    #         self.checkedButtons.append(segment_id)
+    #         self.parent.mergeBtn.show()
+    #         self.parent.deleteButton.show()
+    #         self.parent.deleteButton.setEnabled(True)
 
     def mergeSegments(self):
         merger = Merger(self.parent)
