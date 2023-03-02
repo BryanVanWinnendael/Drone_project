@@ -33,7 +33,7 @@ class ButtonUpload(QtWidgets.QPushButton):
 
         self.setObjectName("uploadbtn")
         self.setLayout(self.layout)
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(100)
         self.clicked.connect(self.parent.openFileNameDialog)
 
     def setError(self):

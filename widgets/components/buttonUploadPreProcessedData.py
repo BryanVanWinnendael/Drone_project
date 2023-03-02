@@ -5,7 +5,7 @@ class ButtonUploadPreProcessedData(QtWidgets.QPushButton):
         super(ButtonUploadPreProcessedData, self).__init__()
         widget = QtWidgets.QWidget()
         self.parent = parent
-        self.setMinimumHeight(100)
+        self.setMinimumHeight(300)
         self.layout = QtWidgets.QGridLayout(widget)
         self.layout.setAlignment(QtCore.Qt.AlignCenter)
         
@@ -29,7 +29,7 @@ class ButtonUploadPreProcessedData(QtWidgets.QPushButton):
 
         self.setObjectName("uploadbtn")
         self.setLayout(self.layout)
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(100)
         self.clicked.connect(self.parent.openDirectoryDialog)
 
     def setError(self):

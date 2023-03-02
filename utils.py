@@ -106,3 +106,20 @@ def copyDirectory(src, dest):
         print(f"Error copying directory: {e}")
     except OSError as e:
         print(f"Error copying directory: {e}")
+
+def checkDataDirectory(directory):
+    if os.path.isdir(directory):
+        contents = os.listdir(directory)
+        
+        # Check if the correct folders exist
+        if "planes" not in contents or "results" not in contents:
+            return False
+        
+        # Check if the results folder contains the correct files
+        results = os.listdir(os.path.join(directory, "results"))
+        if "original.ply" not in results or "result-classified.ply" not in results or "output.csv" not in results:
+            return False
+        else:
+            return True
+    else:
+        return False
