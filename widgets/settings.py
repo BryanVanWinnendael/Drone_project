@@ -15,9 +15,8 @@ class DropDown(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setSpacing(0)
-        self.layout.setContentsMargins(0, 0, 100, 0)
         self.layoutText = QtWidgets.QHBoxLayout()
-        self.layoutText.setContentsMargins(0, 0, 0, 0)
+        self.layoutText.setContentsMargins(0, 0, 0, 5)
         self.layoutText.setSpacing(10)
 
         self.textLabel = QtWidgets.QLabel(self.value)
@@ -60,12 +59,11 @@ class TextInput(QtWidgets.QWidget):
         self.info = info
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setContentsMargins(0, 0, 100, 0)
         self.layout.setSpacing(0)
+        self.setMinimumWidth(400)
 
         self.layoutText = QtWidgets.QHBoxLayout()
-        self.layoutText.setContentsMargins(0, 0, 0, 0)
-        self.layoutText.setSpacing(10)
+        self.layoutText.setContentsMargins(0, 0, 0, 5)
 
         self.textLabel = QtWidgets.QLabel(self.value)
         self.textLabel.setObjectName('infoLabel')
@@ -111,7 +109,8 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.widget.setObjectName("widgetSettings")
 
         self.widgetLayout = QtWidgets.QVBoxLayout()
-        self.widgetLayout.setSpacing(20)
+        self.widgetLayout.setSpacing(5)
+        self.widgetLayout.setAlignment(QtCore.Qt.AlignCenter)
         self.widgetLayout.setContentsMargins(0, 0, 0, 20)
 
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
@@ -167,7 +166,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         info_clusters = "The number of clusters to be used in Agglomerative clustering. This parameter will be ignored with other strategies. It indicates the number of clusters to be created. This number will be static so it will always create the same number of clusters per segment. This could be useful if you manually want to merge."
         self.clustersWidget = TextInput(self.settings, 'Number of Clusters (Agglomerative)', info_clusters)
         
-        self.widgetLayout.addLayout(self.layoutButton)
+        self.layout.addLayout(self.layoutButton)
         self.widgetLayout.addWidget(self.strategyWidget)
         self.widgetLayout.addWidget(self.surfaceStrategyWidget)
         self.widgetLayout.addWidget(self.estimatedPlanesWidget)
@@ -180,7 +179,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.widgetLayout.addWidget(self.standardDeviationWidget)
         self.widgetLayout.addWidget(self.minRatioWidget)
 
-        self.resetButton = QtWidgets.QPushButton('Reset')
+        self.resetButton = QtWidgets.QPushButton('Reset settings')
         self.resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.resetButton.setObjectName('buttonReset')
         self.resetButton.setMinimumHeight(30)

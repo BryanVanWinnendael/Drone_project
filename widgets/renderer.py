@@ -68,10 +68,14 @@ class RendererWidget(QtWidgets.QWidget):
         self.splitter.setSizes([100,200])
 
         self.mergeBtn = QPushButton()
+        self.mergeBtn.setObjectName("mergeBtn")
+        self.mergeBtn.setCursor(QCursor(Qt.PointingHandCursor))
         self.mergeBtn.clicked.connect(lambda: self.resultTable.mergeSegments())
         self.mergeBtn.setText("Merge")
 
         self.deleteButton = QPushButton()
+        self.deleteButton.setObjectName("deleteBtn")
+        self.deleteButton.setCursor(QCursor(Qt.PointingHandCursor))
         self.deleteButton.clicked.connect(lambda: self.removeSelectedPoints())
         self.deleteButton.setText("Delete selection")
 
