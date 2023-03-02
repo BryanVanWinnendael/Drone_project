@@ -105,11 +105,13 @@ class HomeWidget(QtWidgets.QWidget):
 
     def openDirectoryDialog(self):
         self.uploadButton.setNormal()
+        cleanData(True)
         options = QtWidgets.QFileDialog.Options()
         fileName = QtWidgets.QFileDialog.getExistingDirectory(self, "Open file or directory", "", options=options)
         if fileName:
             if checkDataDirectory(fileName):
-                self.parent.navigateToRendererFromPreProcessedData(fileName)
+                copyDirectory(fileName, "data")
+                self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
             else:
                 self.uploadButton.setError()
 
