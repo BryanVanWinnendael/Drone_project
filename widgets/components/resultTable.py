@@ -45,6 +45,7 @@ class ResultTable(QTableWidget):
                     updateClass(row, column, item.text())
 
     def clearChecks(self):
+        self.checkedButtons = []
         rows = range(self.rowCount())
         for i in rows:
             self.cellWidget(i, 0).setChecked(False)
