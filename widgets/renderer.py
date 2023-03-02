@@ -108,8 +108,13 @@ class RendererWidget(QtWidgets.QWidget):
         if self.settings["Estimated planes"] > 0:
             estimated_planes = self.settings["Estimated planes"]
             self.correctness_label.setText(f"Segmentation correctness: {self.calculateCorrectness(estimated_planes)}%")
+        self.resultTable.clearChecks()
         self.resultTable.data = self.data
         self.resultTable.setData()
+
+        # Hide buttons
+        self.mergeBtn.hide()
+        self.deleteButton.hide()
 
     def classifiedResultChanged(self):
         self.renderWidget.updateRenderClassified()
@@ -143,6 +148,6 @@ class RendererWidget(QtWidgets.QWidget):
             self.changeGeometry(self.renderWidget.classified)
         else:
             self.changeGeometry(self.renderWidget.newFileName)
-        self.resultTable.clearChecks()
 
-    
+        self.dataChanged()
+        self.resultTable.clearChecks()
