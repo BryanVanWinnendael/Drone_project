@@ -23,13 +23,15 @@ def constructNewClassifiedPointCloud():
         o3d.io.write_point_cloud("data/results/result-classified.ply", new_pcd)
 
 def deleteSegment(id):
+        print(id)
         # Update CSV
         df = pd.read_csv("data/results/output.csv")
         df = df[df["Segment"] != id]
         df.to_csv("data/results/output.csv", index=False)
 
         # Delete PLY
-        os.remove(f"data/planes/plane_{id}.ply")
+        if os.path.exists(f"data/planes/plane_{id}.ply"):
+            os.remove(f"data/planes/plane_{id}.ply")
 
 def remove_points(file, remove_points, remove_segments):
     if len(remove_points) > 0:
