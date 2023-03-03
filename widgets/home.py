@@ -7,6 +7,7 @@ from widgets.components.buttonSettings import ButtonSettings
 from utils import checkDataDirectory, copyDirectory, cleanData
 from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
 from widgets.components.toggle import AnimatedToggle
+from PyQt5.QtGui import QPixmap
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -50,6 +51,13 @@ class HomeWidget(QtWidgets.QWidget):
         topLayout.addLayout(self.settingsButtonLayout)
 
         layout.addLayout(topLayout)
+
+        # Make title
+        self.title = QtWidgets.QLabel("Point Cloud Processor")
+        self.title.setObjectName("title")
+        self.title.setAlignment(QtCore.Qt.AlignCenter)
+        self.title.setMaximumHeight(150)
+        layout.addWidget(self.title)
 
         # Set upload buttons in horizontal layout
         uploadButtonsLayout = QtWidgets.QHBoxLayout()

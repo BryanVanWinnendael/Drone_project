@@ -39,6 +39,14 @@ QLabel#recentlabelTimeButton {
   color: #808080;
 }
 
+QLabel#title {
+  font-size: 64px;
+  background-color: #249ea7;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 15px;
+}
+
 /* Settings window */
 
 QPushButton#backbtn {
