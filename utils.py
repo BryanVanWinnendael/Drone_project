@@ -113,17 +113,13 @@ def checkDataDirectory(directory):
         contents = os.listdir(directory)
         
         # Check if the correct folders exist
-        if "planes" not in contents or "results" not in contents:
-            return False
-        
-        # Check if the results folder contains the correct files
-        results = os.listdir(os.path.join(directory, "results"))
-        if "original.ply" not in results or "result-classified.ply" not in results or "output.csv" not in results:
-            return False
-        else:
-            return True
-    else:
-        return False
+        if "planes" in contents and "results" in contents:
+            # Check if the results folder contains the correct files
+            results = os.listdir(os.path.join(directory, "results"))
+            if "original.ply" in results and "result-classified.ply" in results and "output.csv" in results:
+                return True
+            
+    return False
     
 def checkZippedData(filename):
     # Check if file exist
@@ -142,4 +138,3 @@ def copyZip(filename, destination):
         if filename.endswith(".zip"):
             with ZipFile(filename, "r") as zip_ref:
                 zip_ref.extractall(destination)
-    return False
