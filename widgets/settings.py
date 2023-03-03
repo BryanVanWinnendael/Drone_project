@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSettings,
                    saveRecentFile, saveSettings)
-from widgets.components.settingParametersWidgets import ClusteringParametersWidget
+from widgets.components.settingParametersWidgets import *
 
 
 class DropDown(QtWidgets.QWidget):
@@ -133,107 +133,25 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.widgetLayout.addWidget(self.mainLabel)
 
         # Clustering parameters
-
-
-        # Pre processing parameters
-        neighbourhbours = "The number of neighbours that are used to remove outliers."
-        self.neighboursWidget = TextInput(self.settings, 'Number of neighbours', neighbourhbours)
-
-        info_voxelSize = "The size of the voxel for downsampling the point cloud. The smaller the voxel size, the more points will be removed."
-        self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', info_voxelSize)
-
-        info_standardDeviation = "The standard deviation ratio to remove statistical outliers."
-        self.standardDeviationWidget = TextInput(self.settings, 'Standard deviation ratio', info_standardDeviation)
-
-        # Segmentation parameters
-        info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
-        self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
-
-        info_iterations = "The number of iterations to run the RANSAC algorithm for."
-        self.iterationsWidget = TextInput(self.settings, 'Iterations', info_iterations)
-
-        info_maxLoops = "The maximum number of loops to run the RANSAC algorithm for, this is to prevent infinite loops or if you manually want to limit the amount of segments."
-        self.maxLoopsWidget = TextInput(self.settings, 'Maximum number of loops', info_maxLoops)
-
-        info_treshhold = "The treshold for the RANSAC algorithm. The smaller the treshold, the more points will be removed."
-        self.treshholdWidget = TextInput(self.settings, 'Treshold', info_treshhold, 0.01)
-
-        info_minRatio = "The ratio parameter determines when the segmenting stops, segmenting will stop if the ratio of points is reached. For example if the ratio is 0.1, the segmenting will stop when 10% of the points are left."
-        self.minRatioWidget = TextInput(self.settings, 'Minimum ratio', info_minRatio, 0.01)
-
-        # Surface
-        info_surfaceStrategy = "Select the surface calculation strategy."
-        self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
-
-        # Calculations
-        info_estimatedPlanes = "The number of planes you think will be in the point cloud. This is used to calculate the correctness of the segmentation."
-        self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes, steps=1)
-
-        # Clustering parameters
         self.clusterWidget = ClusteringParametersWidget(self.settings)
         self.widgetLayout.addWidget(self.clusterWidget)
 
         # Pre processing parameters
-        self.preProcessVBox = QtWidgets.QVBoxLayout()
-
-        self.preProcessingParameterLabel = QtWidgets.QLabel("Pre processing parameters")
-        self.preProcessingParameterLabel.setObjectName("settingsLabel")
-        self.preProcessVBox.addWidget(self.preProcessingParameterLabel)
-
-        self.preProcessingParameterLayout = QtWidgets.QHBoxLayout()
-        self.preProcessingParameterLayout.addWidget(self.neighboursWidget)
-        self.preProcessingParameterLayout.addWidget(self.voxelSizeWidget)
-        self.preProcessingParameterLayout.addWidget(self.standardDeviationWidget)
-
-        self.preProcessVBox.addLayout(self.preProcessingParameterLayout)
-
-        self.widgetLayout.addLayout(self.preProcessVBox)
+        
+        self.preProcessWidget = PreProcessingWidget(self.settings)
+        self.widgetLayout.addWidget(self.preProcessWidget)
 
         # Segmentation parameters
-        self.segmentationVBox = QtWidgets.QVBoxLayout()
+        self.segmentationWidget = SegmentationWidget(self.settings)
+        self.widgetLayout.addWidget(self.segmentationWidget)
 
-        self.segmentationParameterLabel = QtWidgets.QLabel("Segmentation parameters")
-        self.segmentationParameterLabel.setObjectName("settingsLabel")
-        self.segmentationVBox.addWidget(self.segmentationParameterLabel)
-
-        self.segmentationParameterLayout = QtWidgets.QHBoxLayout()
-        self.segmentationParameterLayout.addWidget(self.minimumPointsWidget)
-        self.segmentationParameterLayout.addWidget(self.iterationsWidget)
-        self.segmentationParameterLayout.addWidget(self.maxLoopsWidget)
-        self.segmentationParameterLayout.addWidget(self.treshholdWidget)
-        self.segmentationParameterLayout.addWidget(self.minRatioWidget)
-
-        self.segmentationVBox.addLayout(self.segmentationParameterLayout)
-
-        self.widgetLayout.addLayout(self.segmentationVBox)
-
-        # Surface
-        self.surfaceVBox = QtWidgets.QVBoxLayout()
-
-        self.surfaceParameterLabel = QtWidgets.QLabel("Surface parameters")
-        self.surfaceParameterLabel.setObjectName("settingsLabel")
-        self.surfaceVBox.addWidget(self.surfaceParameterLabel)
-
-        self.surfaceParameterLayout = QtWidgets.QHBoxLayout()
-        self.surfaceParameterLayout.addWidget(self.surfaceStrategyWidget)
-
-        self.surfaceVBox.addLayout(self.surfaceParameterLayout)
-
-        self.widgetLayout.addLayout(self.surfaceVBox)
+        # Surface calculation
+        self.surfaceWidget = SurfaceWidget(self.settings)
+        self.widgetLayout.addWidget(self.surfaceWidget)
 
         # Calculations
-        self.calculationsVBox = QtWidgets.QVBoxLayout()
-
-        self.calculationsParameterLabel = QtWidgets.QLabel("Calculations parameters")
-        self.calculationsParameterLabel.setObjectName("settingsLabel")
-        self.calculationsVBox.addWidget(self.calculationsParameterLabel)
-
-        self.calculationsParameterLayout = QtWidgets.QHBoxLayout()
-        self.calculationsParameterLayout.addWidget(self.estimatedPlanesWidget)
-
-        self.calculationsVBox.addLayout(self.calculationsParameterLayout)
-
-        self.widgetLayout.addLayout(self.calculationsVBox)
+        self.calculationsWidget = CalculationsWidget(self.settings)
+        self.widgetLayout.addWidget(self.calculationsWidget)
 
         # Reset button
         self.resetButton = QtWidgets.QPushButton('Reset settings')
@@ -252,31 +170,8 @@ class SettingsWidget(QtWidgets.QScrollArea):
     def resetSettingsValue(self):
         defaultSettings = resetSettings()
 
-        self.estimatedPlanesWidget.resetValue(defaultSettings)
-        self.minimumPointsWidget.resetValue(defaultSettings)
-        self.iterationsWidget.resetValue(defaultSettings)
-        self.maxLoopsWidget.resetValue(defaultSettings)
-        self.neighboursWidget.resetValue(defaultSettings)
-        self.voxelSizeWidget.resetValue(defaultSettings)
-        self.treshholdWidget.resetValue(defaultSettings)
-        self.standardDeviationWidget.resetValue(defaultSettings)
-        self.minRatioWidget.resetValue(defaultSettings)
-        self.epsilonWidget.resetValue(defaultSettings)
-        self.clustersWidget.resetValue(defaultSettings)
-    
-    # def showSettings(self):
-    #     cluster_strategy = self.strategyWidget.dropDown.currentText()
-
-    #     if cluster_strategy == 'DBSCAN':
-    #         self.clusterParameterLayout.addWidget(self.epsilonWidget)
-    #         self.clusterParameterLayout.removeWidget(self.clustersWidget)
-    #         self.clustersWidget.setParent(None)
-    #     elif cluster_strategy == 'Agglomerative':
-    #         self.clusterParameterLayout.addWidget(self.clustersWidget)
-    #         self.clusterParameterLayout.removeWidget(self.epsilonWidget)
-    #         self.epsilonWidget.setParent(None)
-    #     else:
-    #         self.clusterParameterLayout.removeWidget(self.epsilonWidget)
-    #         self.epsilonWidget.setParent(None)
-    #         self.clusterParameterLayout.removeWidget(self.clustersWidget)
-    #         self.clustersWidget.setParent(None)
+        self.clusterWidget.resetValues(defaultSettings)
+        self.preProcessWidget.resetValues(defaultSettings)
+        self.segmentationWidget.resetValues(defaultSettings)
+        self.surfaceWidget.resetValues(defaultSettings)
+        self.calculationsWidget.resetValues(defaultSettings)
