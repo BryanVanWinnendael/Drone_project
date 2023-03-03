@@ -224,6 +224,7 @@ QWidget#widgetSettings {
 }
 
 QLabel#info_label {
-  font-size: 12px;
-  font-weight: 300;
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: underline;
 }
