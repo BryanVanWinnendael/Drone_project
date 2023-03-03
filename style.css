@@ -1,19 +1,45 @@
+/* Main windows */
 QMainWindow#mainWindow {
-  background-color: white;
+  background-color: #ffffff;
 }
 
+/* Home widget */
 QPushButton#uploadbtn {
-  background-color: transparent;
+  background-color: #efefef;
   border-width: 2px;
   font-size: 18px;
-  border-color: #d7e1fc;
+  border-color: #249ea7;
   border-style: dashed;
   border-radius: 6px;
 }
 
 QPushButton#uploadbtn:hover {
   background-color: #d7e1fc;
+  border-color: #A24936;
 }
+
+QWidget#recentBox {
+  background-color: black;
+}
+
+QLabel#recentlabel {
+  padding: 10px;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+QLabel#recentlabelButton {
+  font-size: 18px;
+  color: black;
+  font-weight: 300;
+}
+
+QLabel#recentlabelTimeButton {
+  font-size: 15px;
+  color: #808080;
+}
+
+/* Settings window */
 
 QPushButton#backbtn {
   width: 30px;
@@ -21,6 +47,18 @@ QPushButton#backbtn {
   border: none;
   background-color: transparent;
   text-align: left;
+}
+
+QLabel#settingsMainLabel {
+  font-size: 32px;
+  font-weight: 500;
+  text-decoration: underline;
+}
+
+QLabel#settingsLabel {
+  font-size: 18px;
+  font-weight: 500;
+  margin-left: 4px;
 }
 
 QPushButton#rendererbtn {
@@ -97,22 +135,7 @@ QLabel#filelabel {
   font-weight: 500;
 }
 
-QLabel#recentlabel {
-  padding: 10px;
-  font-size: 24px;
-  font-weight: 500;
-}
 
-QLabel#recentlabelButton {
-  font-size: 18px;
-  color: black;
-  font-weight: 300;
-}
-
-QLabel#recentlabelTimeButton {
-  font-size: 15px;
-  color: #808080;
-}
 
 QLabel#labelLoading {
   color: #000000;
@@ -157,14 +180,11 @@ QTableWidgetItem {
   background-color: white;
 }
 
-QToolButton::menu-indicator {
-  image: none;
-}
-
 QToolButton#buttonSettings {
+  background-color: #249ea7;
+  border-radius: 4px;
   border: none;
-  background-color: transparent;
-  padding-bottom: 10px;
+  padding: 2px;
 }
 
 QDoubleSpinBox {
