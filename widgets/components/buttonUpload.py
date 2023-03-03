@@ -37,7 +37,7 @@ class ButtonUpload(QtWidgets.QPushButton):
         self.clicked.connect(self.parent.openFileNameDialog)
 
     def setError(self):
-        self.text.setText("Error: File is not a valid .ply file")
+        self.text.setText("Error: File is not a valid .ply or zipped directory file")
         self.text2.setText("")
         self.text.setStyleSheet("color: #b22222")
         self.text2.setStyleSheet("color: #b22222")

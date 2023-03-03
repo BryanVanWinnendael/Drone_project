@@ -2,6 +2,7 @@ import os
 from PyQt5 import QtCore
 import datetime
 from model.clean import clean
+from zipfile import ZipFile
 
 clusterStrategies = ["DBSCAN", "None", "Agglomerative"]
 surfaceStrategies = ["Poisson", "Convex Hull", "Ball Pivoting"]
@@ -123,3 +124,22 @@ def checkDataDirectory(directory):
             return True
     else:
         return False
+    
+def checkZippedData(filename):
+    # Check if file exist
+    if os.path.isfile(filename):
+        # Check if file is a zip file
+        if filename.endswith(".zip"):
+            # Check if the zip file contains the correct folders
+            with ZipFile(filename, "r") as zip_ref:
+                contents = zip_ref.namelist()
+                if "results/original.ply" in contents and "results/result-classified.ply" in contents and "results/output.csv" in contents:
+                    return True
+    return False
+    
+def copyZip(filename, destination):
+    if os.path.isfile(filename):
+        if filename.endswith(".zip"):
+            with ZipFile(filename, "r") as zip_ref:
+                zip_ref.extractall(destination)
+    return False

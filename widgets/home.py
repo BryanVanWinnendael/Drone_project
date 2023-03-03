@@ -1,5 +1,5 @@
 from PyQt5 import QtWidgets, QtCore
-from utils import getFileNames
+from utils import getFileNames, copyZip, checkZippedData
 from widgets.components.buttonHistory import ButtonHistory
 from PyQt5.QtCore import pyqtSignal
 from widgets.components.buttonUpload import ButtonUpload
@@ -7,7 +7,6 @@ from widgets.components.buttonSettings import ButtonSettings
 from utils import checkDataDirectory, copyDirectory, cleanData
 from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
 from widgets.components.toggle import AnimatedToggle
-from PyQt5.QtGui import QPixmap
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -104,10 +103,17 @@ class HomeWidget(QtWidgets.QWidget):
     def openFileNameDialog(self):
         self.uploadButton.setNormal()
         options = QtWidgets.QFileDialog.Options()
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open file or directory", "", "Polygen Files (*).ply ", options=options)
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open file or directory", "", "Polygen Files (*).ply;; Zip (*).zip ", options=options)
         if fileName:
             if fileName.endswith('.ply'):
                 self.parent.navigateToRenderer(fileName)
+            elif fileName.endswith('.zip'):
+                if checkZippedData(fileName):
+                    cleanData(True)
+                    copyZip(fileName, "data")
+                    self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
+                else:
+                    self.uploadButton.setError()
             else:
                 self.uploadButton.setError()
 
