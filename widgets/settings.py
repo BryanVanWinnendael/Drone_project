@@ -60,7 +60,6 @@ class TextInput(QtWidgets.QWidget):
 
         self.layout = QtWidgets.QVBoxLayout()
         self.layout.setSpacing(0)
-        self.setMinimumWidth(400)
 
         self.layoutText = QtWidgets.QHBoxLayout()
         self.layoutText.setContentsMargins(0, 0, 0, 5)
@@ -126,16 +125,33 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.backButton.setIconSize(QtCore.QSize(30, 30))
         self.backButton.setToolTip("Back to home")
         self.layoutButton.addWidget(self.backButton)
+        self.layout.addLayout(self.layoutButton)
 
+        self.mainLabel = QtWidgets.QLabel("Settings for the point cloud processing")
+        self.mainLabel.setObjectName("settingsMainLabel")
+        self.widgetLayout.addWidget(self.mainLabel)
+
+        # Clustering parameters
         info_strategy = "Select the clustering strategy."
         self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings, callback=self.showSettings)
-        
-        info_surfaceStrategy = "Select the surface calculation strategy."
-        self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
 
-        info_estimatedPlanes = "The number of planes you think will be in the point cloud. This is used to calculate the correctness of the segmentation."
-        self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes, steps=1)
+        info_epsilon = "The epsilon parameter is used in DBSCAN only. This parameter will be ignored with other strategies. It indicates the distances between clusters."
+        self.epsilonWidget = TextInput(self.settings, 'Epsilon (DBSCAN)', info_epsilon)
 
+        info_clusters = "The number of clusters to be used in Agglomerative clustering. This parameter will be ignored with other strategies. It indicates the number of clusters to be created. This number will be static so it will always create the same number of clusters per segment. This could be useful if you manually want to merge."
+        self.clustersWidget = TextInput(self.settings, 'Number of Clusters (Agglomerative)', info_clusters)
+
+        # Pre processing parameters
+        neighbourhbours = "The number of neighbours that are used to remove outliers."
+        self.neighboursWidget = TextInput(self.settings, 'Number of neighbours', neighbourhbours)
+
+        info_voxelSize = "The size of the voxel for downsampling the point cloud. The smaller the voxel size, the more points will be removed."
+        self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', info_voxelSize)
+
+        info_standardDeviation = "The standard deviation ratio to remove statistical outliers."
+        self.standardDeviationWidget = TextInput(self.settings, 'Standard deviation ratio', info_standardDeviation)
+
+        # Segmentation parameters
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
         self.minimumPointsWidget = TextInput(self.settings, 'Minimum points', info_minimumPoints)
 
@@ -145,40 +161,79 @@ class SettingsWidget(QtWidgets.QScrollArea):
         info_maxLoops = "The maximum number of loops to run the RANSAC algorithm for, this is to prevent infinite loops or if you manually want to limit the amount of segments."
         self.maxLoopsWidget = TextInput(self.settings, 'Maximum number of loops', info_maxLoops)
 
-        neighbourhbours = "The number of neighbours that are used to remove outliers."
-        self.neighboursWidget = TextInput(self.settings, 'Number of neighbours', neighbourhbours)
-
-        info_voxelSize = "The size of the voxel for downsampling the point cloud. The smaller the voxel size, the more points will be removed."
-        self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', info_voxelSize)
-
         info_treshhold = "The treshold for the RANSAC algorithm. The smaller the treshold, the more points will be removed."
         self.treshholdWidget = TextInput(self.settings, 'Treshold', info_treshhold, 0.01)
-
-        info_standardDeviation = "The standard deviation ratio to remove statistical outliers."
-        self.standardDeviationWidget = TextInput(self.settings, 'Standard deviation ratio', info_standardDeviation)
 
         info_minRatio = "The ratio parameter determines when the segmenting stops, segmenting will stop if the ratio of points is reached. For example if the ratio is 0.1, the segmenting will stop when 10% of the points are left."
         self.minRatioWidget = TextInput(self.settings, 'Minimum ratio', info_minRatio, 0.01)
 
-        info_epsilon = "The epsilon parameter is used in DBSCAN only. This parameter will be ignored with other strategies. It indicates the distances between clusters."
-        self.epsilonWidget = TextInput(self.settings, 'Epsilon (DBSCAN)', info_epsilon)
+        # Surface
+        info_surfaceStrategy = "Select the surface calculation strategy."
+        self.surfaceStrategyWidget = DropDown(surfaceStrategies, "Surface strategy", info_surfaceStrategy, self.settings)
 
-        info_clusters = "The number of clusters to be used in Agglomerative clustering. This parameter will be ignored with other strategies. It indicates the number of clusters to be created. This number will be static so it will always create the same number of clusters per segment. This could be useful if you manually want to merge."
-        self.clustersWidget = TextInput(self.settings, 'Number of Clusters (Agglomerative)', info_clusters)
-        
-        self.layout.addLayout(self.layoutButton)
-        self.widgetLayout.addWidget(self.strategyWidget)
-        self.widgetLayout.addWidget(self.surfaceStrategyWidget)
-        self.widgetLayout.addWidget(self.estimatedPlanesWidget)
-        self.widgetLayout.addWidget(self.minimumPointsWidget)
-        self.widgetLayout.addWidget(self.iterationsWidget)
-        self.widgetLayout.addWidget(self.maxLoopsWidget)
-        self.widgetLayout.addWidget(self.neighboursWidget)
-        self.widgetLayout.addWidget(self.voxelSizeWidget)
-        self.widgetLayout.addWidget(self.treshholdWidget)
-        self.widgetLayout.addWidget(self.standardDeviationWidget)
-        self.widgetLayout.addWidget(self.minRatioWidget)
+        # Calculations
+        info_estimatedPlanes = "The number of planes you think will be in the point cloud. This is used to calculate the correctness of the segmentation."
+        self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes, steps=1)
 
+        # Clustering parameters
+        self.clusterParameterLabel = QtWidgets.QLabel("Clustering parameters")
+        self.clusterParameterLabel.setObjectName("settingsLabel")
+        self.widgetLayout.addWidget(self.clusterParameterLabel)
+
+        self.clusterParameterLayout = QtWidgets.QHBoxLayout()
+        self.clusterParameterLayout.addWidget(self.strategyWidget)
+        self.clusterParameterLayout.addWidget(self.epsilonWidget)
+        self.clusterParameterLayout.addWidget(self.clustersWidget)
+
+        self.widgetLayout.addLayout(self.clusterParameterLayout)
+
+        # Pre processing parameters
+        self.preProcessingParameterLabel = QtWidgets.QLabel("Pre processing parameters")
+        self.preProcessingParameterLabel.setObjectName("settingsLabel")
+        self.widgetLayout.addWidget(self.preProcessingParameterLabel)
+
+        self.preProcessingParameterLayout = QtWidgets.QHBoxLayout()
+        self.preProcessingParameterLayout.addWidget(self.neighboursWidget)
+        self.preProcessingParameterLayout.addWidget(self.voxelSizeWidget)
+        self.preProcessingParameterLayout.addWidget(self.standardDeviationWidget)
+
+        self.widgetLayout.addLayout(self.preProcessingParameterLayout)
+
+        # Segmentation parameters
+        self.segmentationParameterLabel = QtWidgets.QLabel("Segmentation parameters")
+        self.segmentationParameterLabel.setObjectName("settingsLabel")
+        self.widgetLayout.addWidget(self.segmentationParameterLabel)
+
+        self.segmentationParameterLayout = QtWidgets.QHBoxLayout()
+        self.segmentationParameterLayout.addWidget(self.minimumPointsWidget)
+        self.segmentationParameterLayout.addWidget(self.iterationsWidget)
+        self.segmentationParameterLayout.addWidget(self.maxLoopsWidget)
+        self.segmentationParameterLayout.addWidget(self.treshholdWidget)
+        self.segmentationParameterLayout.addWidget(self.minRatioWidget)
+
+        self.widgetLayout.addLayout(self.segmentationParameterLayout)
+
+        # Surface
+        self.surfaceParameterLabel = QtWidgets.QLabel("Surface parameters")
+        self.surfaceParameterLabel.setObjectName("settingsLabel")
+        self.widgetLayout.addWidget(self.surfaceParameterLabel)
+
+        self.surfaceParameterLayout = QtWidgets.QHBoxLayout()
+        self.surfaceParameterLayout.addWidget(self.surfaceStrategyWidget)
+
+        self.widgetLayout.addLayout(self.surfaceParameterLayout)
+
+        # Calculations
+        self.calculationsParameterLabel = QtWidgets.QLabel("Calculations parameters")
+        self.calculationsParameterLabel.setObjectName("settingsLabel")
+        self.widgetLayout.addWidget(self.calculationsParameterLabel)
+
+        self.calculationsParameterLayout = QtWidgets.QHBoxLayout()
+        self.calculationsParameterLayout.addWidget(self.estimatedPlanesWidget)
+
+        self.widgetLayout.addLayout(self.calculationsParameterLayout)
+
+        # Reset button
         self.resetButton = QtWidgets.QPushButton('Reset settings')
         self.resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.resetButton.setObjectName('buttonReset')
@@ -211,15 +266,15 @@ class SettingsWidget(QtWidgets.QScrollArea):
         cluster_strategy = self.strategyWidget.dropDown.currentText()
 
         if cluster_strategy == 'DBSCAN':
-            self.widgetLayout.addWidget(self.epsilonWidget)
-            self.widgetLayout.removeWidget(self.clustersWidget)
+            self.clusterParameterLayout.addWidget(self.epsilonWidget)
+            self.clusterParameterLayout.removeWidget(self.clustersWidget)
             self.clustersWidget.setParent(None)
         elif cluster_strategy == 'Agglomerative':
-            self.widgetLayout.addWidget(self.clustersWidget)
-            self.widgetLayout.removeWidget(self.epsilonWidget)
+            self.clusterParameterLayout.addWidget(self.clustersWidget)
+            self.clusterParameterLayout.removeWidget(self.epsilonWidget)
             self.epsilonWidget.setParent(None)
         else:
-            self.widgetLayout.removeWidget(self.epsilonWidget)
+            self.clusterParameterLayout.removeWidget(self.epsilonWidget)
             self.epsilonWidget.setParent(None)
-            self.widgetLayout.removeWidget(self.clustersWidget)
+            self.clusterParameterLayout.removeWidget(self.clustersWidget)
             self.clustersWidget.setParent(None)
