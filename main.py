@@ -81,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
     
 if __name__ == '__main__':
     app = QtWidgets.QApplication([])
-    app.setWindowIcon(QtGui.QIcon('assets/PointCloud.png'))
+    app.setWindowIcon(QtGui.QIcon('assets/PointCloud.svg'))
     
     myappid = 'mycompany.myproduct.subproduct.version'
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)

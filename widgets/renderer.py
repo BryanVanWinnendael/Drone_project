@@ -52,13 +52,23 @@ class RendererWidget(QtWidgets.QWidget):
         self.correctness_label.setMaximumHeight(50)
 
         self.tableAndButtonSpace = QtWidgets.QWidget()
-        self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
+        self.rendererLayout = QtWidgets.QVBoxLayout()
 
+        # Make seperate horizontal layout for the info labels
+        self.infoLayout = QtWidgets.QHBoxLayout()
+        self.infoLayout.addWidget(self.area_label)
+        self.infoLayout.addWidget(self.correctness_label)
+
+        # Make layout for the table and buttons
+        self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
-        self.tableAndButtonsLayout.addWidget(self.area_label)
-        self.tableAndButtonsLayout.addWidget(self.correctness_label)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
-        self.tableAndButtonSpace.setLayout(self.tableAndButtonsLayout)
+
+
+        self.rendererLayout.addLayout(self.infoLayout)
+        self.rendererLayout.addLayout(self.tableAndButtonsLayout)
+
+        self.tableAndButtonSpace.setLayout(self.rendererLayout)
 
         self.splitter = QtWidgets.QSplitter(Qt.Vertical)
         self.splitter.addWidget(self.renderWidget)

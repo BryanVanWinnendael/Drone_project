@@ -39,6 +39,14 @@ QLabel#recentlabelTimeButton {
   color: #808080;
 }
 
+QLabel#title {
+  font-size: 64px;
+  background-color: #249ea7;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 15px;
+}
+
 /* Settings window */
 
 QPushButton#backbtn {
@@ -62,10 +70,18 @@ QLabel#settingsLabel {
 }
 
 QPushButton#rendererbtn {
-  color: black;
+  color: #ffffff;
   font-size: 18px;
   width: 300px;
   border: none;
+  background-color: #249ea7;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: 400;
+}
+
+QPushButton#rendererbtn:hover {
+  background-color: #2ca6af;
 }
 
 QPushButton#exportbtn {
@@ -216,6 +232,7 @@ QWidget#widgetSettings {
 }
 
 QLabel#info_label {
-  font-size: 12px;
-  font-weight: 300;
+  font-size: 16px;
+  font-weight: 400;
+  text-decoration: underline;
 }
