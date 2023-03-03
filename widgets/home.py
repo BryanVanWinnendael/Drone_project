@@ -104,7 +104,7 @@ class HomeWidget(QtWidgets.QWidget):
                 self.uploadButton.setError()
 
     def openDirectoryDialog(self):
-        self.uploadButton.setNormal()
+        self.uploadPreProcessedDataButton.setNormal()
         cleanData(True)
         options = QtWidgets.QFileDialog.Options()
         fileName = QtWidgets.QFileDialog.getExistingDirectory(self, "Open file or directory", "", options=options)
@@ -113,7 +113,7 @@ class HomeWidget(QtWidgets.QWidget):
                 copyDirectory(fileName, "data")
                 self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
             else:
-                self.uploadButton.setError()
+                self.uploadPreProcessedDataButton.setError()
 
     def dragEnterEvent(self, event):
         self.uploadButton.setNormal()
@@ -134,3 +134,4 @@ class HomeWidget(QtWidgets.QWidget):
         else:
             print("Not a valid file")
             self.uploadButton.setError()
+            self.uploadPreProcessedDataButton.setError()

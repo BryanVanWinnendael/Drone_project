@@ -1,9 +1,9 @@
-from scipy.spatial import ConvexHull
 import open3d as o3d
 import numpy as np
 import os
 import csv
 import pandas as pd
+from model.model_utils import calculateArea
 
 def CalculateSurfaces(strategy, waitingScreen):
     results = {}
@@ -26,7 +26,7 @@ def CalculateSurfaces(strategy, waitingScreen):
         elif strategy == "mesh_ball_pivoting":
             surface_area = CalculateSurfaceMeshBallPivotingMethod(pcd)
         else:
-            surface_area = CalculateSurfaceConvexHull(pcd)
+            surface_area = calculateArea(np.asarray(pcd.points))
 
         results[segment_number] = [surface_area, [int(x * 255) for x in np.asarray(pcd.colors)[0]]]
 
@@ -69,13 +69,6 @@ def CalculateSurfaceMeshBallPivotingMethod(pcd):
 
     # Get surface area
     return mesh.get_surface_area()
-
-def CalculateSurfaceConvexHull(pcd):
-    points = np.asarray(pcd.points)
-
-    # Calculate surface area
-    return ConvexHull(points, qhull_options='QJ').area / 2
-
 
 # Legacy code
 # def OldCalculateSurfaces():

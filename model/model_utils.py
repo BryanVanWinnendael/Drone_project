@@ -1,6 +1,8 @@
 import os
 import pandas as pd
 import open3d as o3d
+from scipy.spatial import ConvexHull
+from scipy.spatial.qhull import QhullError
 
 def GetDefaulftParameters():
     return {
@@ -67,3 +69,11 @@ def deleteSegment(id):
             os.remove(f"data/planes/plane_{id}.ply")
     else:
         print("Error: cannot delete last segment")
+
+def calculateArea(points):
+    try:
+        surface_area = ConvexHull(points, qhull_options='QJ').area / 2
+    except QhullError:
+        print("Qhull error: surface area could not be calculated")
+        surface_area = 0
+    return surface_area
