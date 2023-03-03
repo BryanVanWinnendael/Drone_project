@@ -62,10 +62,18 @@ QLabel#settingsLabel {
 }
 
 QPushButton#rendererbtn {
-  color: black;
+  color: #ffffff;
   font-size: 18px;
   width: 300px;
   border: none;
+  background-color: #249ea7;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: 400;
+}
+
+QPushButton#rendererbtn:hover {
+  background-color: #2ca6af;
 }
 
 QPushButton#exportbtn {
