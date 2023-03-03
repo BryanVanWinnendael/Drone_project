@@ -1,10 +1,7 @@
 import open3d as o3d
 import numpy as np
-import os
 import pandas as pd
-from scipy.spatial import ConvexHull
-from scipy.spatial.qhull import QhullError
-from model.model_utils import constructNewClassifiedPointCloud, deleteSegment, reassignSegmentIds
+from model.model_utils import constructNewClassifiedPointCloud, deleteSegment, reassignSegmentIds, calculateArea
 
 def remove_points(file, remove_points, remove_segments):
     if len(remove_points) > 0:
@@ -16,12 +13,7 @@ def remove_points(file, remove_points, remove_segments):
         new_points = new_points.tolist()
 
         if len(new_points) > 3:
-            try:
-                surface_area = ConvexHull(new_points, qhull_options='QJ').area / 2
-            except QhullError:
-                print("Qhull error: surface area could not be calculated")
-                surface_area = 0
-
+            surface_area = calculateArea(new_points)
             seg_id = int(file.split("_")[1].split(".")[0])
             df = pd.read_csv("data/results/output.csv")
             df.loc[df.Segment == seg_id, 'Surface area'] = surface_area

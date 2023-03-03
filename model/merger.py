@@ -1,10 +1,8 @@
 import open3d as o3d
 import numpy as np
-from csv import writer, reader
-from scipy.spatial import ConvexHull
-import pandas as pd
+from csv import writer
 import os
-from model.model_utils import reassignSegmentIds, constructNewClassifiedPointCloud, deleteSegment
+from model.model_utils import reassignSegmentIds, constructNewClassifiedPointCloud, deleteSegment, calculateArea
 
 class Merger():
     def __init__(self, parent):
@@ -37,7 +35,7 @@ class Merger():
             new_pcd.points = o3d.utility.Vector3dVector(points)
 
             # Calculate new surface
-            surface_area = ConvexHull(points, qhull_options='QJ').area / 2
+            surface_area = calculateArea(points)
 
             color = list(np.random.choice(range(256), size=3))
             new_pcd.paint_uniform_color([color[0] / 255, color[1] / 255, color[2] / 255])
