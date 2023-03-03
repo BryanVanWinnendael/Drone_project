@@ -32,7 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setObjectName("mainWindow")
         self.setWindowTitle("Point cloud Processor")
         self.setMinimumWidth(900)
-        self.setMinimumHeight(800)
+        self.setMinimumHeight(850)
 
         homeWidget = HomeWidget(self)
         self.setCentralWidget(homeWidget)

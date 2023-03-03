@@ -295,6 +295,8 @@ class CalculationsWidget(QtWidgets.QWidget):
 
         self.box.addLayout(self.parameterLayout)
 
+        self.setLayout(self.box)
+
     def resetValues(self):
         defaultSettings = resetSettings()
 

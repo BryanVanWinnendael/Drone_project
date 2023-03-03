@@ -4,100 +4,6 @@ from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSetti
                    saveRecentFile, saveSettings)
 from widgets.components.settingParametersWidgets import *
 
-
-class DropDown(QtWidgets.QWidget):
-    def __init__(self, items, value, info, settings, callback=None):
-        super(DropDown, self).__init__()
-        self.items = items
-        self.value = value
-        self.info = info
-        self.settings = settings
-        self.callback = callback
-
-        self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setSpacing(0)
-        self.layoutText = QtWidgets.QHBoxLayout()
-        self.layoutText.setContentsMargins(0, 0, 0, 5)
-        self.layoutText.setSpacing(10)
-
-        self.textLabel = QtWidgets.QLabel(self.value)
-        self.textLabel.setObjectName('infoLabel')
-        self.buttonInfo = QtWidgets.QPushButton()
-        self.buttonInfo.setIcon(QtGui.QIcon('assets/info.svg'))
-        self.buttonInfo.setIconSize(QtCore.QSize(20, 20))
-        self.buttonInfo.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.buttonInfo.setObjectName('buttonInfo')
-        self.buttonInfo.setToolTip(self.info)
-        self.buttonInfo.clicked.connect(lambda: QtWidgets.QMessageBox.information(self, 'Info', self.info))
-
-        self.layoutText.addWidget(self.textLabel)
-        self.layoutText.addWidget(self.buttonInfo)
-
-        self.dropDown = QtWidgets.QComboBox()
-        for item in self.items:
-            self.dropDown.addItem(item)
-        
-        self.dropDown.setCurrentText(self.settings[self.value])
-
-        self.dropDown.currentIndexChanged.connect(self.saveSettingsValue)
-
-        self.layout.addLayout(self.layoutText)
-        self.layout.addWidget(self.dropDown)
-
-        self.setLayout(self.layout)
-
-    def saveSettingsValue(self):
-        if self.callback: self.callback()
-        self.settings[self.value] = self.dropDown.currentText()
-        saveSettings(self.settings)
-        saveRecentFile(None)
-
-class TextInput(QtWidgets.QWidget):
-    def __init__(self, settings, value, info, steps=0.5):
-        super(TextInput, self).__init__()
-        self.settings = settings
-        self.value = value
-        self.info = info
-
-        self.layout = QtWidgets.QVBoxLayout()
-        self.layout.setSpacing(0)
-
-        self.layoutText = QtWidgets.QHBoxLayout()
-        self.layoutText.setContentsMargins(0, 0, 0, 5)
-
-        self.textLabel = QtWidgets.QLabel(self.value)
-        self.textLabel.setObjectName('infoLabel')
-        self.buttonInfo = QtWidgets.QPushButton()
-        self.buttonInfo.setIcon(QtGui.QIcon('assets/info.svg'))
-        self.buttonInfo.setIconSize(QtCore.QSize(20, 20))
-        self.buttonInfo.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.buttonInfo.setObjectName('buttonInfo')
-        self.buttonInfo.setToolTip(self.info)
-        self.buttonInfo.clicked.connect(lambda: QtWidgets.QMessageBox.information(self, 'Info', self.info))
-
-        self.layoutText.addWidget(self.textLabel)
-        self.layoutText.addWidget(self.buttonInfo)
-
-        self.TextWidget = QtWidgets.QDoubleSpinBox()
-        self.TextWidget.setSingleStep(steps)
-        self.TextWidget.setRange(0, 100000)
-        self.TextWidget.setValue(self.settings[self.value])
-        self.TextWidget.valueChanged.connect(self.saveSettingsValue)
-
-        self.layout.addLayout(self.layoutText)
-        self.layout.addWidget(self.TextWidget)
-
-        self.setLayout(self.layout)
-
-    def saveSettingsValue(self):
-        self.settings[self.value] = self.TextWidget.value()
-        saveSettings(self.settings)
-        saveRecentFile(None)
-    
-    def resetValue(self, defaultSettings):
-        self.TextWidget.setValue(defaultSettings[self.value])
-        saveRecentFile(None)
-
 class SettingsWidget(QtWidgets.QScrollArea):
     def __init__(self, parent):
         super().__init__()
@@ -110,7 +16,6 @@ class SettingsWidget(QtWidgets.QScrollArea):
 
         self.widgetLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.setSpacing(5)
-        # self.widgetLayout.setAlignment(QtCore.Qt.AlignCenter)
         self.widgetLayout.setContentsMargins(0, 0, 0, 20)
 
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
@@ -128,9 +33,24 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.layoutButton.addWidget(self.backButton)
         self.layout.addLayout(self.layoutButton)
 
+        # Main label
+        ## Make widget
+        self.labelWidget = QtWidgets.QWidget()
+        self.labelWidget.setObjectName("settingsLabelWidget")
+        self.labelWidget.setMinimumHeight(70)
+        self.labelWidget.setMaximumHeight(150)
+
+        ## Make layout
+        self.labelLayout = QtWidgets.QHBoxLayout()
+
+        ## Make label
         self.mainLabel = QtWidgets.QLabel("Settings for the point cloud processing")
         self.mainLabel.setObjectName("settingsMainLabel")
-        self.widgetLayout.addWidget(self.mainLabel)
+
+        ## Add to layout
+        self.labelLayout.addWidget(self.mainLabel)
+        self.labelWidget.setLayout(self.labelLayout)
+        self.layout.addWidget(self.labelWidget)
 
         # Clustering parameters
         self.clusterWidget = ClusteringParametersWidget(self.settings)
@@ -164,7 +84,6 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.layout.addWidget(self.resetButton)
         self.widget.setLayout(self.layout)
 
-        # self.showSettings()
         self.setWidget(self.widget)
     
     def resetSettingsValue(self):
