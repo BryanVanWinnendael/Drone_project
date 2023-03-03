@@ -43,26 +43,11 @@ class ResultTopBar(QtWidgets.QWidget):
 
         self.layout.addWidget(self.saveButton)
         self.setLayout(self.layout)
-    
-    # Save CSV file
-    def saveFileDialog(self):
-        try:
-            filePath, _ = QFileDialog.getSaveFileName(self, "Save file", "",
-                            "CSV(*.csv);;")
-            result_path = "data/results/output.csv"
-
-            with open(result_path, "r") as infile:
-                data = infile.read()
-
-            with open(filePath, "w") as outfile:
-                outfile.write(data)
-        except:
-            print("No file selected")
 
     # Export the entire data directory to a zip file
     def saveDirectoryDialog(self):
         try:
-            dirPath = QFileDialog.getExistingDirectory(self, "Select Directory")
+            dirPath, _ = QFileDialog.getExistingDirectory(self, "Select Directory")
             resultPath = "data"
             zipPath = os.path.join(dirPath, "result.zip")
 
