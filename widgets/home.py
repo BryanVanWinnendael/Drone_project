@@ -113,6 +113,7 @@ class HomeWidget(QtWidgets.QWidget):
                 copyDirectory(fileName, "data")
                 self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
             else:
+                print("here")
                 self.uploadButton.setError()
 
     def dragEnterEvent(self, event):

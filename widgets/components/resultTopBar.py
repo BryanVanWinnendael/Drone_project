@@ -47,9 +47,12 @@ class ResultTopBar(QtWidgets.QWidget):
     # Export the entire data directory to a zip file
     def saveDirectoryDialog(self):
         try:
-            dirPath, _ = QFileDialog.getExistingDirectory(self, "Select Directory")
+            dirPath = QFileDialog.getExistingDirectory(self, "Select Directory")
+            if dirPath == "":
+                return
             resultPath = "data"
             zipPath = os.path.join(dirPath, "result.zip")
+            print("Zipping directory:", zipPath)
 
             with zipfile.ZipFile(zipPath, "w", zipfile.ZIP_DEFLATED) as zip:
                 for root, dirs, files in os.walk(resultPath):
