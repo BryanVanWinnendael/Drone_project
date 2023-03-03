@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSettings,
                    saveRecentFile, saveSettings)
+from widgets.components.settingParametersWidgets import ClusteringParametersWidget
 
 
 class DropDown(QtWidgets.QWidget):
@@ -109,7 +110,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
 
         self.widgetLayout = QtWidgets.QVBoxLayout()
         self.widgetLayout.setSpacing(5)
-        self.widgetLayout.setAlignment(QtCore.Qt.AlignCenter)
+        # self.widgetLayout.setAlignment(QtCore.Qt.AlignCenter)
         self.widgetLayout.setContentsMargins(0, 0, 0, 20)
 
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
@@ -132,14 +133,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.widgetLayout.addWidget(self.mainLabel)
 
         # Clustering parameters
-        info_strategy = "Select the clustering strategy."
-        self.strategyWidget = DropDown(clusterStrategies, "Cluster strategy", info_strategy, self.settings, callback=self.showSettings)
 
-        info_epsilon = "The epsilon parameter is used in DBSCAN only. This parameter will be ignored with other strategies. It indicates the distances between clusters."
-        self.epsilonWidget = TextInput(self.settings, 'Epsilon (DBSCAN)', info_epsilon)
-
-        info_clusters = "The number of clusters to be used in Agglomerative clustering. This parameter will be ignored with other strategies. It indicates the number of clusters to be created. This number will be static so it will always create the same number of clusters per segment. This could be useful if you manually want to merge."
-        self.clustersWidget = TextInput(self.settings, 'Number of Clusters (Agglomerative)', info_clusters)
 
         # Pre processing parameters
         neighbourhbours = "The number of neighbours that are used to remove outliers."
@@ -176,33 +170,31 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.estimatedPlanesWidget = TextInput(self.settings, 'Estimated planes', info_estimatedPlanes, steps=1)
 
         # Clustering parameters
-        self.clusterParameterLabel = QtWidgets.QLabel("Clustering parameters")
-        self.clusterParameterLabel.setObjectName("settingsLabel")
-        self.widgetLayout.addWidget(self.clusterParameterLabel)
-
-        self.clusterParameterLayout = QtWidgets.QHBoxLayout()
-        self.clusterParameterLayout.addWidget(self.strategyWidget)
-        self.clusterParameterLayout.addWidget(self.epsilonWidget)
-        self.clusterParameterLayout.addWidget(self.clustersWidget)
-
-        self.widgetLayout.addLayout(self.clusterParameterLayout)
+        self.clusterWidget = ClusteringParametersWidget(self.settings)
+        self.widgetLayout.addWidget(self.clusterWidget)
 
         # Pre processing parameters
+        self.preProcessVBox = QtWidgets.QVBoxLayout()
+
         self.preProcessingParameterLabel = QtWidgets.QLabel("Pre processing parameters")
         self.preProcessingParameterLabel.setObjectName("settingsLabel")
-        self.widgetLayout.addWidget(self.preProcessingParameterLabel)
+        self.preProcessVBox.addWidget(self.preProcessingParameterLabel)
 
         self.preProcessingParameterLayout = QtWidgets.QHBoxLayout()
         self.preProcessingParameterLayout.addWidget(self.neighboursWidget)
         self.preProcessingParameterLayout.addWidget(self.voxelSizeWidget)
         self.preProcessingParameterLayout.addWidget(self.standardDeviationWidget)
 
-        self.widgetLayout.addLayout(self.preProcessingParameterLayout)
+        self.preProcessVBox.addLayout(self.preProcessingParameterLayout)
+
+        self.widgetLayout.addLayout(self.preProcessVBox)
 
         # Segmentation parameters
+        self.segmentationVBox = QtWidgets.QVBoxLayout()
+
         self.segmentationParameterLabel = QtWidgets.QLabel("Segmentation parameters")
         self.segmentationParameterLabel.setObjectName("settingsLabel")
-        self.widgetLayout.addWidget(self.segmentationParameterLabel)
+        self.segmentationVBox.addWidget(self.segmentationParameterLabel)
 
         self.segmentationParameterLayout = QtWidgets.QHBoxLayout()
         self.segmentationParameterLayout.addWidget(self.minimumPointsWidget)
@@ -211,27 +203,37 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.segmentationParameterLayout.addWidget(self.treshholdWidget)
         self.segmentationParameterLayout.addWidget(self.minRatioWidget)
 
-        self.widgetLayout.addLayout(self.segmentationParameterLayout)
+        self.segmentationVBox.addLayout(self.segmentationParameterLayout)
+
+        self.widgetLayout.addLayout(self.segmentationVBox)
 
         # Surface
+        self.surfaceVBox = QtWidgets.QVBoxLayout()
+
         self.surfaceParameterLabel = QtWidgets.QLabel("Surface parameters")
         self.surfaceParameterLabel.setObjectName("settingsLabel")
-        self.widgetLayout.addWidget(self.surfaceParameterLabel)
+        self.surfaceVBox.addWidget(self.surfaceParameterLabel)
 
         self.surfaceParameterLayout = QtWidgets.QHBoxLayout()
         self.surfaceParameterLayout.addWidget(self.surfaceStrategyWidget)
 
-        self.widgetLayout.addLayout(self.surfaceParameterLayout)
+        self.surfaceVBox.addLayout(self.surfaceParameterLayout)
+
+        self.widgetLayout.addLayout(self.surfaceVBox)
 
         # Calculations
+        self.calculationsVBox = QtWidgets.QVBoxLayout()
+
         self.calculationsParameterLabel = QtWidgets.QLabel("Calculations parameters")
         self.calculationsParameterLabel.setObjectName("settingsLabel")
-        self.widgetLayout.addWidget(self.calculationsParameterLabel)
+        self.calculationsVBox.addWidget(self.calculationsParameterLabel)
 
         self.calculationsParameterLayout = QtWidgets.QHBoxLayout()
         self.calculationsParameterLayout.addWidget(self.estimatedPlanesWidget)
 
-        self.widgetLayout.addLayout(self.calculationsParameterLayout)
+        self.calculationsVBox.addLayout(self.calculationsParameterLayout)
+
+        self.widgetLayout.addLayout(self.calculationsVBox)
 
         # Reset button
         self.resetButton = QtWidgets.QPushButton('Reset settings')
@@ -244,7 +246,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.layout.addWidget(self.resetButton)
         self.widget.setLayout(self.layout)
 
-        self.showSettings()
+        # self.showSettings()
         self.setWidget(self.widget)
     
     def resetSettingsValue(self):
@@ -262,19 +264,19 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.epsilonWidget.resetValue(defaultSettings)
         self.clustersWidget.resetValue(defaultSettings)
     
-    def showSettings(self):
-        cluster_strategy = self.strategyWidget.dropDown.currentText()
+    # def showSettings(self):
+    #     cluster_strategy = self.strategyWidget.dropDown.currentText()
 
-        if cluster_strategy == 'DBSCAN':
-            self.clusterParameterLayout.addWidget(self.epsilonWidget)
-            self.clusterParameterLayout.removeWidget(self.clustersWidget)
-            self.clustersWidget.setParent(None)
-        elif cluster_strategy == 'Agglomerative':
-            self.clusterParameterLayout.addWidget(self.clustersWidget)
-            self.clusterParameterLayout.removeWidget(self.epsilonWidget)
-            self.epsilonWidget.setParent(None)
-        else:
-            self.clusterParameterLayout.removeWidget(self.epsilonWidget)
-            self.epsilonWidget.setParent(None)
-            self.clusterParameterLayout.removeWidget(self.clustersWidget)
-            self.clustersWidget.setParent(None)
+    #     if cluster_strategy == 'DBSCAN':
+    #         self.clusterParameterLayout.addWidget(self.epsilonWidget)
+    #         self.clusterParameterLayout.removeWidget(self.clustersWidget)
+    #         self.clustersWidget.setParent(None)
+    #     elif cluster_strategy == 'Agglomerative':
+    #         self.clusterParameterLayout.addWidget(self.clustersWidget)
+    #         self.clusterParameterLayout.removeWidget(self.epsilonWidget)
+    #         self.epsilonWidget.setParent(None)
+    #     else:
+    #         self.clusterParameterLayout.removeWidget(self.epsilonWidget)
+    #         self.epsilonWidget.setParent(None)
+    #         self.clusterParameterLayout.removeWidget(self.clustersWidget)
+    #         self.clustersWidget.setParent(None)
