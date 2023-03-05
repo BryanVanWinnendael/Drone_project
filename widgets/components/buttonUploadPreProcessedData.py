@@ -1,4 +1,5 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class ButtonUploadPreProcessedData(QtWidgets.QPushButton):
     def __init__(self, parent):
@@ -40,4 +41,4 @@ class ButtonUploadPreProcessedData(QtWidgets.QPushButton):
     def setNormal(self):
         self.text.setText("Open pre-processed data")
         self.text.setStyleSheet("color: black")
-        self.setStyleSheet("border-color: #d7e1fc")
+        self.setStyleSheet("border-color: #bedddf")

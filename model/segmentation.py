@@ -23,7 +23,9 @@ def SegmentPointCloud(filename, waitingScreen, cluster=None, surface="Convex Hul
     # Save original point cloud
     print("Saving original point cloud...")
     pcd = o3d.io.read_point_cloud(filename)
-    o3d.io.write_point_cloud("data/results/original.ply", pcd)
+    name = filename.split("/")[-1]
+    newFilename = f"original_{name}"
+    o3d.io.write_point_cloud(f"data/results/{newFilename}", pcd)
 
     print("Detecting planes...")
     DetectPlanes(filename, waitingScreen, cluster=cluster, parameters=parameters)

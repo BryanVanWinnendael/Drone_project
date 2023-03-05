@@ -3,6 +3,7 @@ import open3d as o3d
 import win32gui
 from PyQt5 import QtCore, QtGui, QtWidgets
 
+
 class WorkerCloseScreen(QtCore.QThread):
     def __init__(self, parent=None):
         super(WorkerCloseScreen, self).__init__(parent)
@@ -25,6 +26,8 @@ class RenderWidget(QtWidgets.QWidget):
         self.parent = parent
         self.classified = "data/results/result-classified.ply"
         self.night = False
+        
+        o3d.utility.set_verbosity_level(o3d.utility.VerbosityLevel.Error)
 
         self.pcd = o3d.io.read_point_cloud(fileName)
         self.vis = o3d.visualization.VisualizerWithVertexSelection()

@@ -1,4 +1,5 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class ButtonUpload(QtWidgets.QPushButton):
     def __init__(self, parent):
@@ -48,4 +49,4 @@ class ButtonUpload(QtWidgets.QPushButton):
         self.text2.setText("browse")
         self.text.setStyleSheet("color: black")
         self.text2.setStyleSheet("color: #249ea7")
-        self.setStyleSheet("border-color: #d7e1fc")
+        self.setStyleSheet("border-color: #bedddf")

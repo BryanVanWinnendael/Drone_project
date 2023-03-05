@@ -1,17 +1,18 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-import open3d as o3d
+import csv
+import os
+
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+from model.remove_points import remove_points
+from utils import getSettings
+from widgets.components.buttonSpace import ButtonSpace
+from widgets.components.renderWidget import RenderWidget
 from widgets.components.resultTable import ResultTable
 from widgets.components.resultTopBar import ResultTopBar
-from widgets.components.buttonSpace import ButtonSpace
-import numpy as np
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-import csv
-from widgets.components.renderWidget import RenderWidget
-from utils import getSettings
-from model.remove_points import remove_points
-import os
+
 
 class RendererWidget(QtWidgets.QWidget):
     def __init__(self, parent, fileName=None):
@@ -62,10 +63,11 @@ class RendererWidget(QtWidgets.QWidget):
         # Make layout for the table and buttons
         self.tableAndButtonsLayout = QtWidgets.QVBoxLayout()
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
+        self.tableAndButtonsLayout.addLayout(self.infoLayout)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
 
 
-        self.rendererLayout.addLayout(self.infoLayout)
+        # self.rendererLayout.addLayout(self.infoLayout)
         self.rendererLayout.addLayout(self.tableAndButtonsLayout)
 
         self.tableAndButtonSpace.setLayout(self.rendererLayout)
