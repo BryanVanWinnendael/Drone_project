@@ -146,6 +146,14 @@ class HomeWidget(QtWidgets.QWidget):
         if (files[0].endswith('.ply') == True):
             print("Opening ply file")
             self.parent.navigateToRenderer(files[0])
+        elif (files[0].endswith('.zip') == True):
+            if checkZippedData(files[0]):
+                cleanData(True)
+                copyZip(files[0], "data")
+                fileName = getOriginalPly()
+                self.parent.navigateToRendererFromPreProcessedData(folderPath=files[0], fileName=f"data/results/{fileName}")
+            else:
+                self.uploadButton.setError()
         elif checkDataDirectory(files[0]):
             cleanData(True)
             copyDirectory(files[0], "data")
