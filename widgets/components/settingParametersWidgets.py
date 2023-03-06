@@ -130,6 +130,7 @@ class Switch(QtWidgets.QWidget):
 
         self.CheckBox = QtWidgets.QCheckBox()
         self.CheckBox.setMinimumHeight(35)
+        self.CheckBox.setObjectName("redistributeCheckbox")
         self.CheckBox.setChecked(self.settings[self.value])
         self.CheckBox.toggled.connect(self.saveSettingsValue)
 

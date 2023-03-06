@@ -234,3 +234,15 @@ QLabel#info_label {
 QWidget#settingsWidgetTest {
   background-color: #249ea7;
 }
+
+QCheckBox#redistributeCheckbox::indicator {
+  border: 3px solid #D7E1FC;
+  background: none;
+  width: 25;
+  height: 25;
+}
+
+QCheckBox#redistributeCheckbox::indicator:checked {
+  border: 3px solid #cedafb;
+  background: #D7E1FC;
+}
