@@ -183,7 +183,6 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
 
     def showSettings(self):
         cluster_strategy = self.strategyWidget.dropDown.currentText()
-        print(cluster_strategy)
 
         if cluster_strategy == 'DBSCAN':
             self.parameterLayout.addWidget(self.epsilonWidget)

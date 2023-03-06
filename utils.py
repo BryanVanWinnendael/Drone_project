@@ -7,7 +7,7 @@ from PyQt5 import QtCore
 
 from model.clean import clean
 
-clusterStrategies = ["DBSCAN", "None", "Agglomerative"]
+clusterStrategies = ["None", "DBSCAN", "Agglomerative"]
 surfaceStrategies = ["Poisson", "Convex Hull", "Ball Pivoting"]
 
 defaultSettings = {
@@ -136,7 +136,6 @@ def checkZippedData(filename):
             with ZipFile(filename, "r") as zip_ref:
                 contents = zip_ref.namelist()
                 if not any(s.startswith('results/original') and s.endswith('.ply') for s in contents):
-                    print("hrere")
                     return False
                 if "results/result-classified.ply" in contents and "results/output.csv" in contents:
                     return True

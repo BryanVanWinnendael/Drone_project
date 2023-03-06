@@ -87,7 +87,7 @@ class RenderWidget(QtWidgets.QWidget):
                 print(error)
                 self.changeGeometry(self.classified)
             except:
-                print("other error")
+                print("Other error")
 
         ctr = self.vis.get_view_control()
         ctr.convert_from_pinhole_camera_parameters(original_view)

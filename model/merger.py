@@ -49,7 +49,7 @@ class Merger():
             reassignSegmentIds()
 
     def saveSegment(self, pcd, surface_area, rgb):  
-        print("saving...")      
+        print("Saving...")      
         with open("data/results/output.csv", "r") as f:
             last_id = f.readlines()[-1].split(",")[0]
             if last_id == "Segment":
