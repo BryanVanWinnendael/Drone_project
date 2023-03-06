@@ -177,7 +177,6 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
 
         self.parameterLayout = QtWidgets.QHBoxLayout()
         self.parameterLayout.addWidget(self.strategyWidget)
-        self.parameterLayout.addWidget(self.redistributeWidget)
 
         self.box.addLayout(self.parameterLayout)
         self.setLayout(self.box)
@@ -187,10 +186,12 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
 
         if cluster_strategy == 'DBSCAN':
             self.parameterLayout.addWidget(self.epsilonWidget)
+            self.parameterLayout.addWidget(self.redistributeWidget)
             self.parameterLayout.removeWidget(self.clustersWidget)
             self.clustersWidget.setParent(None)
         elif cluster_strategy == 'Agglomerative':
             self.parameterLayout.addWidget(self.clustersWidget)
+            self.parameterLayout.addWidget(self.redistributeWidget)
             self.parameterLayout.removeWidget(self.epsilonWidget)
             self.epsilonWidget.setParent(None)
         else:
@@ -198,6 +199,8 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
             self.epsilonWidget.setParent(None)
             self.parameterLayout.removeWidget(self.clustersWidget)
             self.clustersWidget.setParent(None)
+            self.parameterLayout.removeWidget(self.redistributeWidget)
+            self.redistributeWidget.setParent(None)
 
     def resetValues(self):
         defaultSettings = resetSettings()
