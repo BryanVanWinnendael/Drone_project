@@ -4,6 +4,9 @@ This repository contains our project for the Afstudeerproject in UCLL.
 
 Our project was about detecting planes inside a point cloud, in order to get information about all the planes in a point cloud.
 
+### Tested versions
+The project has been tested on Python version [3.9.1](https://www.python.org/downloads/release/python-391/) and [3.10.10](https://www.python.org/downloads/release/python-31010/).
+
 ### Contributors
 - Bryan Van Winnendael
 - Charles Thuysbaert
