@@ -1,4 +1,5 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class ButtonTable(QtWidgets.QPushButton):
     def __init__(self, data, parent, rgb):

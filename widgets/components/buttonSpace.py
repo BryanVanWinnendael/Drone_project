@@ -1,4 +1,5 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
+
 
 class ButtonSpace(QtWidgets.QWidget):
     def __init__(self, parent=None):

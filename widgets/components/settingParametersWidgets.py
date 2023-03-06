@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSettings,
+from utils import (clusterStrategies, surfaceStrategies, resetSettings,
                    saveRecentFile, saveSettings)
 
 class DropDown(QtWidgets.QWidget):
@@ -48,6 +48,11 @@ class DropDown(QtWidgets.QWidget):
         self.settings[self.value] = self.dropDown.currentText()
         saveSettings(self.settings)
         saveRecentFile(None)
+    
+    def resetValue(self, defaultSettings):
+        self.dropDown.setCurrentText(defaultSettings[self.value])
+
+        saveRecentFile(None)
 
 class TextInput(QtWidgets.QWidget):
     def __init__(self, settings, value, info, steps=0.5):
@@ -93,6 +98,7 @@ class TextInput(QtWidgets.QWidget):
     
     def resetValue(self, defaultSettings):
         self.TextWidget.setValue(defaultSettings[self.value])
+
         saveRecentFile(None)
 
 class ClusteringParametersWidget(QtWidgets.QWidget):
@@ -100,7 +106,7 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
         super().__init__()
         self.settings = settings
         self.widget = QtWidgets.QWidget()
-        self.setMaximumHeight(150)
+        self.setMaximumHeight(130)
 
         # Clustering parameters
         info_strategy = "Select the clustering strategy."
@@ -116,6 +122,7 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
 
         self.label = QtWidgets.QLabel("Clustering parameters")
         self.label.setObjectName("settingsLabel")
+        self.label.setContentsMargins(7, 0, 0, 0)
         self.box.addWidget(self.label)
 
         self.parameterLayout = QtWidgets.QHBoxLayout()
@@ -124,11 +131,11 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
         self.parameterLayout.addWidget(self.clustersWidget)
 
         self.box.addLayout(self.parameterLayout)
-
         self.setLayout(self.box)
 
     def showSettings(self):
         cluster_strategy = self.strategyWidget.dropDown.currentText()
+        print(cluster_strategy)
 
         if cluster_strategy == 'DBSCAN':
             self.parameterLayout.addWidget(self.epsilonWidget)
@@ -147,6 +154,7 @@ class ClusteringParametersWidget(QtWidgets.QWidget):
     def resetValues(self):
         defaultSettings = resetSettings()
 
+        self.strategyWidget.resetValue(defaultSettings)
         self.epsilonWidget.resetValue(defaultSettings)
         self.clustersWidget.resetValue(defaultSettings)
 
@@ -155,7 +163,7 @@ class PreProcessingWidget(QtWidgets.QWidget):
         super().__init__()
         self.settings = settings
         self.widget = QtWidgets.QWidget()
-        self.setMaximumHeight(150)
+        self.setMaximumHeight(130)
     
         # Make Widgets
         neighbourhbours = "The number of neighbours that are used to remove outliers."
@@ -172,6 +180,7 @@ class PreProcessingWidget(QtWidgets.QWidget):
 
         self.label = QtWidgets.QLabel("Pre processing parameters")
         self.label.setObjectName("settingsLabel")
+        self.label.setContentsMargins(7, 0, 0, 0)
         self.box.addWidget(self.label)
 
         self.parameterLayout = QtWidgets.QHBoxLayout()
@@ -195,7 +204,7 @@ class SegmentationWidget(QtWidgets.QWidget):
         super().__init__()
         self.settings = settings
         self.widget = QtWidgets.QWidget()
-        self.setMaximumHeight(150)
+        self.setMaximumHeight(130)
     
         # Make Widgets
         info_minimumPoints = "This is the minimum number of points that a segment/ cluster needs to have."
@@ -218,6 +227,7 @@ class SegmentationWidget(QtWidgets.QWidget):
 
         self.label = QtWidgets.QLabel("Segmentation parameters")
         self.label.setObjectName("settingsLabel")
+        self.label.setContentsMargins(7, 0, 0, 0)
         self.box.addWidget(self.label)
 
         self.parameterLayout = QtWidgets.QHBoxLayout()
@@ -245,7 +255,7 @@ class SurfaceWidget(QtWidgets.QWidget):
         super().__init__()
         self.settings = settings
         self.widget = QtWidgets.QWidget()
-        self.setMaximumHeight(150)
+        self.setMaximumHeight(130)
 
         # Make Widgets
         info_surfaceStrategy = "Select the surface calculation strategy."
@@ -256,6 +266,7 @@ class SurfaceWidget(QtWidgets.QWidget):
 
         self.label = QtWidgets.QLabel("Surface parameters")
         self.label.setObjectName("settingsLabel")
+        self.label.setContentsMargins(7, 0, 0, 0)
         self.box.addWidget(self.label)
 
         self.parameterLayout = QtWidgets.QHBoxLayout()
@@ -275,7 +286,7 @@ class CalculationsWidget(QtWidgets.QWidget):
         super().__init__()
         self.settings = settings
         self.widget = QtWidgets.QWidget()
-        self.setMaximumHeight(150)
+        self.setMaximumHeight(130)
 
         # Make Widgets
         info_estimatedPlanes = "The number of planes you think will be in the point cloud. This is used to calculate the correctness of the segmentation."
@@ -288,6 +299,7 @@ class CalculationsWidget(QtWidgets.QWidget):
 
         self.label = QtWidgets.QLabel("Calculations parameters")
         self.label.setObjectName("settingsLabel")
+        self.label.setContentsMargins(7, 0, 0, 0)
         self.box.addWidget(self.label)
 
         self.parameterLayout = QtWidgets.QHBoxLayout()

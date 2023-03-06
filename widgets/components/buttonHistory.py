@@ -1,4 +1,8 @@
-from PyQt5 import QtWidgets, QtGui, QtCore
+import os
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+from utils import checkDataDirectory, checkZippedData, cleanData, copyDirectory
+
 
 class ButtonHistory(QtWidgets.QPushButton):
     def __init__(self, file, parent):
@@ -13,14 +17,23 @@ class ButtonHistory(QtWidgets.QPushButton):
 
         self.setMinimumHeight(70)
         self.parent = parent
+
         fileName = file["name"]
         fileTime = file["time"]
+
+        try:
+            folderPath = file["folderPath"]
+        except:
+            folderPath = None
 
         self.fileIcon = QtWidgets.QPushButton()
         self.fileIcon.setObjectName("historyArrowbtn")
         self.fileIcon.setStyleSheet("background-color: transparent")
         self.fileIcon.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.fileIcon.setIcon(QtGui.QIcon('assets/file.svg'))
+        if folderPath:
+            self.fileIcon.setIcon(QtGui.QIcon('assets/folder.svg'))
+        else:
+            self.fileIcon.setIcon(QtGui.QIcon('assets/file.svg'))
         self.fileIcon.setIconSize(QtCore.QSize(50, 50))
         self.fileIcon.clicked.connect(lambda: self.parent.navigateToRenderer(fileName))
 
@@ -44,5 +57,23 @@ class ButtonHistory(QtWidgets.QPushButton):
         self.setStyleSheet("QPushButton#recentbtn:hover {background-color: #F6F6F6; text-align: left;}")
         self.setLayout(self.layout)
         self.setMinimumWidth(400)
-        self.setToolTip(fileName)
-        self.clicked.connect(lambda: self.parent.navigateToRenderer(fileName))
+        if folderPath:
+            self.setToolTip(folderPath)
+            self.clicked.connect(lambda: self.navigateToRendererFromPreProcessedData(folderPath, fileName))
+        else:
+            self.setToolTip(fileName)
+            self.clicked.connect(lambda: self.navigateToRenderer(fileName))
+    
+    def navigateToRenderer(self, fileName):
+        if os.path.exists(fileName):
+            self.parent.navigateToRenderer(fileName)
+
+    def navigateToRendererFromPreProcessedData(self, folderPath, fileName):
+        if folderPath.endswith("zip"):
+            check = checkZippedData(folderPath)
+        else:
+            check = checkDataDirectory(folderPath)
+        if check:
+            cleanData(True)
+            copyDirectory(folderPath, "data")
+            self.parent.navigateToRendererFromPreProcessedData(folderPath, fileName)

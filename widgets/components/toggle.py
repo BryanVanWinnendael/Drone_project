@@ -1,10 +1,8 @@
-from PyQt5.QtCore import (
-    Qt, QSize, QPoint, QPointF, QRectF,
-    QEasingCurve, QPropertyAnimation, QSequentialAnimationGroup,
-    pyqtSlot, pyqtProperty)
-
+from PyQt5.QtCore import (QEasingCurve, QPoint, QPointF, QPropertyAnimation,
+                          QRectF, QSequentialAnimationGroup, QSize, Qt,
+                          pyqtProperty, pyqtSlot)
+from PyQt5.QtGui import QBrush, QColor, QPainter, QPaintEvent, QPen
 from PyQt5.QtWidgets import QCheckBox
-from PyQt5.QtGui import QColor, QBrush, QPaintEvent, QPen, QPainter
 
 
 class AnimatedToggle(QCheckBox):
@@ -15,7 +13,8 @@ class AnimatedToggle(QCheckBox):
     def __init__(self,
         parent=None,
         bar_color=Qt.gray,
-        checked_color="#00B0FF",
+        checked_color="#249ea7",
+        checked_color_lighter="#42B6BF",
         handle_color=Qt.white,
         pulse_unchecked_color="#44999999",
         pulse_checked_color="#4400B0EE"
@@ -25,7 +24,7 @@ class AnimatedToggle(QCheckBox):
         # Save our properties on the object via self, so we can access them later
         # in the paintEvent.
         self._bar_brush = QBrush(bar_color)
-        self._bar_checked_brush = QBrush(QColor(checked_color).lighter())
+        self._bar_checked_brush = QBrush(QColor(checked_color_lighter))
 
         self._handle_brush = QBrush(handle_color)
         self._handle_checked_brush = QBrush(QColor(checked_color))
