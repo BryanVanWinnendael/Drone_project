@@ -24,7 +24,7 @@ Once the program is running, you will be greeted with the home screen. Here you 
 - Load a point cloud from a .ply file
 - Load in a zip file from a previous exported result.
 - Load in a folder from a previous exported result. You can use this option by using the switch on the homescreen.
-- Select a recent file that you used. 
+- Select a recent file or folder that you used. 
 
 ![Home Screen](assets/HomeScreen.png)
 
