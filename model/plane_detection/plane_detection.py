@@ -55,7 +55,8 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
 
         if cluster != None and cluster in GetValidClusterStrategies():
             inlier_points = np.asarray(plane.points)
-
+            redistributing = parameters["redistribute_smaller_clusters"]
+  
             # Remaining clusters
             remaining_clusters = []
 
@@ -75,15 +76,15 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
                 # Get the points for this cluster
                 cluster_points = inlier_points[labels == label]
 
-                # Check if it is the largest cluster and if redistribution is disabled it will ignore this
-                if len(cluster_points) >= parameters["min_points"] and IsLargestCluster(label, largest_cluster, parameters["redistribute_smaller_clusters"]):
+                correct_label = label == largest_cluster
+                enough_points = len(cluster_points) >= parameters["min_points"]
+
+                if (redistributing and correct_label and enough_points) or (not redistributing and enough_points):
                     # Convert points to Open3D point cloud
                     cluster_pcd = o3d.geometry.PointCloud()
                     cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
-
                     # Add the cluster point cloud to the list of planes
                     planes.append(cluster_pcd)
-
                     # Update the count
                     count += len(cluster_points)
                 else:
