@@ -65,13 +65,16 @@ class RendererWidget(QtWidgets.QWidget):
         self.tableAndButtonsLayout.addWidget(self.buttonSpace)
         self.tableAndButtonsLayout.addLayout(self.infoLayout)
         self.tableAndButtonsLayout.addWidget(self.resultTable)
-
+        self.tableAndButtonsLayout.setSpacing(0)
+        self.tableAndButtonsLayout.setContentsMargins(0, 0, 0, 0)
 
         # self.rendererLayout.addLayout(self.infoLayout)
         self.rendererLayout.addLayout(self.tableAndButtonsLayout)
 
         self.tableAndButtonSpace.setLayout(self.rendererLayout)
-
+        self.rendererLayout.setSpacing(0)
+        self.rendererLayout.setContentsMargins(0, 0, 0, 0)
+        
         self.splitter = QtWidgets.QSplitter(Qt.Vertical)
         self.splitter.addWidget(self.renderWidget)
         self.splitter.addWidget(self.tableAndButtonSpace)
