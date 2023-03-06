@@ -1,8 +1,11 @@
-import os
-from PyQt5 import QtCore
 import datetime
-from model.clean import clean
+import os
+import shutil
 from zipfile import ZipFile
+
+from PyQt5 import QtCore
+
+from model.clean import clean
 
 clusterStrategies = ["DBSCAN", "None", "Agglomerative"]
 surfaceStrategies = ["Poisson", "Convex Hull", "Ball Pivoting"]
@@ -24,10 +27,10 @@ defaultSettings = {
     "Number of Clusters (Agglomerative)": 3,
 }
 
-def saveFileName(fileName):
+def saveFileName(fileName, folderPath=None):
     savedFileNames = getFileNames()
     current_time = datetime.datetime.now()
-    file = {"name": fileName, "time": current_time.strftime("%d/%m/%Y %H:%M")}
+    file = {"name": fileName, "time": current_time.strftime("%d/%m/%Y %H:%M"), "folderPath": folderPath}
 
     if savedFileNames == None:
         savedFileNames = [file]
@@ -98,11 +101,13 @@ def updateClass(row, col, newItem):
     with open(res_path, "w") as outfile:
         outfile.write(data)
 
-import shutil
-
 def copyDirectory(src, dest):
     try:
-        shutil.copytree(src, dest)
+        if src.endswith("zip"):
+            with ZipFile(src, "r") as zip_ref:
+                zip_ref.extractall(dest)
+        else:
+            shutil.copytree(src, dest)
         print("Directory copied successfully")
     except shutil.Error as e:
         print(f"Error copying directory: {e}")
@@ -112,14 +117,14 @@ def copyDirectory(src, dest):
 def checkDataDirectory(directory):
     if os.path.isdir(directory):
         contents = os.listdir(directory)
-        
         # Check if the correct folders exist
         if "planes" in contents and "results" in contents:
             # Check if the results folder contains the correct files
             results = os.listdir(os.path.join(directory, "results"))
-            if "original.ply" in results and "result-classified.ply" in results and "output.csv" in results:
+            if not any(s.startswith('original') and s.endswith('.ply') for s in results):
+                return False
+            if  "result-classified.ply" in results and "output.csv" in results:
                 return True
-            
     return False
     
 def checkZippedData(filename):
@@ -130,7 +135,10 @@ def checkZippedData(filename):
             # Check if the zip file contains the correct folders
             with ZipFile(filename, "r") as zip_ref:
                 contents = zip_ref.namelist()
-                if "results/original.ply" in contents and "results/result-classified.ply" in contents and "results/output.csv" in contents:
+                if not any(s.startswith('results/original') and s.endswith('.ply') for s in contents):
+                    print("hrere")
+                    return False
+                if "results/result-classified.ply" in contents and "results/output.csv" in contents:
                     return True
     return False
     
@@ -139,3 +147,9 @@ def copyZip(filename, destination):
         if filename.endswith(".zip"):
             with ZipFile(filename, "r") as zip_ref:
                 zip_ref.extractall(destination)
+
+def getOriginalPly():
+    results = os.listdir("data/results")
+    for file in results:
+        if file.startswith("original") and file.endswith(".ply"):
+            return file

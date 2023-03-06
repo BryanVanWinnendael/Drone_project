@@ -4,8 +4,8 @@ from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from model.segmentator import Segmentator
-from utils import (cleanData, getRecentFile, getSettings, saveFileName,
-                   saveRecentFile)
+from utils import (cleanData, getRecentFile,
+                   getSettings, saveFileName, saveRecentFile)
 from widgets.home import HomeWidget
 from widgets.renderer import RendererWidget
 from widgets.settings import SettingsWidget
@@ -52,7 +52,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.worker.finished.connect(lambda: self.navigateToSegmentation(fileName))
         self.worker.progress.connect(lambda x: self.setLoadingText(x))
 
-    def navigateToRendererFromPreProcessedData(self, fileName):
+    def navigateToRendererFromPreProcessedData(self, folderPath, fileName):
+        saveFileName(fileName, folderPath)
+        saveRecentFile(fileName)
         return self.setCentralWidget(RendererWidget(self, fileName))
     
     def setLoadingText(self, text):

@@ -1,9 +1,12 @@
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QHeaderView, QCheckBox
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QHeaderView, QTableWidget, QTableWidgetItem
+
+from model.merger import Merger
+from utils import updateClass
 from widgets.components.buttonTable import ButtonTable
 from widgets.components.checkMerge import CheckMerge
-from PyQt5 import QtCore, QtGui
-from utils import updateClass
-from model.merger import Merger
+
+
 class ResultTable(QTableWidget):
     def __init__(self, parent, data):
         self.parent = parent

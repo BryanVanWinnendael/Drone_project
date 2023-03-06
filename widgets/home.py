@@ -1,12 +1,15 @@
-from PyQt5 import QtWidgets, QtCore
-from utils import getFileNames, copyZip, checkZippedData
-from widgets.components.buttonHistory import ButtonHistory
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
-from widgets.components.buttonUpload import ButtonUpload
+
+from utils import (checkDataDirectory, checkZippedData, cleanData,
+                   copyDirectory, copyZip, getFileNames, getOriginalPly)
+from widgets.components.buttonHistory import ButtonHistory
 from widgets.components.buttonSettings import ButtonSettings
-from utils import checkDataDirectory, copyDirectory, cleanData
-from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
+from widgets.components.buttonUpload import ButtonUpload
+from widgets.components.buttonUploadPreProcessedData import \
+    ButtonUploadPreProcessedData
 from widgets.components.toggle import AnimatedToggle
+
 
 class HomeWidget(QtWidgets.QWidget):
     finished = pyqtSignal()
@@ -26,18 +29,23 @@ class HomeWidget(QtWidgets.QWidget):
 
         topLayout = QtWidgets.QHBoxLayout()
 
+        # Set toggle button layout
         toggleLayout = QtWidgets.QHBoxLayout()
+        toggleLayout.setSpacing(0)
+
+        # Set toggle button
         mainToggle = AnimatedToggle()
         mainToggle.setCursor(QtCore.Qt.PointingHandCursor)
         mainToggle.setMaximumHeight(200)
         mainToggle.setMaximumWidth(60)
         mainToggle.clicked.connect(self.changeUploadButton)
         toggleLayout.addWidget(mainToggle)
+        
+        # Set toggle text
         toggleText = QtWidgets.QLabel("Browse folder")
-        toggleText.setMaximumHeight(40)
-        toggleText.setMaximumWidth(90)
         toggleText.setObjectName("toggleText")
-        toggleText.setAlignment(QtCore.Qt.AlignCenter)
+        toggleText.setMaximumHeight(20)
+        toggleText.setAlignment(QtCore.Qt.AlignLeft)
         toggleLayout.addWidget(toggleText)
 
         topLayout.addLayout(toggleLayout)
@@ -50,13 +58,6 @@ class HomeWidget(QtWidgets.QWidget):
         topLayout.addLayout(self.settingsButtonLayout)
 
         layout.addLayout(topLayout)
-
-        # Make title
-        self.title = QtWidgets.QLabel("Point Cloud Processor")
-        self.title.setObjectName("title")
-        self.title.setAlignment(QtCore.Qt.AlignCenter)
-        self.title.setMaximumHeight(150)
-        layout.addWidget(self.title)
 
         # Set upload buttons in horizontal layout
         uploadButtonsLayout = QtWidgets.QHBoxLayout()
@@ -75,8 +76,8 @@ class HomeWidget(QtWidgets.QWidget):
         # Set recent files
         vbox = QtWidgets.QVBoxLayout()
         
-        self.label = QtWidgets.QLabel("Recent files")
-        self.label.setMaximumHeight(40)
+        self.label = QtWidgets.QLabel("Recent viewed")
+        self.label.setMaximumHeight(45)
         self.label.setObjectName("recentlabel")
         self.label.setAlignment(QtCore.Qt.AlignCenter)
 
@@ -99,38 +100,42 @@ class HomeWidget(QtWidgets.QWidget):
         self.uploadButton.setVisible(self.folderButton)
         self.uploadPreProcessedDataButton.setVisible(not self.folderButton)
 
-
     def openFileNameDialog(self):
         self.uploadButton.setNormal()
+        self.uploadPreProcessedDataButton.setNormal()
         options = QtWidgets.QFileDialog.Options()
-        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open file or directory", "", "Polygen Files (*).ply;; Zip (*).zip ", options=options)
-        if fileName:
-            if fileName.endswith('.ply'):
-                self.parent.navigateToRenderer(fileName)
-            elif fileName.endswith('.zip'):
-                if checkZippedData(fileName):
+        path, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open file or directory", "", "Polygen Files (*).ply;; Zip (*).zip ", options=options)
+        if path:
+            if path.endswith('.ply'):
+                self.parent.navigateToRenderer(path)
+            elif path.endswith('.zip'):
+                if checkZippedData(path):
                     cleanData(True)
-                    copyZip(fileName, "data")
-                    self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
+                    copyZip(path, "data")
+                    fileName = getOriginalPly()
+                    self.parent.navigateToRendererFromPreProcessedData(folderPath=path, fileName=f"data/results/{fileName}")
                 else:
                     self.uploadButton.setError()
             else:
                 self.uploadButton.setError()
 
     def openDirectoryDialog(self):
+        self.uploadButton.setNormal()
         self.uploadPreProcessedDataButton.setNormal()
         cleanData(True)
         options = QtWidgets.QFileDialog.Options()
-        fileName = QtWidgets.QFileDialog.getExistingDirectory(self, "Open file or directory", "", options=options)
-        if fileName:
-            if checkDataDirectory(fileName):
-                copyDirectory(fileName, "data")
-                self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
+        folderPath = QtWidgets.QFileDialog.getExistingDirectory(self, "Open file or directory", "", options=options)
+        if folderPath:
+            if checkDataDirectory(folderPath):
+                copyDirectory(folderPath, "data")
+                fileName = getOriginalPly()
+                self.parent.navigateToRendererFromPreProcessedData(folderPath=folderPath, fileName=f"data/results/{fileName}")
             else:
                 self.uploadPreProcessedDataButton.setError()
 
     def dragEnterEvent(self, event):
         self.uploadButton.setNormal()
+        self.uploadPreProcessedDataButton.setNormal()
         if event.mimeData().hasUrls():
             event.accept()
         else:
@@ -144,7 +149,8 @@ class HomeWidget(QtWidgets.QWidget):
         elif checkDataDirectory(files[0]):
             cleanData(True)
             copyDirectory(files[0], "data")
-            self.parent.navigateToRendererFromPreProcessedData("data/results/original.ply")
+            fileName = getOriginalPly()
+            self.parent.navigateToRendererFromPreProcessedData(folderPath=files[0], fileName=f"data/results/{fileName}")
         else:
             print("Not a valid file")
             self.uploadButton.setError()

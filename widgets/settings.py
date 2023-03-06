@@ -1,8 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import (clusterStrategies, surfaceStrategies, getSettings, resetSettings,
-                   saveRecentFile, saveSettings)
+from utils import getSettings, resetSettings
 from widgets.components.settingParametersWidgets import *
+
 
 class SettingsWidget(QtWidgets.QScrollArea):
     def __init__(self, parent):
@@ -10,47 +10,46 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.parent = parent
         self.settings = getSettings()
         
-        self.widget = QtWidgets.QWidget()
         self.layout = QtWidgets.QVBoxLayout()
-        self.widget.setObjectName("widgetSettings")
+        self.layout.setContentsMargins(7, 0, 7, 0)
 
         self.widgetLayout = QtWidgets.QVBoxLayout()
-        self.widgetLayout.setSpacing(5)
         self.widgetLayout.setContentsMargins(0, 0, 0, 20)
 
         self.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
         self.setWidgetResizable(True)
 
+        self.topBar = QtWidgets.QGridLayout()
+
         self.layoutButton = QtWidgets.QHBoxLayout()
+
         self.backButton = QtWidgets.QPushButton("Back")
         self.backButton.setObjectName("backbtn")
         self.backButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.backButton.clicked.connect(self.parent.navigateToHome)
         self.backButton.setIcon(QtGui.QIcon('assets/back.svg'))
         self.backButton.setIconSize(QtCore.QSize(30, 30))
         self.backButton.setToolTip("Back to home")
+        self.backButton.clicked.connect(self.parent.navigateToHome)
+
         self.layoutButton.addWidget(self.backButton)
-        self.layout.addLayout(self.layoutButton)
+        self.topBar.addLayout(self.layoutButton, 0, 0)
 
         # Main label
-        ## Make widget
-        self.labelWidget = QtWidgets.QWidget()
-        self.labelWidget.setObjectName("settingsLabelWidget")
-        self.labelWidget.setMinimumHeight(70)
-        self.labelWidget.setMaximumHeight(150)
-
-        ## Make layout
-        self.labelLayout = QtWidgets.QHBoxLayout()
-
         ## Make label
-        self.mainLabel = QtWidgets.QLabel("Settings for the point cloud processing")
+        self.mainLabel = QtWidgets.QLabel("Settings")
         self.mainLabel.setObjectName("settingsMainLabel")
+        self.mainLabel.setAlignment(QtCore.Qt.AlignCenter)
 
-        ## Add to layout
-        self.labelLayout.addWidget(self.mainLabel)
-        self.labelWidget.setLayout(self.labelLayout)
-        self.layout.addWidget(self.labelWidget)
+        ## Add to top bar
+        self.topBar.addWidget(self.mainLabel, 0, 1)
+        
+        # Empty label
+        self.emptyLabel = QtWidgets.QLabel()
+        self.topBar.addWidget(self.emptyLabel, 0, 2)
+        
+        # Add top bar to layout
+        self.layout.addLayout(self.topBar)
 
         # Clustering parameters
         self.clusterWidget = ClusteringParametersWidget(self.settings)
@@ -58,7 +57,6 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.widgetLayout.addWidget(self.clusterWidget)
 
         # Pre processing parameters
-        
         self.preProcessWidget = PreProcessingWidget(self.settings)
         self.widgetLayout.addWidget(self.preProcessWidget)
 
@@ -79,19 +77,17 @@ class SettingsWidget(QtWidgets.QScrollArea):
         self.resetButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.resetButton.setObjectName('buttonReset')
         self.resetButton.setMinimumHeight(30)
+        self.resetButton.setContentsMargins(7, 0, 100, 0)
         self.resetButton.clicked.connect(self.resetSettingsValue)
 
         self.layout.addLayout(self.widgetLayout)
         self.layout.addWidget(self.resetButton)
-        self.widget.setLayout(self.layout)
 
-        self.setWidget(self.widget)
+        self.setLayout(self.layout)
     
     def resetSettingsValue(self):
-        defaultSettings = resetSettings()
-
-        self.clusterWidget.resetValues(defaultSettings)
-        self.preProcessWidget.resetValues(defaultSettings)
-        self.segmentationWidget.resetValues(defaultSettings)
-        self.surfaceWidget.resetValues(defaultSettings)
-        self.calculationsWidget.resetValues(defaultSettings)
+        self.clusterWidget.resetValues()
+        self.preProcessWidget.resetValues()
+        self.segmentationWidget.resetValues()
+        self.surfaceWidget.resetValues()
+        self.calculationsWidget.resetValues()
