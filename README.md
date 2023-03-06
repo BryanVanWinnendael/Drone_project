@@ -20,19 +20,43 @@ After the dependencies have been installed you can run the project by running th
 ```bash
 python3 main.py
 ```
-This will take you to the main menu, here you can upload your .ply point cloud and select the algorithm you want to use. Multiple other settings are also available.
-Choose your settings before you upload the file because the file will be processed immediately after it has been uploaded.
+Once the program is running, you will be greeted with the home screen. Here you have multiple options for loading in a point cloud:
+- Load a point cloud from a .ply file
+- Load in a zip file from a previous exported result.
+- Load in a folder from a previous exported result. You can use this option by using the switch on the homescreen.
+- Select a recent file that you used. 
 
 ![Home Screen](assets/HomeScreen.png)
+
+If you click on the settings icon on the top right, you will be taken to the settings screen. Here you can change the parameters for the segmentation, pre-processing and the clustering.
+
+Each of the parameters has an extra information button that you can click so you know what everything does.
+
 ![Settings](assets/SettingsScreen.png)
 
-The program will then process the point cloud and show you the results.
+Once you uploaded a file or loaded a folder the program will automatically process the point cloud and take you to the result screen.
 
 ![Results Screen](assets/ResultsScreen.png)
 
-When you get the result, you can view each of the planes by pressing the view button. You can also merge planes together for a better end result.
+### Functionalities
 
-Because our model uses RANSAC to detect planes, it will of course be 100% accurate. This is why the merge function exist. For each segment you can also indicate a class, this could be useful for labeling data.
+Once the processes point cloud is shown you can do the following:
+- View the point cloud and segmented point cloud
+- View the different segments that were detected
+- View the surface area of each segment
+- View the total surface area of all the segments
+- View the estimated correctness of the segmentation. This requires that you gave the number of planes that are meant to be detected in the settings. Otherwise there is no way to calculate a correctness percentage.
+- Merge different segments together
+- Merge points of a specific segment with another segment. This is done by selecting a segment, holding shift and left click and selecting the points you want to merge. Then you select the checkbox of the segment you want to merge the points with and click the merge button.
+- Delete a segment
+- Delete points from a segment. This is done by selecting a segment, holding shift and left click and selecting the points you want to delete and then clicking the delete button.
+- Assign a class to a segment, this is done by click the class on the table and typing the class you want.
+- Export the result to a zip file. This zip file will contain:
+  - The original point cloud
+  - The segmented point cloud
+  - All the seperate segments
+  - A csv with the surface area and class of each segment
+- Change the 3D-viewer background to black or white
 
 ## Working
 This program is seperated into 2 parts:
@@ -55,9 +79,11 @@ This is the part of the application that will actually process the point cloud.
 7. Write the info for each plane to a .csv file
 
 #### Extra information
-The model is made to be extendable, you can easily add new cluster strategies. All the parameters needed for RANSAC and clustering are stored in a dictionary, this makes it easy to add new parameters.
+The model is made to be extendable, you can easily add new cluster strategies. All the parameters needed for RANSAC and clustering are stored in a dictionary, this makes it easy to add new parameters. This dictionary is given throughout the entire segmentation process, so should you want to add new parameters you only need to do it in one place.
 
-The model mostly uses Open3D for the processing because it already has functions for RANSAC and DBSCAN.
+Adding new cluster strategies is also simple, in the file model/plane_dectection/plane_detection.py there is a function called SegmentPlanes. This function receives the cluster strategy name as a string and the parameters dictionary. In this function there is a condintional block where you can simply add a new check for your new cluster strategy. This condition block is just meant to return the labels so the rest of the code can proceed.
+
+The model mostly uses Open3D for the processing because it already has functions for RANSAC and DBSCAN. Agglomerative clustering uses the Sci-kit learn implementation.
 
 #### Extra functionalities
 The model also contains some extra functionalities that are not used in the front-end, but could be useful for other projects.
