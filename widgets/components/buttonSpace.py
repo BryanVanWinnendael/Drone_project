@@ -6,9 +6,9 @@ class ButtonSpace(QtWidgets.QWidget):
         super().__init__()
         self.parent = parent
         self.layout = QtWidgets.QHBoxLayout()
-        
         self.originalButton = QtWidgets.QPushButton("Original")
         self.originalButton.setObjectName("rendererbtn")
+        self.originalButton.setStyleSheet("border-left: none;")
         self.originalButton.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
         self.originalButton.clicked.connect(lambda: self.parent.changeGeometry(self.parent.fileName))
 
@@ -31,4 +31,6 @@ class ButtonSpace(QtWidgets.QWidget):
         self.layout.addWidget(self.classifiedButton)
         self.layout.addWidget(self.daynightSwitch)
         self.layout.addWidget(self.buttonClear)
+        self.layout.setSpacing(0)
+        self.layout.setContentsMargins(0, 0, 0, 0)
         self.setLayout(self.layout)
