@@ -49,8 +49,8 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
 
         if cluster != None and cluster in GetValidClusterStrategies():
             inlier_points = np.asarray(plane.points)
-            redistribute_smaller_clusters = parameters["redistribute_smaller_clusters"]
-
+            redistributing = parameters["redistribute_smaller_clusters"]
+  
             # Remaining clusters
             remaining_clusters = []
 
@@ -70,38 +70,22 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
                 # Get the points for this cluster
                 cluster_points = inlier_points[labels == label]
 
-                # Check if you want to redistribute the smaller clusters
-                if redistribute_smaller_clusters == True:
-                    # Check if it is the largest cluster
-                    if label == largest_cluster and len(cluster_points) >= parameters["min_points"]:
-                        # Convert points to Open3D point cloud
-                        cluster_pcd = o3d.geometry.PointCloud()
-                        cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
+                correct_label = label == largest_cluster
+                enough_points = len(cluster_points) >= parameters["min_points"]
 
-                        # Add the cluster point cloud to the list of planes
-                        planes.append(cluster_pcd)
-
-                        # Update the count
-                        count += len(cluster_points)
-                    else:
-                        # Put the points back into the target
-                        print("Not enough points to be a plane, adding points back to target")
-                        remaining_clusters.append(cluster_points)
+                if (redistributing and correct_label and enough_points) or (not redistributing and enough_points):
+                    # Convert points to Open3D point cloud
+                    cluster_pcd = o3d.geometry.PointCloud()
+                    cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
+                    # Add the cluster point cloud to the list of planes
+                    planes.append(cluster_pcd)
+                    # Update the count
+                    count += len(cluster_points)
                 else:
-                    if len(cluster_points) >= parameters["min_points"]:
-                        # Convert points to Open3D point cloud
-                        cluster_pcd = o3d.geometry.PointCloud()
-                        cluster_pcd.points = o3d.utility.Vector3dVector(cluster_points)
+                    # Put the points back into the target
+                    print("Not enough points to be a plane, adding points back to target")
+                    remaining_clusters.append(cluster_points)
 
-                        # Add the cluster point cloud to the list of planes
-                        planes.append(cluster_pcd)
-
-                        # Update the count
-                        count += len(cluster_points)
-                    else:
-                        # Put the points back into the target
-                        print("Not enough points to be a plane, adding points back to target")
-                        remaining_clusters.append(cluster_points)
         else:
             # Add the plane to the list
             planes.append(plane)
