@@ -54,6 +54,7 @@ class SettingsWidget(QtWidgets.QScrollArea):
 
         # Clustering parameters
         self.clusterWidget = ClusteringParametersWidget(self.settings)
+        self.clusterWidget.showSettings()
         self.widgetLayout.addWidget(self.clusterWidget)
 
         # Pre processing parameters

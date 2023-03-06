@@ -10,6 +10,7 @@ class Segmentator:
         surface_strategy = self.settings["Surface strategy"]
 
         segmentation_parameters = {
+            "redistribute_smaller_clusters": self.settings["Redistribute smaller clusters"],
             "min_points": int(self.settings["Minimum points"]),
             "iterations": int(self.settings["Iterations"]),
             "max_loops": int(self.settings["Maximum number of loops"]),

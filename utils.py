@@ -10,6 +10,7 @@ surfaceStrategies = ["Poisson", "Convex Hull", "Ball Pivoting"]
 defaultSettings = {
     "Cluster strategy": "None",
     "Surface strategy": "Convex Hull",
+    "Redistribute smaller clusters": False,
     "Estimated planes": 0,
     "Minimum points": 30,
     "Iterations": 1000,

@@ -49,7 +49,7 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
 
         if cluster != None and cluster in GetValidClusterStrategies():
             inlier_points = np.asarray(plane.points)
-            redistribute_smaller_clusters = False
+            redistribute_smaller_clusters = parameters["redistribute_smaller_clusters"]
 
             # Remaining clusters
             remaining_clusters = []
@@ -58,7 +58,6 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
                 # Perform DBSCAN clustering on the points
                 # The minimum number of points is set to 20, because if the parameter value is used it gives weird results
                 labels = np.array(plane.cluster_dbscan(eps=parameters["epsilon"], min_points=20))
-                redistribute_smaller_clusters = True
             elif cluster == "Agglomerative":
                 # Perform agglomerative clustering on the points
                 labels = AgglomerativeClustering(n_clusters=parameters["number_of_clusters"]).fit_predict(inlier_points)
