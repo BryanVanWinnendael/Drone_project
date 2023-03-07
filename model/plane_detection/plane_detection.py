@@ -1,7 +1,7 @@
-import open3d as o3d
-from model.plane_detection.color_generator import GenerateColors
 import numpy as np
+import open3d as o3d
 from sklearn.cluster import AgglomerativeClustering
+from model.plane_detection.color_generator import GenerateColors
 from model.model_utils import GetDefaulftParameters, GetValidClusterStrategies
 
 def SaveResult(planes):
@@ -23,12 +23,6 @@ def findLargestCluster(points, labels):
 
     return largest_cluster
 
-# Is largest cluster is used to check if the cluster is the largest cluster, but if redistribution is disabled it will always return true. This was added so we don't get duplicate code
-def IsLargestCluster(label, largest_cluster, redistribute_smaller_clusters):
-    if redistribute_smaller_clusters == True:
-        return label == largest_cluster
-    return True
-
 def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
@@ -41,7 +35,8 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
     print(f"Starting with {N} points")
 
     # Because infinite loops are possible we limit the max amount of loops
-    # Loop until the minimum ratio of points is reached
+    # Loop until the minimum ratio of points is reached, this will limit the amount of planes which results in less computation time
+    # You can put min ratio to 0 to get all planes, but this will take a lot of time
     while count < (1 - parameters["min_ratio"]) * N and max_loops > 0:
         # Convert back to open3d point cloud
         cloud = o3d.geometry.PointCloud()

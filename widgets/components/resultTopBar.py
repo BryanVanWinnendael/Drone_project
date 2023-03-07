@@ -1,8 +1,8 @@
 import os
 import zipfile
 
-from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 class ResultTopBar(QtWidgets.QWidget):

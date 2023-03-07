@@ -4,12 +4,14 @@ from PyQt5 import QtGui, QtWidgets
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from model.segmentator import Segmentator
-from utils import (cleanData, getRecentFile,
-                   getSettings, saveFileName, saveRecentFile)
+
 from widgets.home import HomeWidget
 from widgets.renderer import RendererWidget
 from widgets.settings import SettingsWidget
 from widgets.waiting import WaitingWidget
+
+from utils import (cleanData, getRecentFile,
+                   getSettings, saveFileName, saveRecentFile)
 
 
 class Worker(QThread):

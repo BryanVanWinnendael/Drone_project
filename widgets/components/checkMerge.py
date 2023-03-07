@@ -1,6 +1,5 @@
 from PyQt5 import QtWidgets
 
-
 class CheckMerge(QtWidgets.QCheckBox):
     def __init__(self, parent, segment_id):
         super(CheckMerge, self).__init__()

@@ -1,8 +1,10 @@
+from utils import updateClass
+
+from model.merger import Merger
+
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QHeaderView, QTableWidget, QTableWidgetItem
 
-from model.merger import Merger
-from utils import updateClass
 from widgets.components.buttonTable import ButtonTable
 from widgets.components.checkMerge import CheckMerge
 

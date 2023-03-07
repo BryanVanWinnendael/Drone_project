@@ -157,7 +157,7 @@ class RendererWidget(QtWidgets.QWidget):
         self.clearSelectedPoints()
         self.deleteButton.hide()
         self.deleteButton.setEnabled(False)
-        self.renderWidget.update_vis()
+        self.renderWidget.updateVis()
         self.renderWidget.updateClassified()
         if not os.path.exists(self.renderWidget.newFileName):
             self.changeGeometry(self.renderWidget.classified)

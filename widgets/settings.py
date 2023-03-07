@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from utils import getSettings, resetSettings
+from utils import getSettings
 from widgets.components.settingParametersWidgets import *
 
 

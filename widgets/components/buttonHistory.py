@@ -3,7 +3,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 from utils import checkDataDirectory, checkZippedData, cleanData, copyDirectory
 
-
 class ButtonHistory(QtWidgets.QPushButton):
     def __init__(self, file, parent):
         super(ButtonHistory, self).__init__()

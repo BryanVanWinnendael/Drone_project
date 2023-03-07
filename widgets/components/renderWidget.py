@@ -1,6 +1,7 @@
+import win32gui
 import numpy as np
 import open3d as o3d
-import win32gui
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -42,26 +43,23 @@ class RenderWidget(QtWidgets.QWidget):
         win32gui.CloseWindow(win32gui.FindWindowEx(0, 0, None, "Open3D - free view"))
         
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
-        self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
-        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
-        self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
 
         hwnd = win32gui.FindWindowEx(0, 0, None, "Open3D - free view")
         self.window = QtGui.QWindow.fromWinId(hwnd)    
 
-        self.Vbox = QtWidgets.QVBoxLayout(self)
+        self.vbox = QtWidgets.QVBoxLayout(self)
         self.windowcontainer = self.parent.createWindowContainer(self.window, self.widget)
         self.windowcontainer.setMinimumWidth(300)
         self.windowcontainer.setMinimumHeight(300)
-        self.Vbox.addWidget(self.windowcontainer)
+        self.vbox.addWidget(self.windowcontainer)
 
         self.timer = QtCore.QTimer(self.parent)
-        self.timer.timeout.connect(self.update_vis)
+        self.timer.timeout.connect(self.updateVis)
         self.timer.start(1)
 
-        self.setLayout(self.Vbox)
+        self.setLayout(self.vbox)
 
-    def update_vis(self):
+    def updateVis(self):
         self.vis.poll_events()
         self.vis.update_renderer()
     
@@ -81,7 +79,6 @@ class RenderWidget(QtWidgets.QWidget):
             cloud = o3d.io.read_point_cloud(newFileName)
             try:
                 self.vis.add_geometry(cloud)
-                self.vis.add_geometry(self.classified_pcd_downscaled)
             except RuntimeError as error:
                 print("Error: Could not load file")
                 print(error)
@@ -110,9 +107,6 @@ class RenderWidget(QtWidgets.QWidget):
 
     def updateClassified(self):
         self.classified_pcd = o3d.io.read_point_cloud(self.classified)
-        self.classified_pcd_downscaled = o3d.io.read_point_cloud(self.classified)
-        self.classified_pcd_downscaled.voxel_down_sample(voxel_size=0.001)
-        self.classified_pcd_downscaled.paint_uniform_color([0.5, 0.5, 0.5])
     
     def clearSelectedPoints(self):
         self.vis.clear_picked_points()

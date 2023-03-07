@@ -1,6 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-
 class ButtonSettings(QtWidgets.QToolButton):
     def __init__(self, parent):
         super(ButtonSettings, self).__init__()

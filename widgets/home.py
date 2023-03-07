@@ -1,14 +1,14 @@
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtCore import pyqtSignal
 
-from utils import (checkDataDirectory, checkZippedData, cleanData,
-                   copyDirectory, copyZip, getFileNames, getOriginalPly)
 from widgets.components.buttonHistory import ButtonHistory
 from widgets.components.buttonSettings import ButtonSettings
 from widgets.components.buttonUpload import ButtonUpload
-from widgets.components.buttonUploadPreProcessedData import \
-    ButtonUploadPreProcessedData
+from widgets.components.buttonUploadPreProcessedData import ButtonUploadPreProcessedData
 from widgets.components.toggle import AnimatedToggle
+
+from utils import (checkDataDirectory, checkZippedData, cleanData,
+                   copyDirectory, copyZip, getFileNames, getOriginalPly)
 
 
 class HomeWidget(QtWidgets.QWidget):

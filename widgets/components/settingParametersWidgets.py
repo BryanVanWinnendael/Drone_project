@@ -1,4 +1,5 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+
 from utils import (clusterStrategies, surfaceStrategies, resetSettings,
                    saveRecentFile, saveSettings)
 
@@ -217,8 +218,8 @@ class PreProcessingWidget(QtWidgets.QWidget):
         self.setMaximumHeight(130)
     
         # Make Widgets
-        neighbourhbours = "The number of neighbours that are used to remove outliers."
-        self.neighboursWidget = TextInput(self.settings, 'Number of neighbours', neighbourhbours, steps=1)
+        info_neighbours = "The number of neighbours that are used to remove outliers."
+        self.neighboursWidget = TextInput(self.settings, 'Number of neighbours', info_neighbours, steps=1)
 
         info_voxelSize = "The size of the voxel for downsampling the point cloud. The smaller the voxel size, the more points will be removed."
         self.voxelSizeWidget = TextInput(self.settings, 'Voxel size', info_voxelSize)
