@@ -1,4 +1,4 @@
-from model.segmentation import SegmentPointCloud
+from model.segmentation import segmentPointCloud
 
 class Segmentator:
     def __init__(self, waitingScreen, settings):
@@ -23,4 +23,4 @@ class Segmentator:
             "number_of_clusters": int(self.settings["Number of Clusters (Agglomerative)"]),
         }
 
-        SegmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, surface=surface_strategy, parameters=segmentation_parameters)
+        segmentPointCloud(filename, self.waitingScreen, cluster=cluster_strategy, surface=surface_strategy, parameters=segmentation_parameters)

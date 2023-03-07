@@ -1,9 +1,9 @@
 import open3d as o3d
 import numpy as np
 import pandas as pd
-from model.model_utils import constructNewClassifiedPointCloud, deleteSegment, reassignSegmentIds, calculateArea
+from model.utils import constructNewClassifiedPointCloud, deleteSegment, reassignSegmentIds, calculateArea
 
-def remove_points(file, remove_points, remove_segments):
+def removePoints(file, remove_points, remove_segments):
     if len(remove_points) > 0:
         pcd = o3d.io.read_point_cloud(file)
         points = np.asarray(pcd.points)

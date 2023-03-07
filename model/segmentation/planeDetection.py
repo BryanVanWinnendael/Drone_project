@@ -1,10 +1,12 @@
 import numpy as np
 import open3d as o3d
-from sklearn.cluster import AgglomerativeClustering
-from model.plane_detection.color_generator import GenerateColors
-from model.model_utils import GetDefaulftParameters, GetValidClusterStrategies
 
-def SaveResult(planes):
+from sklearn.cluster import AgglomerativeClustering
+
+from model.segmentation.colorGenerator import GenerateColors
+from model.utils import getDefaulftParameters, getValidClusterStrategies
+
+def saveResult(planes):
     pcds = o3d.geometry.PointCloud()
     for plane in planes:
         pcds += plane
@@ -23,7 +25,7 @@ def findLargestCluster(points, labels):
 
     return largest_cluster
 
-def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
+def segmentPlanes(pcd, cluster=None, parameters=getDefaulftParameters()):
     # Prepare necessary variables
     points = np.asarray(pcd.points)
     planes = []
@@ -48,7 +50,7 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
         # Extract the plane
         plane = cloud.select_by_index(mask)
 
-        if cluster != None and cluster in GetValidClusterStrategies():
+        if cluster != None and cluster in getValidClusterStrategies():
             inlier_points = np.asarray(plane.points)
             redistributing = parameters["redistribute_smaller_clusters"]
   
@@ -116,7 +118,7 @@ def SegmentPlanes(pcd, cluster=None, parameters=GetDefaulftParameters()):
     return planes
 
 # Detect planes solely based on RANSAC
-def DetectPlanes(filename, waitingScreen, cluster=None, parameters=GetDefaulftParameters()):
+def detectPlanes(filename, waitingScreen, cluster=None, parameters=getDefaulftParameters()):
     # Load in point cloud
     print("Loading point cloud...")
     waitingScreen.progress.emit("Loading point cloud...")
@@ -132,7 +134,7 @@ def DetectPlanes(filename, waitingScreen, cluster=None, parameters=GetDefaulftPa
     # Segment the planes
     print("Segmenting planes...")
     waitingScreen.progress.emit("Segmenting planes...")
-    planes = SegmentPlanes(pcd, cluster=cluster, parameters=parameters)
+    planes = segmentPlanes(pcd, cluster=cluster, parameters=parameters)
 
     # Generate range of colors
     colors = GenerateColors(len(planes))
@@ -154,4 +156,4 @@ def DetectPlanes(filename, waitingScreen, cluster=None, parameters=GetDefaulftPa
     # Save the result
     print("Saving result...")
     waitingScreen.progress.emit("Saving result...")
-    SaveResult(planes)
+    saveResult(planes)

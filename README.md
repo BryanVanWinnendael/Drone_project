@@ -84,7 +84,7 @@ This is the part of the application that will actually process the point cloud.
 #### Extra information
 The model is made to be extendable, you can easily add new cluster strategies. All the parameters needed for RANSAC and clustering are stored in a dictionary, this makes it easy to add new parameters. This dictionary is given throughout the entire segmentation process, so should you want to add new parameters you only need to do it in one place.
 
-Adding new cluster strategies is also simple, in the file model/plane_dectection/plane_detection.py there is a function called SegmentPlanes. This function receives the cluster strategy name as a string and the parameters dictionary. In this function there is a condintional block where you can simply add a new check for your new cluster strategy. This condition block is just meant to return the labels so the rest of the code can proceed.
+Adding new cluster strategies is also simple, in the file model/segmentation/planeDetection.py there is a function called SegmentPlanes. This function receives the cluster strategy name as a string and the parameters dictionary. In this function there is a condintional block where you can simply add a new check for your new cluster strategy. This condition block is just meant to return the labels so the rest of the code can proceed.
 
 The model mostly uses Open3D for the processing because it already has functions for RANSAC and DBSCAN. Agglomerative clustering uses the Sci-kit learn implementation.
 
@@ -98,17 +98,17 @@ python model/clean.py (hard)
 The hard parameter will also delete the results folder.
 - A viewing function that can be used to view a point cloud or a mesh. Usage: 
 ```bash
-python model/view_data.py point-cloud/mesh (file)
+python model/viewData.py point-cloud/mesh (file)
 ```
 The first parameter is the type of file you want to view and the file parameter is the path to the file you want to view.
 - A function to transform a mesh into a point cloud. Usage: 
 ```bash
-python model/mesh_to_point_cloud.py (file)
+python model/meshToPointCloud.py (file)
 ```
 The file parameter is the path to the mesh you want to transform. This will transform a mesh into a point cloud using the sample Poisson Disk algorithm and results in 16.384 points.
 
 ## Known bugs
 
-There is a bug with open3D. If you load in a large point cloud, it is possible that when viewing certain smaller segments, the 3D viewer window will not show the segment. The reason for this is unknown, because you can still view the segments when you view them seperatly using open3D, for example with the model/view_data.py script.
+There is a bug with open3D. If you load in a large point cloud, it is possible that when viewing certain smaller segments, the 3D viewer window will not show the segment. The reason for this is unknown, because you can still view the segments when you view them seperatly using open3D, for example with the model/viewData.py script.
 
 This is probably an issue with open3D itself and not our code, because with smaller point clouds it works fine.

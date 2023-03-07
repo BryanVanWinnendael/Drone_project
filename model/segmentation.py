@@ -1,10 +1,11 @@
 import os
-from model.plane_detection.plane_detection import DetectPlanes
-from model.plane_detection.surface_calculator import CalculateSurfaces
-from model.model_utils import GetDefaulftParameters
 import open3d as o3d
 
-def SegmentPointCloud(filename, waitingScreen, cluster=None, surface="Convex Hull", parameters=GetDefaulftParameters()):
+from model.utils import getDefaulftParameters
+from model.segmentation.planeDetection import detectPlanes
+from model.segmentation.surfaceCalculator import calculateSurfaces
+
+def segmentPointCloud(filename, waitingScreen, cluster=None, surface="Convex Hull", parameters=getDefaulftParameters()):
     # Check if the file exists
     print("Checking if the file exists...")
     if not os.path.exists(filename):
@@ -28,7 +29,7 @@ def SegmentPointCloud(filename, waitingScreen, cluster=None, surface="Convex Hul
     o3d.io.write_point_cloud(f"data/results/{newFilename}", pcd)
 
     print("Detecting planes...")
-    DetectPlanes(filename, waitingScreen, cluster=cluster, parameters=parameters)
+    detectPlanes(filename, waitingScreen, cluster=cluster, parameters=parameters)
 
     print("Calculating surface areas...")
-    CalculateSurfaces(surface, waitingScreen)
+    calculateSurfaces(surface, waitingScreen)

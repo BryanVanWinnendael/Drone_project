@@ -6,7 +6,7 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-from model.remove_points import remove_points
+from model.removePoints import removePoints
 from utils import getSettings
 from widgets.components.buttonSpace import ButtonSpace
 from widgets.components.renderWidget import RenderWidget
@@ -153,7 +153,7 @@ class RendererWidget(QtWidgets.QWidget):
             return len(self.data) / int(estimated_planes) * 100
         
     def removeSelectedPoints(self):
-        remove_points(self.renderWidget.newFileName, self.getSelectedPoints(), self.resultTable.checkedButtons)
+        removePoints(self.renderWidget.newFileName, self.getSelectedPoints(), self.resultTable.checkedButtons)
         self.clearSelectedPoints()
         self.deleteButton.hide()
         self.deleteButton.setEnabled(False)

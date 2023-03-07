@@ -1,7 +1,7 @@
-import open3d as o3d
 import sys
+import open3d as o3d
 
-def ConvertMeshToPointCloud(filename):
+def convertMeshToPointCloud(filename):
     print("Reading point cloud from file: " + filename)
     mesh = o3d.io.read_triangle_mesh(filename)
     print("Converting mesh to point cloud by sampling...")
@@ -16,4 +16,4 @@ if __name__ == "__main__":
         exit(1)
     else:
         filename = sys.argv[1]
-        ConvertMeshToPointCloud(filename)
+        convertMeshToPointCloud(filename)

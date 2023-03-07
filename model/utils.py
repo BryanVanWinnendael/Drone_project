@@ -4,7 +4,7 @@ import open3d as o3d
 from scipy.spatial import ConvexHull
 from scipy.spatial.qhull import QhullError
 
-def GetDefaulftParameters():
+def getDefaulftParameters():
     return {
         "min_points": 100,
         "iterations": 1000,
@@ -18,7 +18,7 @@ def GetDefaulftParameters():
         "number_of_clusters": 3,
     }
 
-def GetValidClusterStrategies():
+def getValidClusterStrategies():
     return ["DBSCAN", "Agglomerative"]
 
 def reassignSegmentIds():

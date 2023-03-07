@@ -1,8 +1,9 @@
-import open3d as o3d
-import numpy as np
-from csv import writer
 import os
-from model.model_utils import reassignSegmentIds, constructNewClassifiedPointCloud, deleteSegment, calculateArea
+import numpy as np
+import open3d as o3d
+from csv import writer
+
+from model.utils import reassignSegmentIds, constructNewClassifiedPointCloud, deleteSegment, calculateArea
 
 class Merger():
     def __init__(self, parent):

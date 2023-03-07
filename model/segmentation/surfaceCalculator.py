@@ -3,9 +3,10 @@ import csv
 import numpy as np
 import pandas as pd
 import open3d as o3d
-from model.model_utils import calculateArea
 
-def CalculateSurfaces(strategy, waitingScreen):
+from model.utils import calculateArea
+
+def calculateSurfaces(strategy, waitingScreen):
     results = {}
 
     # Iterate over all files in directory
@@ -22,9 +23,9 @@ def CalculateSurfaces(strategy, waitingScreen):
         # Compute the surface area
         
         if strategy == "mesh_poisson":
-            surface_area = CalculateSurfaceMeshPoissonMethod(pcd)
+            surface_area = calculateSurfaceMeshPoissonMethod(pcd)
         elif strategy == "mesh_ball_pivoting":
-            surface_area = CalculateSurfaceMeshBallPivotingMethod(pcd)
+            surface_area = calculateSurfaceMeshBallPivotingMethod(pcd)
         else:
             surface_area = calculateArea(np.asarray(pcd.points))
 
@@ -48,7 +49,7 @@ def CalculateSurfaces(strategy, waitingScreen):
     df.to_csv("data/results/output.csv", index=False)
 
 
-def CalculateSurfaceMeshPoissonMethod(pcd):
+def calculateSurfaceMeshPoissonMethod(pcd):
     # Estimate normals for the point cloud
     pcd.estimate_normals()
 
@@ -58,7 +59,7 @@ def CalculateSurfaceMeshPoissonMethod(pcd):
     # Get surface area
     return mesh.get_surface_area()
 
-def CalculateSurfaceMeshBallPivotingMethod(pcd):
+def calculateSurfaceMeshBallPivotingMethod(pcd):
     # Estimate normals for the point cloud
     pcd.estimate_normals()
 
