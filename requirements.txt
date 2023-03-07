@@ -1,6 +1,7 @@
 open3d
 numpy
 PyQt5
-win32gui
+pywin32
 pandas
-colorsys
+scipy
+sklearn
