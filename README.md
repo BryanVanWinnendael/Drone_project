@@ -1,4 +1,19 @@
 # Drone project <img src="https://github.com/BryanVanWinnendael/Drone_project/blob/main/assets/PointCloud.png" alt="drawing" width="50"/>
+
+<div>
+  <a href="https://github.com/BryanVanWinnendael/Drone_project/releases/latest">
+      <img src="https://img.shields.io/github/downloads/BryanVanWinnendael/Drone_project/total" alt="latest download">
+  </a>
+  <a href="https://github.com/BryanVanWinnendael/Drone_project/releases/latest">
+      <img src="https://img.shields.io/github/v/release/BryanVanWinnendael/Drone_project" alt="version">
+  </a>
+  <a href="">
+    <img src="https://img.shields.io/github/contributors/BryanVanWinnendael/Drone_project" alt="contributers">
+  </a>
+</div>
+
+
+  
 ## Information
 This repository contains our project for the Afstudeerproject in UCLL.
 
