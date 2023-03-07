@@ -84,7 +84,7 @@ This is the part of the application that will actually process the point cloud.
 #### Extra information
 The model is made to be extendable, you can easily add new cluster strategies. All the parameters needed for RANSAC and clustering are stored in a dictionary, this makes it easy to add new parameters. This dictionary is given throughout the entire segmentation process, so should you want to add new parameters you only need to do it in one place.
 
-Adding new cluster strategies is also simple, in the file model/segmentation/planeDetection.py there is a function called SegmentPlanes. This function receives the cluster strategy name as a string and the parameters dictionary. In this function there is a condintional block where you can simply add a new check for your new cluster strategy. This condition block is just meant to return the labels so the rest of the code can proceed.
+Adding new cluster strategies is also simple, in the file model/segmentationProcess/planeDetection.py there is a function called SegmentPlanes. This function receives the cluster strategy name as a string and the parameters dictionary. In this function there is a condintional block where you can simply add a new check for your new cluster strategy. This condition block is just meant to return the labels so the rest of the code can proceed.
 
 The model mostly uses Open3D for the processing because it already has functions for RANSAC and DBSCAN. Agglomerative clustering uses the Sci-kit learn implementation.
 
