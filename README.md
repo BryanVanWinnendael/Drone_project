@@ -1,4 +1,4 @@
-# Drone project
+# Drone project <img src="https://github.com/BryanVanWinnendael/Drone_project/blob/main/assets/PointCloud.png" alt="drawing" width="50"/>
 ## Information
 This repository contains our project for the Afstudeerproject in UCLL.
 
