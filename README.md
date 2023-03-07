@@ -4,6 +4,9 @@ This repository contains our project for the Afstudeerproject in UCLL.
 
 Our project was about detecting planes inside a point cloud, in order to get information about all the planes in a point cloud.
 
+### Tested versions
+The project has been tested on Python version [3.9.1](https://www.python.org/downloads/release/python-391/) and [3.10.10](https://www.python.org/downloads/release/python-31010/).
+
 ### Contributors
 - Bryan Van Winnendael
 - Charles Thuysbaert
@@ -24,7 +27,7 @@ Once the program is running, you will be greeted with the home screen. Here you 
 - Load a point cloud from a .ply file
 - Load in a zip file from a previous exported result.
 - Load in a folder from a previous exported result. You can use this option by using the switch on the homescreen.
-- Select a recent file that you used. 
+- Select a recent file or folder that you used. 
 
 ![Home Screen](assets/HomeScreen.png)
 
@@ -103,3 +106,9 @@ The first parameter is the type of file you want to view and the file parameter 
 python model/mesh_to_point_cloud.py (file)
 ```
 The file parameter is the path to the mesh you want to transform. This will transform a mesh into a point cloud using the sample Poisson Disk algorithm and results in 16.384 points.
+
+## Known bugs
+
+There is a bug with open3D. If you load in a large point cloud, it is possible that when viewing certain smaller segments, the 3D viewer window will not show the segment. The reason for this is unknown, because you can still view the segments when you view them seperatly using open3D, for example with the model/view_data.py script.
+
+This is probably an issue with open3D itself and not our code, because with smaller point clouds it works fine.
