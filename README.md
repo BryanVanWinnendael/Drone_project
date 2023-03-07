@@ -7,7 +7,7 @@ Our project was about detecting planes inside a point cloud, in order to get inf
 ### Tested versions
 The project has been tested on Windows with Python version [3.9.1](https://www.python.org/downloads/release/python-391/) and [3.10.10](https://www.python.org/downloads/release/python-31010/).
 
-This project will not work Linux or Mac. The model functionalities should work on Linux and Mac.
+This project will not work on Linux or Mac. The model functionalities should work on Linux and Mac.
 
 ### Contributors
 - Bryan Van Winnendael
