@@ -3,7 +3,7 @@ import open3d as o3d
 
 from sklearn.cluster import AgglomerativeClustering
 
-from model.segmentation.colorGenerator import GenerateColors
+from model.segmentationProcess.colorGenerator import GenerateColors
 from model.utils import getDefaulftParameters, getValidClusterStrategies
 
 def saveResult(planes):

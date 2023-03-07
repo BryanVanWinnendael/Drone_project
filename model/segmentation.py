@@ -2,8 +2,8 @@ import os
 import open3d as o3d
 
 from model.utils import getDefaulftParameters
-from model.segmentation.planeDetection import detectPlanes
-from model.segmentation.surfaceCalculator import calculateSurfaces
+from model.segmentationProcess.planeDetection import detectPlanes
+from model.segmentationProcess.surfaceCalculator import calculateSurfaces
 
 def segmentPointCloud(filename, waitingScreen, cluster=None, surface="Convex Hull", parameters=getDefaulftParameters()):
     # Check if the file exists
